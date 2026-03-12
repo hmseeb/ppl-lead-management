@@ -67,6 +67,7 @@ Recent decisions affecting current work:
 - 03-02: Retry uses stored payload jsonb snapshot (not re-fetch from leads table) for consistent data
 - 03-02: Permanent failures logged to activity_log with webhook_failed_permanent event_type
 - 03-02: pg_net _http_response rows cleaned up after processing to prevent table bloat
+- [Phase quick-1]: Added delivery_id to AssignmentResult interface for webhook wiring
 
 ### Pending Todos
 

@@ -30,12 +30,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Admin can create orders with vertical/credit-score criteria and control their lifecycle (start, pause, resume, complete, bonus toggle)
   4. Calling `assign_lead()` with a test lead correctly matches it to the right broker based on vertical + credit score, uses weighted rotation, decrements leads_remaining, logs the decision, and holds unmatched leads with failure reasons
   5. Two concurrent `assign_lead()` calls never double-assign or produce rotation drift (advisory lock works)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
+- [ ] 01-01-PLAN.md — Project scaffold, database schema, Supabase clients, and auth (iron-session + middleware)
+- [ ] 01-02-PLAN.md — Broker and order management UI with CRUD, lifecycle actions, and data tables
+- [ ] 01-03-PLAN.md — assign_lead() Postgres function with advisory locks, weighted rotation, and test suite
 
 ### Phase 2: Webhook Ingestion
 **Goal**: External systems (GHL) can send leads into the system via HTTP and the full assignment flow triggers automatically
@@ -105,7 +105,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation + Assignment Engine | 0/3 | Not started | - |
+| 1. Foundation + Assignment Engine | 0/3 | Planning complete | - |
 | 2. Webhook Ingestion | 0/2 | Not started | - |
 | 3. Lead Delivery | 0/2 | Not started | - |
 | 4. Admin Dashboard | 0/3 | Not started | - |

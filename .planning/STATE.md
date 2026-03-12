@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-03-12)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** Phase 3: Lead Delivery
+**Current focus:** Phase 4: Admin Dashboard
 
 ## Current Position
 
-Phase: 3 of 5 (Lead Delivery)
-Plan: 1 of 2 in current phase
+Phase: 4 of 5 (Admin Dashboard)
+Plan: 0 of 3 in current phase
 Status: In Progress
-Last activity: 2026-03-12 — Completed 03-01-PLAN.md
+Last activity: 2026-03-12 — Completed 03-02-PLAN.md
 
-Progress: [██████░░░░] 43%
+Progress: [███████░░░] 57%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
+- Total plans completed: 7
 - Average duration: 7min
-- Total execution time: 0.63 hours
+- Total execution time: 0.77 hours
 
 **By Phase:**
 
@@ -29,11 +29,11 @@ Progress: [██████░░░░] 43%
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 29min | 10min |
 | 02-webhook-ingestion | 2 | 7min | 4min |
-| 03-lead-delivery | 1 | 2min | 2min |
+| 03-lead-delivery | 2 | 10min | 5min |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (7min), 02-01 (3min), 02-02 (4min), 03-01 (2min)
-- Trend: improving
+- Last 5 plans: 01-03 (7min), 02-01 (3min), 02-02 (4min), 03-01 (2min), 03-02 (8min)
+- Trend: stable
 
 *Updated after each plan completion*
 
@@ -64,6 +64,9 @@ Recent decisions affecting current work:
 - 02-02: PROTECTED_FIELDS array explicitly blocks assignment columns from PATCH updates
 - 03-01: Delivery payload is a jsonb snapshot of lead data at assignment time (not a reference)
 - 03-01: delivery_id returned as null when broker has no crm_webhook_url (graceful skip)
+- 03-02: Retry uses stored payload jsonb snapshot (not re-fetch from leads table) for consistent data
+- 03-02: Permanent failures logged to activity_log with webhook_failed_permanent event_type
+- 03-02: pg_net _http_response rows cleaned up after processing to prevent table bloat
 
 ### Pending Todos
 
@@ -76,5 +79,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-12
-Stopped at: Completed 03-01-PLAN.md
+Stopped at: Completed 03-02-PLAN.md (Phase 3 complete)
 Resume file: None

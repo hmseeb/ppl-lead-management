@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation + Assignment Engine** - Schema, auth, broker/order CRUD, and the atomic assignment function with advisory locks
 - [x] **Phase 2: Webhook Ingestion** - Inbound lead endpoint and PATCH update endpoint wired to the assignment engine
-- [ ] **Phase 3: Lead Delivery** - Outbound webhook to broker GHL sub-accounts with pg_cron retry pipeline
+- [x] **Phase 3: Lead Delivery** - Outbound webhook to broker GHL sub-accounts with pg_cron retry pipeline
 - [ ] **Phase 4: Admin Dashboard** - Full admin UI with KPIs, all data tables, unassigned queue, and activity log
 - [ ] **Phase 5: Realtime + Polish** - Live dashboard updates via Supabase Realtime, theme toggle, UX refinements
 
@@ -64,8 +64,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — webhook_deliveries table, pg_net outbound trigger, and updated assign_lead() with delivery wiring
-- [ ] 03-02-PLAN.md — pg_cron retry pipeline (response checker + retry scanner) and end-to-end test script
+- [x] 03-01-PLAN.md — webhook_deliveries table, pg_net outbound trigger, and updated assign_lead() with delivery wiring
+- [x] 03-02-PLAN.md — pg_cron retry pipeline (response checker + retry scanner) and end-to-end test script
 
 ### Phase 4: Admin Dashboard
 **Goal**: Admin has full visibility into every lead, broker, order, and event in the system through a professional desktop UI with filtering, search, and inline actions
@@ -107,6 +107,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Foundation + Assignment Engine | 3/3 | Complete    | 2026-03-12 |
 | 2. Webhook Ingestion | 2/2 | Complete    | 2026-03-12 |
-| 3. Lead Delivery | 0/2 | Not started | - |
+| 3. Lead Delivery | 2/2 | Complete    | 2026-03-12 |
 | 4. Admin Dashboard | 0/3 | Not started | - |
 | 5. Realtime + Polish | 0/2 | Not started | - |

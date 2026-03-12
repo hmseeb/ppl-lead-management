@@ -9,11 +9,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Webhook Ingestion
 
-- [ ] **HOOK-01**: System accepts incoming leads via POST /api/leads/incoming with full GHL payload (name, phone, email, business, funding amount/purpose, vertical, credit score, state, AI call notes/status, ghl_contact_id, timestamp)
-- [ ] **HOOK-02**: System stores lead in database immediately on receipt and returns 200 within 2 seconds
-- [ ] **HOOK-03**: System handles malformed payloads gracefully (log error, return appropriate status, don't crash)
-- [ ] **HOOK-04**: System accepts lead updates via PATCH matching on ghl_contact_id (for AI call notes arriving later)
-- [ ] **HOOK-05**: System enforces idempotency on ghl_contact_id to prevent duplicate lead creation
+- [x] **HOOK-01**: System accepts incoming leads via POST /api/leads/incoming with full GHL payload (name, phone, email, business, funding amount/purpose, vertical, credit score, state, AI call notes/status, ghl_contact_id, timestamp)
+- [x] **HOOK-02**: System stores lead in database immediately on receipt and returns 200 within 2 seconds
+- [x] **HOOK-03**: System handles malformed payloads gracefully (log error, return appropriate status, don't crash)
+- [x] **HOOK-04**: System accepts lead updates via PATCH matching on ghl_contact_id (for AI call notes arriving later)
+- [x] **HOOK-05**: System enforces idempotency on ghl_contact_id to prevent duplicate lead creation
 
 ### Broker Management
 
@@ -130,11 +130,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ASGN-05 | Phase 1 | Complete |
 | ASGN-06 | Phase 1 | Complete |
 | ASGN-07 | Phase 1 | Complete |
-| HOOK-01 | Phase 2 | Pending |
-| HOOK-02 | Phase 2 | Pending |
-| HOOK-03 | Phase 2 | Pending |
-| HOOK-04 | Phase 2 | Pending |
-| HOOK-05 | Phase 2 | Pending |
+| HOOK-01 | Phase 2 | Complete |
+| HOOK-02 | Phase 2 | Complete |
+| HOOK-03 | Phase 2 | Complete |
+| HOOK-04 | Phase 2 | Complete |
+| HOOK-05 | Phase 2 | Complete |
 | DLVR-01 | Phase 3 | Pending |
 | DLVR-02 | Phase 3 | Pending |
 | DLVR-03 | Phase 3 | Pending |

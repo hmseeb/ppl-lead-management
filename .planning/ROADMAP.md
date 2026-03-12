@@ -13,7 +13,7 @@ This roadmap delivers an internal lead distribution system in 5 phases following
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation + Assignment Engine** - Schema, auth, broker/order CRUD, and the atomic assignment function with advisory locks
-- [ ] **Phase 2: Webhook Ingestion** - Inbound lead endpoint and PATCH update endpoint wired to the assignment engine
+- [x] **Phase 2: Webhook Ingestion** - Inbound lead endpoint and PATCH update endpoint wired to the assignment engine
 - [ ] **Phase 3: Lead Delivery** - Outbound webhook to broker GHL sub-accounts with pg_cron retry pipeline
 - [ ] **Phase 4: Admin Dashboard** - Full admin UI with KPIs, all data tables, unassigned queue, and activity log
 - [ ] **Phase 5: Realtime + Polish** - Live dashboard updates via Supabase Realtime, theme toggle, UX refinements
@@ -49,8 +49,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — POST /api/leads/incoming with Zod validation, idempotency on ghl_contact_id, and assignment trigger
-- [ ] 02-02-PLAN.md — PATCH /api/leads/update for AI call notes by ghl_contact_id without disrupting assignment
+- [x] 02-01-PLAN.md — POST /api/leads/incoming with Zod validation, idempotency on ghl_contact_id, and assignment trigger
+- [x] 02-02-PLAN.md — PATCH /api/leads/update for AI call notes by ghl_contact_id without disrupting assignment
 
 ### Phase 3: Lead Delivery
 **Goal**: Assigned leads are automatically delivered to the correct broker's GHL sub-account via outbound webhook, with retries for failures and clear status tracking
@@ -106,7 +106,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation + Assignment Engine | 3/3 | Complete    | 2026-03-12 |
-| 2. Webhook Ingestion | 0/2 | Not started | - |
+| 2. Webhook Ingestion | 2/2 | Complete    | 2026-03-12 |
 | 3. Lead Delivery | 0/2 | Not started | - |
 | 4. Admin Dashboard | 0/3 | Not started | - |
 | 5. Realtime + Polish | 0/2 | Not started | - |

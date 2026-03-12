@@ -5,32 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-03-12)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** Phase 1: Foundation + Assignment Engine
+**Current focus:** Phase 2: Webhook Ingestion
 
 ## Current Position
 
-Phase: 1 of 5 (Foundation + Assignment Engine)
-Plan: 3 of 3 in current phase
+Phase: 2 of 5 (Webhook Ingestion)
+Plan: 2 of 2 in current phase
 Status: Phase Complete
-Last activity: 2026-03-12 — Completed 01-03-PLAN.md
+Last activity: 2026-03-12 — Completed 02-02-PLAN.md
 
-Progress: [████░░░░░░] 21%
+Progress: [█████░░░░░] 36%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 10min
-- Total execution time: 0.48 hours
+- Total plans completed: 5
+- Average duration: 8min
+- Total execution time: 0.60 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 29min | 10min |
+| 02-webhook-ingestion | 2 | 7min | 4min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (15min), 01-02 (7min), 01-03 (7min)
+- Last 5 plans: 01-02 (7min), 01-03 (7min), 02-01 (3min), 02-02 (4min)
 - Trend: improving
 
 *Updated after each plan completion*
@@ -55,6 +56,11 @@ Recent decisions affecting current work:
 - 01-03: Used pg_advisory_xact_lock(1,0) two-integer form to avoid GoTrue lock collision
 - 01-03: Weighted rotation: leads_remaining/total_leads DESC, last_assigned_at ASC NULLS FIRST
 - 01-03: Used assignment_status (not status) for broker eligibility in assign_lead()
+- 02-01: SELECT-first idempotency over upsert for ghl_contact_id duplicate detection
+- 02-01: Graceful assignment errors: catch and return in response, never lose the lead
+- 02-01: Empty string handling for email/phone via z.literal('') to handle GHL inconsistency
+- 02-02: Inline Zod schema for PATCH (different from POST schema, self-contained per endpoint)
+- 02-02: PROTECTED_FIELDS array explicitly blocks assignment columns from PATCH updates
 
 ### Pending Todos
 
@@ -67,5 +73,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-12
-Stopped at: Completed 01-03-PLAN.md (Phase 1 complete)
+Stopped at: Completed 02-02-PLAN.md (Phase 2 complete)
 Resume file: None

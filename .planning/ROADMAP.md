@@ -46,11 +46,11 @@ Plans:
   2. POSTing a duplicate ghl_contact_id does not create a second lead (idempotency enforced)
   3. PATCHing a lead by ghl_contact_id updates it with AI call notes without disrupting assignment
   4. Malformed or incomplete payloads return appropriate error status without crashing the endpoint
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [ ] 02-01-PLAN.md — POST /api/leads/incoming with Zod validation, idempotency on ghl_contact_id, and assignment trigger
+- [ ] 02-02-PLAN.md — PATCH /api/leads/update for AI call notes by ghl_contact_id without disrupting assignment
 
 ### Phase 3: Lead Delivery
 **Goal**: Assigned leads are automatically delivered to the correct broker's GHL sub-account via outbound webhook, with retries for failures and clear status tracking

@@ -342,7 +342,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      assign_lead: { Args: { p_lead_id: string }; Returns: Json }
+      build_match_failure_reason: {
+        Args: { p_lead: Database["public"]["Tables"]["leads"]["Row"] }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

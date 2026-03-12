@@ -17,19 +17,19 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Broker Management
 
-- [ ] **BRKR-01**: Admin can create broker profiles (name, company, email, phone, GHL webhook URL)
-- [ ] **BRKR-02**: Admin can edit broker profiles
-- [ ] **BRKR-03**: Admin can set broker status (Active / Paused / Completed)
+- [x] **BRKR-01**: Admin can create broker profiles (name, company, email, phone, GHL webhook URL)
+- [x] **BRKR-02**: Admin can edit broker profiles
+- [x] **BRKR-03**: Admin can set broker status (Active / Paused / Completed)
 - [ ] **BRKR-04**: Admin can view broker detail with all orders and full lead delivery history
 
 ### Order Management
 
-- [ ] **ORDR-01**: Admin can create orders linked to a broker with total leads purchased, vertical criteria (multi-select from MCA, SBA, Equipment Finance, Working Capital, Lines of Credit, All), and credit score minimum
-- [ ] **ORDR-02**: System tracks leads_delivered and calculates leads_remaining per order
-- [ ] **ORDR-03**: Admin can start, pause, resume, and complete orders
-- [ ] **ORDR-04**: Admin can toggle bonus mode on an order (continues delivering leads past total purchased)
-- [ ] **ORDR-05**: System auto-completes orders when leads_remaining hits 0 and bonus mode is off
-- [ ] **ORDR-06**: Pausing an order removes broker from rotation without losing remaining count or position
+- [x] **ORDR-01**: Admin can create orders linked to a broker with total leads purchased, vertical criteria (multi-select from MCA, SBA, Equipment Finance, Working Capital, Lines of Credit, All), and credit score minimum
+- [x] **ORDR-02**: System tracks leads_delivered and calculates leads_remaining per order
+- [x] **ORDR-03**: Admin can start, pause, resume, and complete orders
+- [x] **ORDR-04**: Admin can toggle bonus mode on an order (continues delivering leads past total purchased)
+- [x] **ORDR-05**: System auto-completes orders when leads_remaining hits 0 and bonus mode is off
+- [x] **ORDR-06**: Pausing an order removes broker from rotation without losing remaining count or position
 
 ### Assignment Engine
 
@@ -113,16 +113,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | AUTH-01 | Phase 1 | Complete |
-| BRKR-01 | Phase 1 | Pending |
-| BRKR-02 | Phase 1 | Pending |
-| BRKR-03 | Phase 1 | Pending |
+| BRKR-01 | Phase 1 | Complete |
+| BRKR-02 | Phase 1 | Complete |
+| BRKR-03 | Phase 1 | Complete |
 | BRKR-04 | Phase 4 | Pending |
-| ORDR-01 | Phase 1 | Pending |
-| ORDR-02 | Phase 1 | Pending |
-| ORDR-03 | Phase 1 | Pending |
-| ORDR-04 | Phase 1 | Pending |
-| ORDR-05 | Phase 1 | Pending |
-| ORDR-06 | Phase 1 | Pending |
+| ORDR-01 | Phase 1 | Complete |
+| ORDR-02 | Phase 1 | Complete |
+| ORDR-03 | Phase 1 | Complete |
+| ORDR-04 | Phase 1 | Complete |
+| ORDR-05 | Phase 1 | Complete |
+| ORDR-06 | Phase 1 | Complete |
 | ASGN-01 | Phase 1 | Pending |
 | ASGN-02 | Phase 1 | Pending |
 | ASGN-03 | Phase 1 | Pending |

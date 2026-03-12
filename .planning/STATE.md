@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-03-12)
 ## Current Position
 
 Phase: 1 of 5 (Foundation + Assignment Engine)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: Executing
-Last activity: 2026-03-12 — Completed 01-01-PLAN.md
+Last activity: 2026-03-12 — Completed 01-02-PLAN.md
 
-Progress: [██░░░░░░░░] 7%
+Progress: [███░░░░░░░] 14%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 15min
-- Total execution time: 0.25 hours
+- Total plans completed: 2
+- Average duration: 11min
+- Total execution time: 0.37 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-foundation | 1 | 15min | 15min |
+| 01-foundation | 2 | 22min | 11min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (15min)
-- Trend: -
+- Last 5 plans: 01-01 (15min), 01-02 (7min)
+- Trend: improving
 
 *Updated after each plan completion*
 
@@ -49,6 +49,9 @@ Recent decisions affecting current work:
 - 01-01: Used assignment_status column instead of reusing existing brokers.status (which stores onboarding status)
 - 01-01: Added anon SELECT policies on all tables for ppl-onboarding compatibility when enabling RLS
 - 01-01: Used text CHECK constraints instead of enum types for status columns
+- 01-02: Used native HTML select for broker dropdown (base-ui Select too complex for RHF integration)
+- 01-02: Split name into first_name/last_name server-side to match existing brokers schema
+- 01-02: Server Actions with Zod safeParse pattern established for all mutations
 
 ### Pending Todos
 
@@ -61,5 +64,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-12
-Stopped at: Completed 01-01-PLAN.md
+Stopped at: Completed 01-02-PLAN.md
 Resume file: None

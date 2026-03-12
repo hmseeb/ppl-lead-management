@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-03-12)
 ## Current Position
 
 Phase: 1 of 5 (Foundation + Assignment Engine)
-Plan: 2 of 3 in current phase
-Status: Executing
-Last activity: 2026-03-12 — Completed 01-02-PLAN.md
+Plan: 3 of 3 in current phase
+Status: Phase Complete
+Last activity: 2026-03-12 — Completed 01-03-PLAN.md
 
-Progress: [███░░░░░░░] 14%
+Progress: [████░░░░░░] 21%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 11min
-- Total execution time: 0.37 hours
+- Total plans completed: 3
+- Average duration: 10min
+- Total execution time: 0.48 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-foundation | 2 | 22min | 11min |
+| 01-foundation | 3 | 29min | 10min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (15min), 01-02 (7min)
+- Last 5 plans: 01-01 (15min), 01-02 (7min), 01-03 (7min)
 - Trend: improving
 
 *Updated after each plan completion*
@@ -52,6 +52,9 @@ Recent decisions affecting current work:
 - 01-02: Used native HTML select for broker dropdown (base-ui Select too complex for RHF integration)
 - 01-02: Split name into first_name/last_name server-side to match existing brokers schema
 - 01-02: Server Actions with Zod safeParse pattern established for all mutations
+- 01-03: Used pg_advisory_xact_lock(1,0) two-integer form to avoid GoTrue lock collision
+- 01-03: Weighted rotation: leads_remaining/total_leads DESC, last_assigned_at ASC NULLS FIRST
+- 01-03: Used assignment_status (not status) for broker eligibility in assign_lead()
 
 ### Pending Todos
 
@@ -64,5 +67,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-12
-Stopped at: Completed 01-02-PLAN.md
+Stopped at: Completed 01-03-PLAN.md (Phase 1 complete)
 Resume file: None

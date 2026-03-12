@@ -12,7 +12,7 @@ This roadmap delivers an internal lead distribution system in 5 phases following
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation + Assignment Engine** - Schema, auth, broker/order CRUD, and the atomic assignment function with advisory locks
+- [x] **Phase 1: Foundation + Assignment Engine** - Schema, auth, broker/order CRUD, and the atomic assignment function with advisory locks
 - [ ] **Phase 2: Webhook Ingestion** - Inbound lead endpoint and PATCH update endpoint wired to the assignment engine
 - [ ] **Phase 3: Lead Delivery** - Outbound webhook to broker GHL sub-accounts with pg_cron retry pipeline
 - [ ] **Phase 4: Admin Dashboard** - Full admin UI with KPIs, all data tables, unassigned queue, and activity log
@@ -34,8 +34,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 - [x] 01-01-PLAN.md — Project scaffold, database schema, Supabase clients, and auth (iron-session + middleware)
-- [ ] 01-02-PLAN.md — Broker and order management UI with CRUD, lifecycle actions, and data tables
-- [ ] 01-03-PLAN.md — assign_lead() Postgres function with advisory locks, weighted rotation, and test suite
+- [x] 01-02-PLAN.md — Broker and order management UI with CRUD, lifecycle actions, and data tables
+- [x] 01-03-PLAN.md — assign_lead() Postgres function with advisory locks, weighted rotation, and test suite
 
 ### Phase 2: Webhook Ingestion
 **Goal**: External systems (GHL) can send leads into the system via HTTP and the full assignment flow triggers automatically
@@ -105,7 +105,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation + Assignment Engine | 0/3 | Planning complete | - |
+| 1. Foundation + Assignment Engine | 3/3 | Complete | 2026-03-12 |
 | 2. Webhook Ingestion | 0/2 | Not started | - |
 | 3. Lead Delivery | 0/2 | Not started | - |
 | 4. Admin Dashboard | 0/3 | Not started | - |

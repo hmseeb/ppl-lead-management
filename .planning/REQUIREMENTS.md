@@ -33,13 +33,13 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Assignment Engine
 
-- [ ] **ASGN-01**: System filters eligible brokers by matching lead vertical against order accepted verticals (including "All") and lead credit score >= order credit score minimum
-- [ ] **ASGN-02**: System uses weighted round-robin rotation based on leads_remaining (bigger orders get proportionally more leads)
-- [ ] **ASGN-03**: System tracks last_assigned timestamp per broker per order for rotation fairness
-- [ ] **ASGN-04**: System uses Postgres advisory locks for atomic lead assignment (prevents race conditions on concurrent leads)
-- [ ] **ASGN-05**: System assigns lead, decrements leads_remaining (unless bonus mode), updates last_assigned, and fires outbound webhook in one atomic flow
-- [ ] **ASGN-06**: System holds unmatched leads in unassigned queue with detailed match failure reasons (e.g. "no active orders for MCA vertical", "credit score 520 below all minimums")
-- [ ] **ASGN-07**: System logs every assignment decision (which broker, why them, timestamp) for audit
+- [x] **ASGN-01**: System filters eligible brokers by matching lead vertical against order accepted verticals (including "All") and lead credit score >= order credit score minimum
+- [x] **ASGN-02**: System uses weighted round-robin rotation based on leads_remaining (bigger orders get proportionally more leads)
+- [x] **ASGN-03**: System tracks last_assigned timestamp per broker per order for rotation fairness
+- [x] **ASGN-04**: System uses Postgres advisory locks for atomic lead assignment (prevents race conditions on concurrent leads)
+- [x] **ASGN-05**: System assigns lead, decrements leads_remaining (unless bonus mode), updates last_assigned, and fires outbound webhook in one atomic flow
+- [x] **ASGN-06**: System holds unmatched leads in unassigned queue with detailed match failure reasons (e.g. "no active orders for MCA vertical", "credit score 520 below all minimums")
+- [x] **ASGN-07**: System logs every assignment decision (which broker, why them, timestamp) for audit
 
 ### Lead Delivery
 
@@ -123,13 +123,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ORDR-04 | Phase 1 | Complete |
 | ORDR-05 | Phase 1 | Complete |
 | ORDR-06 | Phase 1 | Complete |
-| ASGN-01 | Phase 1 | Pending |
-| ASGN-02 | Phase 1 | Pending |
-| ASGN-03 | Phase 1 | Pending |
-| ASGN-04 | Phase 1 | Pending |
-| ASGN-05 | Phase 1 | Pending |
-| ASGN-06 | Phase 1 | Pending |
-| ASGN-07 | Phase 1 | Pending |
+| ASGN-01 | Phase 1 | Complete |
+| ASGN-02 | Phase 1 | Complete |
+| ASGN-03 | Phase 1 | Complete |
+| ASGN-04 | Phase 1 | Complete |
+| ASGN-05 | Phase 1 | Complete |
+| ASGN-06 | Phase 1 | Complete |
+| ASGN-07 | Phase 1 | Complete |
 | HOOK-01 | Phase 2 | Pending |
 | HOOK-02 | Phase 2 | Pending |
 | HOOK-03 | Phase 2 | Pending |

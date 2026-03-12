@@ -20,7 +20,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **BRKR-01**: Admin can create broker profiles (name, company, email, phone, GHL webhook URL)
 - [x] **BRKR-02**: Admin can edit broker profiles
 - [x] **BRKR-03**: Admin can set broker status (Active / Paused / Completed)
-- [ ] **BRKR-04**: Admin can view broker detail with all orders and full lead delivery history
+- [x] **BRKR-04**: Admin can view broker detail with all orders and full lead delivery history
 
 ### Order Management
 
@@ -50,34 +50,34 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Admin Dashboard
 
-- [ ] **DASH-01**: Overview page shows KPIs: total leads today/this week/this month, assigned vs unassigned count, active brokers count, active orders count
-- [ ] **DASH-02**: Overview page shows recent activity feed (last 20 lead assignments with timestamp, lead name, broker, order ID, vertical, credit score)
-- [ ] **DASH-03**: Leads table with columns: date/time, name, phone, email, vertical, credit score, funding amount, assigned broker, AI call status, assignment status
-- [ ] **DASH-04**: Leads table supports filtering by date range, vertical, credit score range, assigned/unassigned, broker
-- [ ] **DASH-05**: Leads table supports search by lead name, phone, or email
-- [ ] **DASH-06**: Lead detail view shows full data including AI call notes, assignment history, and webhook delivery status
-- [ ] **DASH-07**: Brokers table shows name, company, status, active orders count, total leads delivered, last delivery date
-- [ ] **DASH-08**: Broker detail view shows profile, all orders (current and past), and every lead received
-- [ ] **DASH-09**: Quick broker actions: pause all active orders, resume all, create new order
-- [ ] **DASH-10**: Orders table shows order ID, broker name, total purchased, delivered, remaining, verticals, credit score min, status, date created
-- [ ] **DASH-11**: Orders table has color coding: green=Active, yellow=Paused, blue=Bonus Mode, gray=Completed
-- [ ] **DASH-12**: Orders table has inline action buttons: pause/resume/bonus mode toggle/complete
-- [ ] **DASH-13**: Order detail view shows every lead assigned to that order
-- [ ] **DASH-14**: Unassigned queue shows leads that couldn't be matched with reason why
-- [ ] **DASH-15**: Admin can manually assign leads from unassigned queue to a broker via dropdown
-- [ ] **DASH-16**: Activity log shows all events (lead received, assigned, order created/paused/completed, bonus toggled, manual assignments, webhook failures)
-- [ ] **DASH-17**: Activity log filterable by event type, broker, date range
+- [x] **DASH-01**: Overview page shows KPIs: total leads today/this week/this month, assigned vs unassigned count, active brokers count, active orders count
+- [x] **DASH-02**: Overview page shows recent activity feed (last 20 lead assignments with timestamp, lead name, broker, order ID, vertical, credit score)
+- [x] **DASH-03**: Leads table with columns: date/time, name, phone, email, vertical, credit score, funding amount, assigned broker, AI call status, assignment status
+- [x] **DASH-04**: Leads table supports filtering by date range, vertical, credit score range, assigned/unassigned, broker
+- [x] **DASH-05**: Leads table supports search by lead name, phone, or email
+- [x] **DASH-06**: Lead detail view shows full data including AI call notes, assignment history, and webhook delivery status
+- [x] **DASH-07**: Brokers table shows name, company, status, active orders count, total leads delivered, last delivery date
+- [x] **DASH-08**: Broker detail view shows profile, all orders (current and past), and every lead received
+- [x] **DASH-09**: Quick broker actions: pause all active orders, resume all, create new order
+- [x] **DASH-10**: Orders table shows order ID, broker name, total purchased, delivered, remaining, verticals, credit score min, status, date created
+- [x] **DASH-11**: Orders table has color coding: green=Active, yellow=Paused, blue=Bonus Mode, gray=Completed
+- [x] **DASH-12**: Orders table has inline action buttons: pause/resume/bonus mode toggle/complete
+- [x] **DASH-13**: Order detail view shows every lead assigned to that order
+- [x] **DASH-14**: Unassigned queue shows leads that couldn't be matched with reason why
+- [x] **DASH-15**: Admin can manually assign leads from unassigned queue to a broker via dropdown
+- [x] **DASH-16**: Activity log shows all events (lead received, assigned, order created/paused/completed, bonus toggled, manual assignments, webhook failures)
+- [x] **DASH-17**: Activity log filterable by event type, broker, date range
 
 ### Real-time
 
-- [ ] **RT-01**: Dashboard updates in real-time via Supabase Realtime when leads arrive, get assigned, or webhook status changes
-- [ ] **RT-02**: KPI counters and activity feed update live without page refresh
+- [x] **RT-01**: Dashboard updates in real-time via Supabase Realtime when leads arrive, get assigned, or webhook status changes
+- [x] **RT-02**: KPI counters and activity feed update live without page refresh
 
 ### Auth & UX
 
 - [x] **AUTH-01**: Admin access protected by simple password authentication with session cookie
-- [ ] **UX-01**: Dark/light theme toggle with persistent preference
-- [ ] **UX-02**: Desktop-first professional admin UI using ShadCN components
+- [x] **UX-01**: Dark/light theme toggle with persistent preference
+- [x] **UX-02**: Desktop-first professional admin UI using ShadCN components
 
 ## v2 Requirements
 
@@ -116,7 +116,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BRKR-01 | Phase 1 | Complete |
 | BRKR-02 | Phase 1 | Complete |
 | BRKR-03 | Phase 1 | Complete |
-| BRKR-04 | Phase 4 | Pending |
+| BRKR-04 | Phase 4 | Complete |
 | ORDR-01 | Phase 1 | Complete |
 | ORDR-02 | Phase 1 | Complete |
 | ORDR-03 | Phase 1 | Complete |
@@ -139,27 +139,27 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DLVR-02 | Phase 3 | Complete |
 | DLVR-03 | Phase 3 | Complete |
 | DLVR-04 | Phase 3 | Complete |
-| DASH-01 | Phase 4 | Pending |
-| DASH-02 | Phase 4 | Pending |
-| DASH-03 | Phase 4 | Pending |
-| DASH-04 | Phase 4 | Pending |
-| DASH-05 | Phase 4 | Pending |
-| DASH-06 | Phase 4 | Pending |
-| DASH-07 | Phase 4 | Pending |
-| DASH-08 | Phase 4 | Pending |
-| DASH-09 | Phase 4 | Pending |
-| DASH-10 | Phase 4 | Pending |
-| DASH-11 | Phase 4 | Pending |
-| DASH-12 | Phase 4 | Pending |
-| DASH-13 | Phase 4 | Pending |
-| DASH-14 | Phase 4 | Pending |
-| DASH-15 | Phase 4 | Pending |
-| DASH-16 | Phase 4 | Pending |
-| DASH-17 | Phase 4 | Pending |
-| RT-01 | Phase 5 | Pending |
-| RT-02 | Phase 5 | Pending |
-| UX-01 | Phase 5 | Pending |
-| UX-02 | Phase 4 | Pending |
+| DASH-01 | Phase 4 | Complete |
+| DASH-02 | Phase 4 | Complete |
+| DASH-03 | Phase 4 | Complete |
+| DASH-04 | Phase 4 | Complete |
+| DASH-05 | Phase 4 | Complete |
+| DASH-06 | Phase 4 | Complete |
+| DASH-07 | Phase 4 | Complete |
+| DASH-08 | Phase 4 | Complete |
+| DASH-09 | Phase 4 | Complete |
+| DASH-10 | Phase 4 | Complete |
+| DASH-11 | Phase 4 | Complete |
+| DASH-12 | Phase 4 | Complete |
+| DASH-13 | Phase 4 | Complete |
+| DASH-14 | Phase 4 | Complete |
+| DASH-15 | Phase 4 | Complete |
+| DASH-16 | Phase 4 | Complete |
+| DASH-17 | Phase 4 | Complete |
+| RT-01 | Phase 5 | Complete |
+| RT-02 | Phase 5 | Complete |
+| UX-01 | Phase 5 | Complete |
+| UX-02 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 48 total

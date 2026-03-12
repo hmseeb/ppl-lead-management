@@ -61,11 +61,11 @@ Plans:
   2. Failed deliveries are retried up to 3 times via pg_cron without blocking the inbound handler
   3. Permanently failed deliveries (3 strikes) are flagged with error details visible in the system
   4. Every lead has a trackable delivery status (pending/sent/failed/retrying) with retry count and timestamps
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
+- [ ] 03-01-PLAN.md — webhook_deliveries table, pg_net outbound trigger, and updated assign_lead() with delivery wiring
+- [ ] 03-02-PLAN.md — pg_cron retry pipeline (response checker + retry scanner) and end-to-end test script
 
 ### Phase 4: Admin Dashboard
 **Goal**: Admin has full visibility into every lead, broker, order, and event in the system through a professional desktop UI with filtering, search, and inline actions

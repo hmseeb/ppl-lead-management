@@ -12,7 +12,10 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Overview</h1>
+      <div className="flex items-center gap-3">
+        <h1 className="text-2xl font-semibold tracking-tight">Overview</h1>
+        <div className="h-px flex-1 bg-gradient-to-r from-red-500/10 to-transparent" />
+      </div>
       <KpiCards data={kpis} />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <LeadVolumeChart data={volume} />

@@ -19,15 +19,15 @@ type ActivityItem = {
 }
 
 const eventConfig: Record<string, { icon: typeof UserPlus; color: string }> = {
-  lead_assigned: { icon: UserPlus, color: 'text-green-600' },
-  lead_received: { icon: FileText, color: 'text-blue-600' },
-  order_created: { icon: ShoppingCart, color: 'text-purple-600' },
-  order_status_changed: { icon: ArrowRightLeft, color: 'text-blue-600' },
-  bonus_mode_toggled: { icon: Sparkles, color: 'text-indigo-600' },
-  webhook_failed_permanent: { icon: AlertTriangle, color: 'text-red-600' },
-  manual_assignment: { icon: Zap, color: 'text-amber-600' },
-  broker_created: { icon: UserPlus, color: 'text-purple-600' },
-  broker_status_changed: { icon: ArrowRightLeft, color: 'text-blue-600' },
+  lead_assigned: { icon: UserPlus, color: 'text-emerald-400' },
+  lead_received: { icon: FileText, color: 'text-blue-400' },
+  order_created: { icon: ShoppingCart, color: 'text-violet-400' },
+  order_status_changed: { icon: ArrowRightLeft, color: 'text-blue-400' },
+  bonus_mode_toggled: { icon: Sparkles, color: 'text-indigo-400' },
+  webhook_failed_permanent: { icon: AlertTriangle, color: 'text-red-400' },
+  manual_assignment: { icon: Zap, color: 'text-amber-400' },
+  broker_created: { icon: UserPlus, color: 'text-violet-400' },
+  broker_status_changed: { icon: ArrowRightLeft, color: 'text-blue-400' },
 }
 
 function formatEvent(item: ActivityItem): string {
@@ -66,13 +66,15 @@ function formatEvent(item: ActivityItem): string {
 }
 
 export function ActivityFeed({ activity }: { activity: ActivityItem[] }) {
-  const defaultConfig = { icon: FileText, color: 'text-gray-500' }
+  const defaultConfig = { icon: FileText, color: 'text-muted-foreground' }
 
   if (activity.length === 0) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm font-medium">Recent Activity</CardTitle>
+          <CardTitle className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+            Recent Activity
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">No recent activity</p>
@@ -84,19 +86,24 @@ export function ActivityFeed({ activity }: { activity: ActivityItem[] }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-sm font-medium">Recent Activity</CardTitle>
+        <CardTitle className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+          Recent Activity
+        </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="max-h-[300px] overflow-y-auto space-y-3">
+        <div className="max-h-[300px] overflow-y-auto space-y-1">
           {activity.map((item) => {
             const config = eventConfig[item.event_type] ?? defaultConfig
             const Icon = config.icon
             return (
-              <div key={item.id} className="flex items-start gap-3 text-sm">
+              <div
+                key={item.id}
+                className="flex items-start gap-3 text-sm py-2 px-2 rounded-lg hover:bg-white/[0.02] transition-colors"
+              >
                 <Icon className={`size-4 mt-0.5 shrink-0 ${config.color}`} />
                 <div className="min-w-0 flex-1">
-                  <p className="text-foreground">{formatEvent(item)}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-foreground/80 text-xs">{formatEvent(item)}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">
                     {formatDistanceToNow(new Date(item.created_at), { addSuffix: true })}
                   </p>
                 </div>

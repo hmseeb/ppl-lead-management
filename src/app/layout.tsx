@@ -25,13 +25,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased ambient-bg`}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
-          <Toaster richColors position="top-right" />
+        <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
+          <div className="relative z-10">
+            {children}
+          </div>
+          <Toaster
+            richColors
+            position="top-right"
+            toastOptions={{
+              style: {
+                background: 'rgba(18, 8, 10, 0.9)',
+                border: '1px solid rgba(220, 38, 38, 0.12)',
+                backdropFilter: 'blur(16px)',
+              },
+            }}
+          />
         </ThemeProvider>
       </body>
     </html>

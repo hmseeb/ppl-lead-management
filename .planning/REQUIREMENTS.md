@@ -43,10 +43,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Lead Delivery
 
-- [ ] **DLVR-01**: System fires outbound POST webhook to assigned broker's GHL webhook URL with full lead payload + reference ID
+- [x] **DLVR-01**: System fires outbound POST webhook to assigned broker's GHL webhook URL with full lead payload + reference ID
 - [ ] **DLVR-02**: System retries failed webhook deliveries up to 3 times with async pg_cron (non-blocking)
 - [ ] **DLVR-03**: System flags permanently failed deliveries in admin dashboard
-- [ ] **DLVR-04**: System tracks per-lead delivery status (pending/sent/failed/retrying) with retry count, last attempt timestamp, and error message
+- [x] **DLVR-04**: System tracks per-lead delivery status (pending/sent/failed/retrying) with retry count, last attempt timestamp, and error message
 
 ### Admin Dashboard
 
@@ -135,10 +135,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HOOK-03 | Phase 2 | Complete |
 | HOOK-04 | Phase 2 | Complete |
 | HOOK-05 | Phase 2 | Complete |
-| DLVR-01 | Phase 3 | Pending |
+| DLVR-01 | Phase 3 | Complete |
 | DLVR-02 | Phase 3 | Pending |
 | DLVR-03 | Phase 3 | Pending |
-| DLVR-04 | Phase 3 | Pending |
+| DLVR-04 | Phase 3 | Complete |
 | DASH-01 | Phase 4 | Pending |
 | DASH-02 | Phase 4 | Pending |
 | DASH-03 | Phase 4 | Pending |

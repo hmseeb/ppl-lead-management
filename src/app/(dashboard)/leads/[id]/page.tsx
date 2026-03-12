@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import Link from 'next/link'
 import { fetchLeadDetail } from '@/lib/queries/leads'
 import { LeadDetail } from '@/components/leads/lead-detail'

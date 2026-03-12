@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { incomingLeadSchema } from '@/lib/webhooks/schemas'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { assignLead } from '@/lib/assignment/assign'
-import { deliverWebhook } from '@/lib/webhooks/deliver'
+import { dispatchDelivery } from '@/lib/delivery/dispatcher'
 import type { Json } from '@/lib/types/database'
 
 export async function POST(request: Request) {
@@ -83,9 +83,14 @@ export async function POST(request: Request) {
     }
   }
 
-  // 6. Fire-and-forget webhook delivery if assigned
-  if (assignment.status === 'assigned' && assignment.delivery_id) {
-    deliverWebhook(assignment.delivery_id).catch(console.error)
+  // 6. Fire-and-forget multi-channel delivery if assigned
+  if (assignment.status === 'assigned' && assignment.broker_id) {
+    dispatchDelivery(
+      lead.id,
+      assignment.broker_id,
+      assignment.order_id!,
+      assignment.delivery_id ?? null
+    ).catch(console.error)
   }
 
   // 7. Return fast

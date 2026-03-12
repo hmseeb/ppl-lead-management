@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import Link from 'next/link'
 import { fetchOrderDetail } from '@/lib/queries/orders'
 import { OrderDetail } from '@/components/orders/order-detail'

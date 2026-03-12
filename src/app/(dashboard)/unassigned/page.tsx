@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { fetchUnassignedQueue, fetchActiveBrokersWithOrders } from '@/lib/queries/unassigned'
 import { UnassignedTable } from '@/components/unassigned/unassigned-table'
 import { Button } from '@/components/ui/button'

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { fetchLeads, fetchBrokersForFilter } from '@/lib/queries/leads'
 import { LeadsFilters } from '@/components/leads/leads-filters'

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { fetchKpis, fetchRecentActivity, fetchLeadVolume7Days } from '@/lib/queries/dashboard'
 import { KpiCards } from '@/components/dashboard/kpi-cards'
 import { LeadVolumeChart } from '@/components/dashboard/lead-volume-chart'

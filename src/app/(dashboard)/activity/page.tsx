@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { fetchActivityLog, fetchEventTypes, fetchBrokersForActivityFilter } from '@/lib/queries/activity'
 import { ActivityFilters } from '@/components/activity/activity-filters'

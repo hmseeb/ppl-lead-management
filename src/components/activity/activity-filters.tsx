@@ -5,16 +5,18 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { X } from 'lucide-react'
 
+const serverSync = { shallow: false } as const
+
 interface ActivityFiltersProps {
   eventTypes: string[]
   brokers: { id: string; first_name: string; last_name: string }[]
 }
 
 export function ActivityFilters({ eventTypes, brokers }: ActivityFiltersProps) {
-  const [eventType, setEventType] = useQueryState('event_type', parseAsString.withDefault(''))
-  const [brokerId, setBrokerId] = useQueryState('broker_id', parseAsString.withDefault(''))
-  const [dateFrom, setDateFrom] = useQueryState('date_from', parseAsString.withDefault(''))
-  const [dateTo, setDateTo] = useQueryState('date_to', parseAsString.withDefault(''))
+  const [eventType, setEventType] = useQueryState('event_type', parseAsString.withDefault('').withOptions(serverSync))
+  const [brokerId, setBrokerId] = useQueryState('broker_id', parseAsString.withDefault('').withOptions(serverSync))
+  const [dateFrom, setDateFrom] = useQueryState('date_from', parseAsString.withDefault('').withOptions(serverSync))
+  const [dateTo, setDateTo] = useQueryState('date_to', parseAsString.withDefault('').withOptions(serverSync))
 
   const hasFilters = eventType || brokerId || dateFrom || dateTo
 

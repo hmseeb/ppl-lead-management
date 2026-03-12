@@ -7,19 +7,22 @@ import { X } from 'lucide-react'
 
 const VERTICALS = ['MCA', 'SBA', 'Equipment Finance', 'Working Capital', 'Lines of Credit']
 
+const serverSync = { shallow: false } as const
+const searchSync = { shallow: false, throttleMs: 300 } as const
+
 interface LeadsFiltersProps {
   brokers: { id: string; first_name: string; last_name: string }[]
 }
 
 export function LeadsFilters({ brokers }: LeadsFiltersProps) {
-  const [search, setSearch] = useQueryState('search', parseAsString.withDefault('').withOptions({ throttleMs: 300 }))
-  const [vertical, setVertical] = useQueryState('vertical', parseAsString.withDefault(''))
-  const [status, setStatus] = useQueryState('status', parseAsString.withDefault(''))
-  const [brokerId, setBrokerId] = useQueryState('broker_id', parseAsString.withDefault(''))
-  const [creditMin, setCreditMin] = useQueryState('credit_min', parseAsInteger.withDefault(0))
-  const [creditMax, setCreditMax] = useQueryState('credit_max', parseAsInteger.withDefault(0))
-  const [dateFrom, setDateFrom] = useQueryState('date_from', parseAsString.withDefault(''))
-  const [dateTo, setDateTo] = useQueryState('date_to', parseAsString.withDefault(''))
+  const [search, setSearch] = useQueryState('search', parseAsString.withDefault('').withOptions(searchSync))
+  const [vertical, setVertical] = useQueryState('vertical', parseAsString.withDefault('').withOptions(serverSync))
+  const [status, setStatus] = useQueryState('status', parseAsString.withDefault('').withOptions(serverSync))
+  const [brokerId, setBrokerId] = useQueryState('broker_id', parseAsString.withDefault('').withOptions(serverSync))
+  const [creditMin, setCreditMin] = useQueryState('credit_min', parseAsInteger.withDefault(0).withOptions(serverSync))
+  const [creditMax, setCreditMax] = useQueryState('credit_max', parseAsInteger.withDefault(0).withOptions(serverSync))
+  const [dateFrom, setDateFrom] = useQueryState('date_from', parseAsString.withDefault('').withOptions(serverSync))
+  const [dateTo, setDateTo] = useQueryState('date_to', parseAsString.withDefault('').withOptions(serverSync))
 
   const hasFilters = search || vertical || status || brokerId || creditMin || creditMax || dateFrom || dateTo
 

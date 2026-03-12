@@ -10,7 +10,7 @@ export default async function NewOrderPage() {
     .order('first_name')
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-lg space-y-6">
       <h1 className="text-2xl font-semibold">New Order</h1>
       <OrderForm brokers={brokers ?? []} />
     </div>

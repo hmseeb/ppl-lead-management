@@ -30,10 +30,14 @@ const eventConfig: Record<string, { icon: typeof UserPlus; color: string }> = {
   broker_status_changed: { icon: ArrowRightLeft, color: 'text-blue-400' },
 }
 
+function getDetails(item: ActivityItem) {
+  return item.details as Record<string, unknown> | null
+}
+
 function formatEvent(item: ActivityItem): string {
   const broker = item.brokers ? `${item.brokers.first_name} ${item.brokers.last_name}` : 'Unknown broker'
   const lead = item.leads?.first_name ? `${item.leads.first_name} ${item.leads.last_name ?? ''}`.trim() : 'a lead'
-  const details = item.details as Record<string, unknown> | null
+  const details = getDetails(item)
 
   switch (item.event_type) {
     case 'lead_assigned':
@@ -98,14 +102,29 @@ export function ActivityFeed({ activity }: { activity: ActivityItem[] }) {
             return (
               <div
                 key={item.id}
-                className="flex items-start gap-3 text-sm py-2 px-2 rounded-lg hover:bg-white/[0.02] transition-colors"
+                className="flex items-start gap-3 text-sm py-2 px-2 rounded-lg hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
               >
                 <Icon className={`size-4 mt-0.5 shrink-0 ${config.color}`} />
                 <div className="min-w-0 flex-1">
                   <p className="text-foreground/80 text-xs">{formatEvent(item)}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">
-                    {formatDistanceToNow(new Date(item.created_at), { addSuffix: true })}
-                  </p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="text-[10px] text-muted-foreground">
+                      {formatDistanceToNow(new Date(item.created_at), { addSuffix: true })}
+                    </span>
+                    {(() => {
+                      const d = getDetails(item)
+                      if (!d) return null
+                      const tags: string[] = []
+                      if (d.vertical) tags.push(String(d.vertical))
+                      if (d.credit_score) tags.push(`CS ${d.credit_score}`)
+                      if (tags.length === 0) return null
+                      return tags.map((t) => (
+                        <span key={t} className="text-[9px] px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">
+                          {t}
+                        </span>
+                      ))
+                    })()}
+                  </div>
                 </div>
               </div>
             )

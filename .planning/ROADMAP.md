@@ -77,12 +77,13 @@ Plans:
   3. Brokers table shows all brokers with status and stats, broker detail view shows profile plus all orders and full lead delivery history, and quick actions (pause all, resume all, new order) work
   4. Orders table shows all orders with color-coded status (green/yellow/blue/gray), inline action buttons (pause/resume/bonus/complete) work, and order detail shows every assigned lead
   5. Unassigned queue shows leads with match failure reasons and admin can manually assign any lead to a broker via dropdown
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
-- [ ] 04-03: TBD
+- [ ] 04-01-PLAN.md — Install deps (nuqs, recharts, date-fns), overview dashboard with KPIs, activity feed, and updated sidebar
+- [ ] 04-02-PLAN.md — Leads table with TanStack Table, nuqs filters/search, and lead detail view
+- [ ] 04-03-PLAN.md — Enhanced brokers/orders tables with stats, detail views, quick actions, and color-coded status
+- [ ] 04-04-PLAN.md — Unassigned queue with manual assignment and filterable activity log
 
 ### Phase 5: Realtime + Polish
 **Goal**: The dashboard updates live as leads flow through the system without manual refresh, and the UI feels polished and complete
@@ -108,5 +109,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Foundation + Assignment Engine | 3/3 | Complete    | 2026-03-12 |
 | 2. Webhook Ingestion | 2/2 | Complete    | 2026-03-12 |
 | 3. Lead Delivery | 2/2 | Complete    | 2026-03-12 |
-| 4. Admin Dashboard | 0/3 | Not started | - |
+| 4. Admin Dashboard | 0/4 | Not started | - |
 | 5. Realtime + Polish | 0/2 | Not started | - |

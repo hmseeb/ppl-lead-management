@@ -1,18 +1,28 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 
-export async function fetchOrdersWithBroker() {
+interface OrderFilters {
+  page?: number
+  per_page?: number
+}
+
+export async function fetchOrdersWithBroker(params: OrderFilters = {}) {
   const supabase = createAdminClient()
-  const { data, error } = await supabase
+  const page = params.page ?? 1
+  const perPage = params.per_page ?? 50
+  const offset = (page - 1) * perPage
+
+  const { data, count, error } = await supabase
     .from('orders')
     .select(`
       id, broker_id, total_leads, leads_delivered, leads_remaining,
       verticals, credit_score_min, status, bonus_mode, created_at,
       brokers!inner ( first_name, last_name )
-    `)
+    `, { count: 'exact' })
     .order('created_at', { ascending: false })
+    .range(offset, offset + perPage - 1)
 
-  if (error) return []
-  return data ?? []
+  if (error) return { data: [], count: 0 }
+  return { data: data ?? [], count: count ?? 0 }
 }
 
 export async function fetchOrderDetail(id: string) {

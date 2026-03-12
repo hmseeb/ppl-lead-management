@@ -1,19 +1,29 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 
-export async function fetchBrokersWithStats() {
+interface BrokerFilters {
+  page?: number
+  per_page?: number
+}
+
+export async function fetchBrokersWithStats(params: BrokerFilters = {}) {
   const supabase = createAdminClient()
-  const { data: brokers, error } = await supabase
+  const page = params.page ?? 1
+  const perPage = params.per_page ?? 50
+  const offset = (page - 1) * perPage
+
+  const { data: brokers, count, error } = await supabase
     .from('brokers')
     .select(`
       id, first_name, last_name, company, email, phone, assignment_status, created_at,
       crm_webhook_url,
       orders ( id, status, leads_delivered, last_assigned_at )
-    `)
+    `, { count: 'exact' })
     .order('created_at', { ascending: false })
+    .range(offset, offset + perPage - 1)
 
-  if (error || !brokers) return []
+  if (error || !brokers) return { data: [], count: 0 }
 
-  return brokers.map((broker) => {
+  const data = brokers.map((broker) => {
     const orders = (broker.orders ?? []) as { id: string; status: string; leads_delivered: number; last_assigned_at: string | null }[]
     return {
       ...broker,
@@ -26,6 +36,8 @@ export async function fetchBrokersWithStats() {
       }, null),
     }
   })
+
+  return { data, count: count ?? 0 }
 }
 
 export async function fetchBrokerDetail(id: string) {

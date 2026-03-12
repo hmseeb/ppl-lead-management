@@ -1,18 +1,28 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 
-export async function fetchUnassignedQueue() {
+interface UnassignedFilters {
+  page?: number
+  per_page?: number
+}
+
+export async function fetchUnassignedQueue(params: UnassignedFilters = {}) {
   const supabase = createAdminClient()
-  const { data, error } = await supabase
+  const page = params.page ?? 1
+  const perPage = params.per_page ?? 50
+  const offset = (page - 1) * perPage
+
+  const { data, count, error } = await supabase
     .from('unassigned_queue')
     .select(`
       id, reason, details, created_at,
       leads ( id, first_name, last_name, vertical, credit_score, funding_amount, phone, email )
-    `)
+    `, { count: 'exact' })
     .eq('resolved', false)
     .order('created_at', { ascending: false })
+    .range(offset, offset + perPage - 1)
 
-  if (error) return []
-  return data ?? []
+  if (error) return { data: [], count: 0 }
+  return { data: data ?? [], count: count ?? 0 }
 }
 
 export async function fetchActiveBrokersWithOrders() {

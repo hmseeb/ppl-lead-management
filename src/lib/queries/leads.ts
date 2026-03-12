@@ -37,7 +37,7 @@ export async function fetchLeads(params: LeadFilters) {
   if (params.credit_score_min) query = query.gte('credit_score', params.credit_score_min)
   if (params.credit_score_max) query = query.lte('credit_score', params.credit_score_max)
   if (params.date_from) query = query.gte('created_at', params.date_from)
-  if (params.date_to) query = query.lte('created_at', params.date_to)
+  if (params.date_to) query = query.lte('created_at', `${params.date_to}T23:59:59.999Z`)
 
   const { data, count, error } = await query
     .order('created_at', { ascending: false })

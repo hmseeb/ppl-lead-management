@@ -27,7 +27,7 @@ export async function fetchActivityLog(params: ActivityFilters) {
   if (params.event_type) query = query.eq('event_type', params.event_type)
   if (params.broker_id) query = query.eq('broker_id', params.broker_id)
   if (params.date_from) query = query.gte('created_at', params.date_from)
-  if (params.date_to) query = query.lte('created_at', params.date_to)
+  if (params.date_to) query = query.lte('created_at', `${params.date_to}T23:59:59.999Z`)
 
   const { data, count, error } = await query
     .order('created_at', { ascending: false })

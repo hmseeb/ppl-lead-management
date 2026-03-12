@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { incomingLeadSchema } from '@/lib/webhooks/schemas'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { assignLead } from '@/lib/assignment/assign'
+import { deliverWebhook } from '@/lib/webhooks/deliver'
 import type { Json } from '@/lib/types/database'
 
 export async function POST(request: Request) {
@@ -82,6 +83,11 @@ export async function POST(request: Request) {
     }
   }
 
-  // 6. Return fast
+  // 6. Fire-and-forget webhook delivery if assigned
+  if (assignment.status === 'assigned' && assignment.delivery_id) {
+    deliverWebhook(assignment.delivery_id).catch(console.error)
+  }
+
+  // 7. Return fast
   return NextResponse.json({ lead_id: lead.id, assignment }, { status: 200 })
 }

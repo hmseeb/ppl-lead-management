@@ -8,7 +8,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
@@ -45,13 +44,11 @@ export function OrderActions({ orderId, currentStatus, bonusMode }: OrderActions
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button variant="ghost" size="icon">
-          <MoreHorizontal className="size-4" />
-        </Button>
+      <DropdownMenuTrigger render={<Button variant="ghost" size="icon" />}>
+        <MoreHorizontal className="size-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <div className="px-1.5 py-1 text-xs font-medium text-muted-foreground">Actions</div>
         <DropdownMenuSeparator />
 
         {currentStatus === 'active' && (

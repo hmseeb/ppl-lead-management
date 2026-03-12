@@ -2,13 +2,12 @@
 
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { MoreHorizontal, Pencil } from 'lucide-react'
+import { MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
@@ -36,13 +35,11 @@ export function BrokerActions({ brokerId, currentStatus }: BrokerActionsProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button variant="ghost" size="icon">
-          <MoreHorizontal className="size-4" />
-        </Button>
+      <DropdownMenuTrigger render={<Button variant="ghost" size="icon" />}>
+        <MoreHorizontal className="size-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <div className="px-1.5 py-1 text-xs font-medium text-muted-foreground">Actions</div>
         <DropdownMenuSeparator />
         {statuses
           .filter((s) => s !== currentStatus)

@@ -1,40 +1,27 @@
-import { createAdminClient } from '@/lib/supabase/admin'
+import Link from 'next/link'
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { OrderStatusBadge, BonusBadge } from './order-status-badge'
 import { OrderActions } from './order-actions'
 
-export async function OrdersTable() {
-  const supabase = createAdminClient()
-  const { data: orders, error } = await supabase
-    .from('orders')
-    .select(`
-      id,
-      broker_id,
-      total_leads,
-      leads_delivered,
-      leads_remaining,
-      verticals,
-      credit_score_min,
-      status,
-      bonus_mode,
-      created_at,
-      brokers!inner ( first_name, last_name )
-    `)
-    .order('created_at', { ascending: false })
+type OrderWithBroker = {
+  id: string
+  broker_id: string
+  total_leads: number
+  leads_delivered: number
+  leads_remaining: number
+  verticals: string[]
+  credit_score_min: number | null
+  status: string
+  bonus_mode: boolean
+  created_at: string
+  brokers: { first_name: string; last_name: string }
+}
 
-  if (error) {
-    return <p className="text-destructive">Failed to load orders: {error.message}</p>
-  }
-
-  if (!orders || orders.length === 0) {
+export function OrdersTable({ orders }: { orders: OrderWithBroker[] }) {
+  if (orders.length === 0) {
     return <p className="text-muted-foreground">No orders yet. Create your first one.</p>
   }
 
@@ -55,19 +42,18 @@ export async function OrdersTable() {
       </TableHeader>
       <TableBody>
         {orders.map((order) => {
-          // Type the joined broker data
-          const broker = order.brokers as unknown as {
-            first_name: string
-            last_name: string
-          }
-
+          const broker = order.brokers as { first_name: string; last_name: string }
           return (
             <TableRow key={order.id}>
-              <TableCell className="font-mono text-xs">
-                {order.id.slice(0, 8)}
+              <TableCell>
+                <Link href={`/orders/${order.id}`} className="font-mono text-xs hover:underline">
+                  {order.id.slice(0, 8)}
+                </Link>
               </TableCell>
               <TableCell className="font-medium">
-                {broker.first_name} {broker.last_name}
+                <Link href={`/brokers/${order.broker_id}`} className="hover:underline">
+                  {broker.first_name} {broker.last_name}
+                </Link>
               </TableCell>
               <TableCell className="text-right">{order.total_leads}</TableCell>
               <TableCell className="text-right">{order.leads_delivered}</TableCell>
@@ -75,15 +61,11 @@ export async function OrdersTable() {
               <TableCell>
                 <div className="flex gap-1 flex-wrap">
                   {(order.verticals as string[]).map((v) => (
-                    <Badge key={v} variant="secondary" className="text-xs">
-                      {v}
-                    </Badge>
+                    <Badge key={v} variant="secondary" className="text-xs">{v}</Badge>
                   ))}
                 </div>
               </TableCell>
-              <TableCell className="text-right">
-                {order.credit_score_min ?? '-'}
-              </TableCell>
+              <TableCell className="text-right">{order.credit_score_min ?? '-'}</TableCell>
               <TableCell>
                 <div className="flex gap-1">
                   <OrderStatusBadge status={order.status} />
@@ -91,11 +73,7 @@ export async function OrdersTable() {
                 </div>
               </TableCell>
               <TableCell>
-                <OrderActions
-                  orderId={order.id}
-                  currentStatus={order.status}
-                  bonusMode={order.bonus_mode}
-                />
+                <OrderActions orderId={order.id} currentStatus={order.status} bonusMode={order.bonus_mode} />
               </TableCell>
             </TableRow>
           )

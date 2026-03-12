@@ -124,3 +124,31 @@ export async function updateBrokerStatus(id: string, status: string) {
   revalidatePath('/brokers')
   return { success: true }
 }
+
+export async function pauseAllBrokerOrders(brokerId: string) {
+  const supabase = createAdminClient()
+  const { error } = await supabase
+    .from('orders')
+    .update({ status: 'paused' })
+    .eq('broker_id', brokerId)
+    .eq('status', 'active')
+
+  if (error) return { error: error.message }
+  revalidatePath('/brokers')
+  revalidatePath('/orders')
+  return { success: true }
+}
+
+export async function resumeAllBrokerOrders(brokerId: string) {
+  const supabase = createAdminClient()
+  const { error } = await supabase
+    .from('orders')
+    .update({ status: 'active' })
+    .eq('broker_id', brokerId)
+    .eq('status', 'paused')
+
+  if (error) return { error: error.message }
+  revalidatePath('/brokers')
+  revalidatePath('/orders')
+  return { success: true }
+}

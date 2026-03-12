@@ -1,4 +1,5 @@
 import { Sidebar } from '@/components/layout/sidebar'
+import { RealtimeListener } from '@/components/realtime-listener'
 
 export default function DashboardLayout({
   children,
@@ -11,6 +12,7 @@ export default function DashboardLayout({
       <main className="flex-1 p-8">
         {children}
       </main>
+      <RealtimeListener />
     </div>
   )
 }

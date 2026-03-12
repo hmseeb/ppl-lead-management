@@ -15,8 +15,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation + Assignment Engine** - Schema, auth, broker/order CRUD, and the atomic assignment function with advisory locks
 - [x] **Phase 2: Webhook Ingestion** - Inbound lead endpoint and PATCH update endpoint wired to the assignment engine
 - [x] **Phase 3: Lead Delivery** - Outbound webhook to broker GHL sub-accounts with pg_cron retry pipeline
-- [ ] **Phase 4: Admin Dashboard** - Full admin UI with KPIs, all data tables, unassigned queue, and activity log
-- [ ] **Phase 5: Realtime + Polish** - Live dashboard updates via Supabase Realtime, theme toggle, UX refinements
+- [x] **Phase 4: Admin Dashboard** - Full admin UI with KPIs, all data tables, unassigned queue, and activity log
+- [x] **Phase 5: Realtime + Polish** - Live dashboard updates via Supabase Realtime, theme toggle, UX refinements
 
 ## Phase Details
 
@@ -80,10 +80,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Install deps (nuqs, recharts, date-fns), overview dashboard with KPIs, activity feed, and updated sidebar
-- [ ] 04-02-PLAN.md — Leads table with TanStack Table, nuqs filters/search, and lead detail view
-- [ ] 04-03-PLAN.md — Enhanced brokers/orders tables with stats, detail views, quick actions, and color-coded status
-- [ ] 04-04-PLAN.md — Unassigned queue with manual assignment and filterable activity log
+- [x] 04-01-PLAN.md — Install deps (nuqs, recharts, date-fns), overview dashboard with KPIs, activity feed, and updated sidebar
+- [x] 04-02-PLAN.md — Leads table with TanStack Table, nuqs filters/search, and lead detail view
+- [x] 04-03-PLAN.md — Enhanced brokers/orders tables with stats, detail views, quick actions, and color-coded status
+- [x] 04-04-PLAN.md — Unassigned queue with manual assignment and filterable activity log
 
 ### Phase 5: Realtime + Polish
 **Goal**: The dashboard updates live as leads flow through the system without manual refresh, and the UI feels polished and complete
@@ -96,8 +96,8 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
+- [x] 05-01-PLAN.md — Supabase Realtime postgres_changes listener for live dashboard updates
+- [x] 05-02-PLAN.md — Dark/light theme toggle with next-themes and persistent preference
 
 ## Progress
 
@@ -109,5 +109,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Foundation + Assignment Engine | 3/3 | Complete    | 2026-03-12 |
 | 2. Webhook Ingestion | 2/2 | Complete    | 2026-03-12 |
 | 3. Lead Delivery | 2/2 | Complete    | 2026-03-12 |
-| 4. Admin Dashboard | 0/4 | Not started | - |
-| 5. Realtime + Polish | 0/2 | Not started | - |
+| 4. Admin Dashboard | 4/4 | Complete    | 2026-03-12 |
+| 5. Realtime + Polish | 2/2 | Complete    | 2026-03-12 |

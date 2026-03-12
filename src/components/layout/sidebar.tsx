@@ -5,12 +5,19 @@ import { usePathname } from 'next/navigation'
 import { logout } from '@/lib/auth/actions'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { LayoutDashboard, Users, ShoppingCart, LogOut } from 'lucide-react'
+import {
+  LayoutDashboard, Users, ShoppingCart, FileText,
+  AlertCircle, Activity, LogOut,
+} from 'lucide-react'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 const navItems = [
   { href: '/', label: 'Overview', icon: LayoutDashboard },
+  { href: '/leads', label: 'Leads', icon: FileText },
   { href: '/brokers', label: 'Brokers', icon: Users },
   { href: '/orders', label: 'Orders', icon: ShoppingCart },
+  { href: '/unassigned', label: 'Unassigned', icon: AlertCircle },
+  { href: '/activity', label: 'Activity', icon: Activity },
 ]
 
 export function Sidebar() {
@@ -40,7 +47,11 @@ export function Sidebar() {
         })}
       </nav>
       <Separator className="my-4" />
-      <div className="mt-auto">
+      <div className="mt-auto space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-muted-foreground">Theme</span>
+          <ThemeToggle />
+        </div>
         <form action={logout}>
           <Button variant="outline" size="sm" className="w-full gap-2">
             <LogOut className="size-4" />

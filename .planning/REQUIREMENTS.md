@@ -112,13 +112,60 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (Populated during roadmap creation) | | |
+| AUTH-01 | Phase 1 | Pending |
+| BRKR-01 | Phase 1 | Pending |
+| BRKR-02 | Phase 1 | Pending |
+| BRKR-03 | Phase 1 | Pending |
+| BRKR-04 | Phase 4 | Pending |
+| ORDR-01 | Phase 1 | Pending |
+| ORDR-02 | Phase 1 | Pending |
+| ORDR-03 | Phase 1 | Pending |
+| ORDR-04 | Phase 1 | Pending |
+| ORDR-05 | Phase 1 | Pending |
+| ORDR-06 | Phase 1 | Pending |
+| ASGN-01 | Phase 1 | Pending |
+| ASGN-02 | Phase 1 | Pending |
+| ASGN-03 | Phase 1 | Pending |
+| ASGN-04 | Phase 1 | Pending |
+| ASGN-05 | Phase 1 | Pending |
+| ASGN-06 | Phase 1 | Pending |
+| ASGN-07 | Phase 1 | Pending |
+| HOOK-01 | Phase 2 | Pending |
+| HOOK-02 | Phase 2 | Pending |
+| HOOK-03 | Phase 2 | Pending |
+| HOOK-04 | Phase 2 | Pending |
+| HOOK-05 | Phase 2 | Pending |
+| DLVR-01 | Phase 3 | Pending |
+| DLVR-02 | Phase 3 | Pending |
+| DLVR-03 | Phase 3 | Pending |
+| DLVR-04 | Phase 3 | Pending |
+| DASH-01 | Phase 4 | Pending |
+| DASH-02 | Phase 4 | Pending |
+| DASH-03 | Phase 4 | Pending |
+| DASH-04 | Phase 4 | Pending |
+| DASH-05 | Phase 4 | Pending |
+| DASH-06 | Phase 4 | Pending |
+| DASH-07 | Phase 4 | Pending |
+| DASH-08 | Phase 4 | Pending |
+| DASH-09 | Phase 4 | Pending |
+| DASH-10 | Phase 4 | Pending |
+| DASH-11 | Phase 4 | Pending |
+| DASH-12 | Phase 4 | Pending |
+| DASH-13 | Phase 4 | Pending |
+| DASH-14 | Phase 4 | Pending |
+| DASH-15 | Phase 4 | Pending |
+| DASH-16 | Phase 4 | Pending |
+| DASH-17 | Phase 4 | Pending |
+| RT-01 | Phase 5 | Pending |
+| RT-02 | Phase 5 | Pending |
+| UX-01 | Phase 5 | Pending |
+| UX-02 | Phase 4 | Pending |
 
 **Coverage:**
-- v1 requirements: 40 total
-- Mapped to phases: 0
-- Unmapped: 40 (pending roadmap)
+- v1 requirements: 48 total
+- Mapped to phases: 48
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-12*
-*Last updated: 2026-03-12 after initial definition*
+*Last updated: 2026-03-12 after roadmap creation*

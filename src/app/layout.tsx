@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrains = JetBrains_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
 });
 
@@ -25,11 +25,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased ambient-bg`}
+        className={`${jakarta.variable} ${jetbrains.variable} antialiased ambient-bg`}
       >
-        <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="relative z-10">
             {children}
           </div>
@@ -37,11 +37,7 @@ export default function RootLayout({
             richColors
             position="top-right"
             toastOptions={{
-              style: {
-                background: 'rgba(18, 8, 10, 0.9)',
-                border: '1px solid rgba(220, 38, 38, 0.12)',
-                backdropFilter: 'blur(16px)',
-              },
+              className: 'toast-glass',
             }}
           />
         </ThemeProvider>

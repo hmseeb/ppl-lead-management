@@ -20,7 +20,7 @@ export default function LoginPage() {
           </div>
           <div>
             <h1 className="text-lg font-semibold tracking-wide">PPL Lead Management</h1>
-            <p className="text-[10px] uppercase tracking-[0.15em] text-red-400/50 font-medium">Control Panel</p>
+            <p className="text-[10px] uppercase tracking-[0.15em] text-red-700/40 dark:text-red-400/50 font-medium">Control Panel</p>
           </div>
         </div>
 

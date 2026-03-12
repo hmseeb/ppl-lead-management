@@ -337,6 +337,79 @@ export type Database = {
           },
         ]
       }
+      webhook_deliveries: {
+        Row: {
+          id: string
+          lead_id: string
+          broker_id: string
+          order_id: string
+          target_url: string
+          payload: Json
+          status: string
+          pg_net_request_id: number | null
+          retry_count: number
+          error_message: string | null
+          sent_at: string | null
+          last_retry_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          lead_id: string
+          broker_id: string
+          order_id: string
+          target_url: string
+          payload: Json
+          status?: string
+          pg_net_request_id?: number | null
+          retry_count?: number
+          error_message?: string | null
+          sent_at?: string | null
+          last_retry_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          lead_id?: string
+          broker_id?: string
+          order_id?: string
+          target_url?: string
+          payload?: Json
+          status?: string
+          pg_net_request_id?: number | null
+          retry_count?: number
+          error_message?: string | null
+          sent_at?: string | null
+          last_retry_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "webhook_deliveries_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "webhook_deliveries_broker_id_fkey"
+            columns: ["broker_id"]
+            isOneToOne: false
+            referencedRelation: "brokers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "webhook_deliveries_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -347,6 +420,7 @@ export type Database = {
         Args: { p_lead: Database["public"]["Tables"]["leads"]["Row"] }
         Returns: string
       }
+      fire_outbound_webhook: { Args: Record<string, never>; Returns: unknown }
     }
     Enums: {
       [_ in never]: never

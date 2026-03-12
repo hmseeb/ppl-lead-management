@@ -30,31 +30,31 @@ export function LeadVolumeChart({ data }: { data: ChartData[] }) {
                 fontSize={10}
                 tickLine={false}
                 axisLine={false}
-                tick={{ fill: isDark ? 'rgba(220, 160, 160, 0.4)' : 'rgba(100, 80, 80, 0.5)' }}
+                tick={{ fill: isDark ? '#8b8b9e' : '#64648c' }}
               />
               <YAxis
                 fontSize={10}
                 tickLine={false}
                 axisLine={false}
                 allowDecimals={false}
-                tick={{ fill: isDark ? 'rgba(220, 160, 160, 0.4)' : 'rgba(100, 80, 80, 0.5)' }}
+                tick={{ fill: isDark ? '#8b8b9e' : '#64648c' }}
               />
               <Tooltip
                 cursor={{ fill: isDark ? 'rgba(220, 38, 38, 0.06)' : 'rgba(220, 38, 38, 0.04)' }}
                 contentStyle={{
                   fontSize: 11,
+                  fontFamily: 'var(--font-jetbrains-mono), monospace',
                   borderRadius: 8,
-                  background: isDark ? 'rgba(18, 8, 10, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-                  border: isDark ? '1px solid rgba(220, 38, 38, 0.15)' : '1px solid rgba(0, 0, 0, 0.08)',
-                  backdropFilter: 'blur(12px)',
-                  boxShadow: isDark ? '0 8px 32px rgba(0, 0, 0, 0.4)' : '0 8px 32px rgba(0, 0, 0, 0.1)',
-                  color: isDark ? 'rgba(255, 220, 220, 0.8)' : 'rgba(40, 20, 20, 0.8)',
+                  background: isDark ? '#0c0c12' : '#ffffff',
+                  border: isDark ? '1px solid rgba(220, 38, 38, 0.15)' : '1px solid rgba(220, 38, 38, 0.10)',
+                  boxShadow: isDark ? '0 8px 32px rgba(0, 0, 0, 0.4)' : '0 8px 32px rgba(0, 0, 0, 0.08)',
+                  color: isDark ? '#e4e4ec' : '#0c0c12',
                 }}
                 labelFormatter={(label) => `${label}`}
               />
               <Bar
                 dataKey="count"
-                fill={isDark ? 'rgba(220, 38, 38, 0.7)' : 'rgba(220, 38, 38, 0.65)'}
+                fill="#dc2626"
                 radius={[4, 4, 0, 0]}
                 style={{ filter: isDark ? 'drop-shadow(0 0 6px rgba(220, 38, 38, 0.3))' : 'none' }}
               />

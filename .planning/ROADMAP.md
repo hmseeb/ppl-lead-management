@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Project scaffold, database schema, Supabase clients, and auth (iron-session + middleware)
+- [x] 01-01-PLAN.md — Project scaffold, database schema, Supabase clients, and auth (iron-session + middleware)
 - [ ] 01-02-PLAN.md — Broker and order management UI with CRUD, lifecycle actions, and data tables
 - [ ] 01-03-PLAN.md — assign_lead() Postgres function with advisory locks, weighted rotation, and test suite
 

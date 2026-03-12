@@ -75,7 +75,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Auth & UX
 
-- [ ] **AUTH-01**: Admin access protected by simple password authentication with session cookie
+- [x] **AUTH-01**: Admin access protected by simple password authentication with session cookie
 - [ ] **UX-01**: Dark/light theme toggle with persistent preference
 - [ ] **UX-02**: Desktop-first professional admin UI using ShadCN components
 
@@ -112,7 +112,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 1 | Pending |
+| AUTH-01 | Phase 1 | Complete |
 | BRKR-01 | Phase 1 | Pending |
 | BRKR-02 | Phase 1 | Pending |
 | BRKR-03 | Phase 1 | Pending |

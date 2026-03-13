@@ -1,6 +1,9 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 
 interface OrderFilters {
+  search?: string
+  status?: string
+  vertical?: string
   page?: number
   per_page?: number
 }
@@ -11,13 +14,21 @@ export async function fetchOrdersWithBroker(params: OrderFilters = {}) {
   const perPage = params.per_page ?? 50
   const offset = (page - 1) * perPage
 
-  const { data, count, error } = await supabase
+  let query = supabase
     .from('orders')
     .select(`
       id, broker_id, total_leads, leads_delivered, leads_remaining,
       verticals, credit_score_min, status, bonus_mode, created_at,
       brokers!inner ( first_name, last_name )
     `, { count: 'exact' })
+
+  if (params.search) {
+    query = query.or(`first_name.ilike.%${params.search}%,last_name.ilike.%${params.search}%`, { referencedTable: 'brokers' })
+  }
+  if (params.status) query = query.eq('status', params.status)
+  if (params.vertical) query = query.contains('verticals', [params.vertical])
+
+  const { data, count, error } = await query
     .order('created_at', { ascending: false })
     .range(offset, offset + perPage - 1)
 

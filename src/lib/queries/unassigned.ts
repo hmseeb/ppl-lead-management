@@ -1,6 +1,8 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 
 interface UnassignedFilters {
+  search?: string
+  reason?: string
   page?: number
   per_page?: number
 }
@@ -11,13 +13,20 @@ export async function fetchUnassignedQueue(params: UnassignedFilters = {}) {
   const perPage = params.per_page ?? 50
   const offset = (page - 1) * perPage
 
-  const { data, count, error } = await supabase
+  let query = supabase
     .from('unassigned_queue')
     .select(`
       id, reason, details, created_at,
       leads ( id, first_name, last_name, vertical, credit_score, funding_amount, phone, email )
     `, { count: 'exact' })
     .eq('resolved', false)
+
+  if (params.search) {
+    query = query.or(`first_name.ilike.%${params.search}%,last_name.ilike.%${params.search}%`, { referencedTable: 'leads' })
+  }
+  if (params.reason) query = query.eq('reason', params.reason)
+
+  const { data, count, error } = await query
     .order('created_at', { ascending: false })
     .range(offset, offset + perPage - 1)
 

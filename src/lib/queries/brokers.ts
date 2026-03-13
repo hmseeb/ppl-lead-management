@@ -1,6 +1,8 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 
 interface BrokerFilters {
+  search?: string
+  assignment_status?: string
   page?: number
   per_page?: number
 }
@@ -11,13 +13,20 @@ export async function fetchBrokersWithStats(params: BrokerFilters = {}) {
   const perPage = params.per_page ?? 50
   const offset = (page - 1) * perPage
 
-  const { data: brokers, count, error } = await supabase
+  let query = supabase
     .from('brokers')
     .select(`
       id, first_name, last_name, company, email, phone, assignment_status, created_at,
       crm_webhook_url,
       orders ( id, status, leads_delivered, last_assigned_at )
     `, { count: 'exact' })
+
+  if (params.search) {
+    query = query.or(`first_name.ilike.%${params.search}%,last_name.ilike.%${params.search}%,company.ilike.%${params.search}%`)
+  }
+  if (params.assignment_status) query = query.eq('assignment_status', params.assignment_status)
+
+  const { data: brokers, count, error } = await query
     .order('created_at', { ascending: false })
     .range(offset, offset + perPage - 1)
 

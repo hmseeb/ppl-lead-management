@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 
 interface ActivityFilters {
+  search?: string
   event_type?: string
   broker_id?: string
   date_from?: string
@@ -24,6 +25,7 @@ export async function fetchActivityLog(params: ActivityFilters) {
       orders ( id )
     `, { count: 'exact' })
 
+  if (params.search) query = query.ilike('details', `%${params.search}%`)
   if (params.event_type) query = query.eq('event_type', params.event_type)
   if (params.broker_id) query = query.eq('broker_id', params.broker_id)
   if (params.date_from) query = query.gte('created_at', params.date_from)

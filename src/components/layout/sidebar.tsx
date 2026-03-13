@@ -23,7 +23,7 @@ export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="w-64 glass-sidebar p-6 flex flex-col">
+    <aside className="w-64 shrink-0 glass-sidebar p-6 flex flex-col sticky top-0 h-screen overflow-y-auto">
       {/* Brand */}
       <div className="mb-8">
         <div className="flex items-center gap-2">

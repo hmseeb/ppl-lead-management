@@ -49,10 +49,10 @@
   3. A lead delivered to a broker with weekend_pause enabled on Saturday or Sunday gets status "queued"
   4. A lead delivered to a broker with contact_hours = "anytime" always fires immediately regardless of day/time
   5. All hours checks use the broker's own timezone (AT TIME ZONE), not server time
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 10-01: TBD
+- [ ] 10-01-PLAN.md — Hours-aware delivery migration + updated assign_lead with is_within_contact_hours helper
 
 ### Phase 11: Queue Processing
 **Goal**: Queued deliveries are automatically released when the broker's contact window opens
@@ -97,6 +97,6 @@ Phases execute in numeric order: 10 -> 11 -> 12
 | 7. Real-time Alerts | v1.1 | 1/1 | Complete | 2026-03-13 |
 | 8. Delivery Stats Dashboard | v1.1 | 2/2 | Complete | 2026-03-13 |
 | 9. Daily Digest | v1.1 | 1/1 | Complete | 2026-03-13 |
-| 10. Hours-Aware Delivery | v1.2 | 0/? | Not started | - |
+| 10. Hours-Aware Delivery | v1.2 | 0/1 | Planning | - |
 | 11. Queue Processing | v1.2 | 0/? | Not started | - |
 | 12. Admin Visibility | v1.2 | 0/? | Not started | - |

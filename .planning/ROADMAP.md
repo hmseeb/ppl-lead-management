@@ -75,7 +75,10 @@ Plans:
   3. A lead arriving when zero active orders exist is rejected with reason "no_active_orders"
   4. A lead with the same email + phone combination as an existing lead is flagged as duplicate and returns the existing lead (not re-routed)
   5. Rejected leads appear in the admin dashboard with their rejection reason
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 14-01-PLAN.md -- DB migration + pre-flight validation logic in webhook route
+- [ ] 14-02-PLAN.md -- Dashboard UI updates for rejected leads display
 
 ### Phase 15: Scoring Engine + Tier Gating
 **Goal**: Leads are assigned to the highest-scoring eligible order using a 0-100 point algorithm that replaces the current weighted rotation ORDER BY clause
@@ -130,7 +133,7 @@ Phases execute in numeric order: 13 -> 14 -> 15 -> 16 -> 17
 | 11. Queue Processing | v1.2 | 1/1 | Complete | 2026-03-13 |
 | 12. Admin Visibility | v1.2 | 2/2 | Complete | 2026-03-13 |
 | 13. Order Model Expansion | v2.0 | 2/2 | Complete | 2026-03-13 |
-| 14. Pre-flight Validation | v2.0 | 0/? | Not started | - |
+| 14. Pre-flight Validation | v2.0 | 0/2 | Not started | - |
 | 15. Scoring Engine + Tier Gating | v2.0 | 0/? | Not started | - |
 | 16. Routing Audit Trail | v2.0 | 0/? | Not started | - |
 | 17. Monthly Recurring Orders | v2.0 | 0/? | Not started | - |

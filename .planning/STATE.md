@@ -34,10 +34,10 @@ Progress: [██████████████████░░░░░
 | 05-realtime-polish | 2 | — | — |
 | 06-alert-foundation | 2 | 2min | 1min |
 | 07-real-time-alerts | 1 | 2min | 2min |
-| 08-delivery-stats-dashboard | 2 | — | — |
+| 08-delivery-stats-dashboard | 2 | 3min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 06-01 (1min), 06-02 (1min), 07-01 (2min), 08-01 (—), 08-02 (1min)
+- Last 5 plans: 06-01 (1min), 06-02 (1min), 07-01 (2min), 08-01 (2min), 08-02 (1min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -59,6 +59,8 @@ Recent decisions affecting current work:
 - WHEN clause on trigger definition (not inside function) to prevent unnecessary function invocations
 - PERFORM for pg_net alert calls (no request_id needed, cleaner than SELECT INTO)
 - NULL-safe name resolution: TRIM + NULLIF + fallback chain (email, phone, id::text)
+- 12 parallel count queries for delivery stats (no SQL view, matches fetchKpis pattern)
+- Health threshold: 0% = healthy, <25% = degraded, >=25% = critical, 0 total = inactive
 - 500ms debounce delay with 2s max wait for RealtimeListener balances responsiveness vs efficiency
 
 ### Pending Todos
@@ -80,5 +82,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: Completed 08-02-PLAN.md (debounced realtime listener)
+Stopped at: Completed 08-01-PLAN.md (delivery stats dashboard)
 Resume file: None

@@ -57,9 +57,10 @@ None.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 1 | Implement webhook delivery backend for sending assigned leads to broker CRM | 2026-03-12 | 0055c3e | [1-implement-webhook-delivery-backend-for-s](./quick/1-implement-webhook-delivery-backend-for-s/) |
+| 2 | Make KPI cards clickable with inline expandable preview tables | 2026-03-13 | 7ae360a | [2-make-kpi-cards-clickable-with-inline-exp](./quick/2-make-kpi-cards-clickable-with-inline-exp/) |
 
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: v1.1 milestone complete
+Stopped at: Completed quick task 2 (KPI cards clickable)
 Resume file: None

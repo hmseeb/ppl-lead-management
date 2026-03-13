@@ -63,10 +63,10 @@ Plans:
   2. Queued deliveries are only released when the broker is currently within their contact window (hours + not weekend-paused)
   3. When multiple deliveries are queued for one broker, they release in FIFO order (oldest created_at first)
   4. Released deliveries proceed through the normal delivery pipeline (pending, sent/failed, retry)
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 11-01: TBD
+- [ ] 11-01-PLAN.md — process_queued_deliveries() function + pg_cron 5-minute schedule
 
 ### Phase 12: Admin Visibility
 **Goal**: Admin can see queued deliveries, broker hours settings, and queue/release activity at a glance
@@ -98,5 +98,5 @@ Phases execute in numeric order: 10 -> 11 -> 12
 | 8. Delivery Stats Dashboard | v1.1 | 2/2 | Complete | 2026-03-13 |
 | 9. Daily Digest | v1.1 | 1/1 | Complete | 2026-03-13 |
 | 10. Hours-Aware Delivery | v1.2 | Complete    | 2026-03-13 | 2026-03-13 |
-| 11. Queue Processing | v1.2 | 0/? | Not started | - |
+| 11. Queue Processing | v1.2 | 0/1 | Not started | - |
 | 12. Admin Visibility | v1.2 | 0/? | Not started | - |

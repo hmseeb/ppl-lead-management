@@ -40,11 +40,11 @@
   2. Calling the `send-alert` edge function with a failure-type payload delivers an SMS to the admin via GHL Conversations API
   3. Calling `send-alert` with an unassigned-type payload delivers a differently formatted SMS to the admin
   4. Sending the same alert type for the same broker within 15 minutes results in only one SMS (dedup works)
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 06-01: admin_settings table, Vault secret, and send-alert edge function with GHL SMS delivery
-- [ ] 06-02: Alert deduplication with alert_state table, 15-minute window, and cleanup cron
+- [ ] 06-01-PLAN.md — admin_settings table, Vault secret, and send-alert edge function with GHL SMS delivery
+- [ ] 06-02-PLAN.md — Alert deduplication with alert_state table, 15-minute window, and cleanup cron
 
 ### Phase 7: Real-time Alerts
 **Goal**: Admin receives an SMS within seconds when a delivery permanently fails or a lead goes unassigned, so problems are caught immediately instead of hours later on the dashboard

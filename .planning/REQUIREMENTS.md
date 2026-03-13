@@ -47,22 +47,22 @@ Requirements for broker hours enforcement. Each maps to roadmap phases.
 
 | Requirement | Phase | Plan | Status |
 |-------------|-------|------|--------|
-| HOUR-01 | — | — | Pending |
-| HOUR-02 | — | — | Pending |
-| HOUR-03 | — | — | Pending |
-| HOUR-04 | — | — | Pending |
-| HOUR-05 | — | — | Pending |
-| TZ-01 | — | — | Pending |
-| TZ-02 | — | — | Pending |
-| VIS-01 | — | — | Pending |
-| VIS-02 | — | — | Pending |
-| VIS-03 | — | — | Pending |
+| HOUR-01 | Phase 10 | — | Pending |
+| HOUR-02 | Phase 10 | — | Pending |
+| HOUR-03 | Phase 10 | — | Pending |
+| HOUR-04 | Phase 11 | — | Pending |
+| HOUR-05 | Phase 11 | — | Pending |
+| TZ-01 | Phase 10 | — | Pending |
+| TZ-02 | Phase 10 | — | Pending |
+| VIS-01 | Phase 12 | — | Pending |
+| VIS-02 | Phase 12 | — | Pending |
+| VIS-03 | Phase 12 | — | Pending |
 
 **Coverage:**
 - v1.2 requirements: 10 total
-- Mapped to phases: 0
-- Unmapped: 10 (pending roadmap)
+- Mapped to phases: 10
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-13*
-*Last updated: 2026-03-13 after initial definition*
+*Last updated: 2026-03-13 after roadmap creation*

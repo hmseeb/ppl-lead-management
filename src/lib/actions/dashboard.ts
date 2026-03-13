@@ -9,6 +9,7 @@ export type KpiPreviewType =
   | 'unassigned'
   | 'active_brokers'
   | 'active_orders'
+  | 'queued'
 
 export async function fetchLeadsTodayPreview() {
   try {
@@ -97,6 +98,27 @@ export async function fetchActiveOrdersPreview() {
       `)
       .eq('status', 'active')
       .order('created_at', { ascending: false })
+      .limit(8)
+
+    return data ?? []
+  } catch {
+    return []
+  }
+}
+
+export async function fetchQueuedPreview() {
+  try {
+    const supabase = createAdminClient()
+
+    const { data } = await supabase
+      .from('deliveries')
+      .select(`
+        id, channel, status, created_at, broker_id, lead_id,
+        brokers ( first_name, last_name ),
+        leads ( first_name, last_name )
+      `)
+      .eq('status', 'queued')
+      .order('created_at', { ascending: true })
       .limit(8)
 
     return data ?? []

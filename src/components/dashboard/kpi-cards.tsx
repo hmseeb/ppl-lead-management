@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Users, TrendingUp, AlertCircle, Activity, Package, Loader2 } from 'lucide-react'
+import { Users, TrendingUp, AlertCircle, Activity, Package, Clock, Loader2 } from 'lucide-react'
 import { format } from 'date-fns'
 import type { KpiPreviewType } from '@/lib/actions/dashboard'
 import {
@@ -20,6 +20,7 @@ import {
   fetchUnassignedPreview,
   fetchActiveBrokersPreview,
   fetchActiveOrdersPreview,
+  fetchQueuedPreview,
 } from '@/lib/actions/dashboard'
 
 interface KpiData {
@@ -30,6 +31,7 @@ interface KpiData {
   unassignedCount: number
   activeBrokers: number
   activeOrders: number
+  queuedCount: number
 }
 
 type CardConfig = {
@@ -90,6 +92,19 @@ export function KpiCards({ data }: { data: KpiData }) {
       fetchAction: fetchUnassignedPreview,
     },
     {
+      title: 'Queued',
+      value: data.queuedCount,
+      subtitle: 'Waiting for broker hours',
+      icon: Clock,
+      iconColor: data.queuedCount > 0 ? 'text-orange-400' : 'text-muted-foreground',
+      glowColor: data.queuedCount > 0 ? 'shadow-[0_0_20px_rgba(249,115,22,0.08)]' : '',
+      highlight: data.queuedCount > 0,
+      previewType: 'queued',
+      borderColor: 'border-orange-400',
+      viewAllHref: '/activity?event_type=delivery_queued',
+      fetchAction: fetchQueuedPreview,
+    },
+    {
       title: 'Active Brokers',
       value: data.activeBrokers,
       subtitle: 'Receiving leads',
@@ -143,7 +158,7 @@ export function KpiCards({ data }: { data: KpiData }) {
 
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
         {cards.map((card) => (
           <div
             key={card.title}
@@ -360,6 +375,38 @@ function PreviewTable({ type, data }: { type: KpiPreviewType; data: any[] }) {
                   <TableCell className="text-xs">{row.leads_delivered}/{row.total_leads}</TableCell>
                   <TableCell className="text-xs">{row.leads_remaining}</TableCell>
                   <TableCell className="text-xs capitalize">{row.status}</TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      )
+
+    case 'queued':
+      return (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-xs">Lead</TableHead>
+              <TableHead className="text-xs">Broker</TableHead>
+              <TableHead className="text-xs">Channel</TableHead>
+              <TableHead className="text-xs">Queued At</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.map((row: any) => {
+              const broker = row.brokers as { first_name: string; last_name: string } | null
+              const lead = row.leads as { first_name: string | null; last_name: string | null } | null
+              return (
+                <TableRow key={row.id}>
+                  <TableCell className="text-xs">
+                    {lead ? `${lead.first_name} ${lead.last_name}` : '-'}
+                  </TableCell>
+                  <TableCell className="text-xs">
+                    {broker ? `${broker.first_name} ${broker.last_name}` : '-'}
+                  </TableCell>
+                  <TableCell className="text-xs uppercase">{row.channel}</TableCell>
+                  <TableCell className="text-xs">{formatDate(row.created_at)}</TableCell>
                 </TableRow>
               )
             })}

@@ -8,7 +8,7 @@ export async function fetchKpis() {
   const weekStart = startOfWeek(now, { weekStartsOn: 1 }).toISOString()
   const monthStart = startOfMonth(now).toISOString()
 
-  const [leadsToday, leadsWeek, leadsMonth, assigned, unassigned, activeBrokers, activeOrders] =
+  const [leadsToday, leadsWeek, leadsMonth, assigned, unassigned, activeBrokers, activeOrders, queued] =
     await Promise.all([
       supabase.from('leads').select('id', { count: 'exact', head: true }).gte('created_at', todayStart),
       supabase.from('leads').select('id', { count: 'exact', head: true }).gte('created_at', weekStart),
@@ -17,6 +17,7 @@ export async function fetchKpis() {
       supabase.from('leads').select('id', { count: 'exact', head: true }).eq('status', 'unassigned'),
       supabase.from('brokers').select('id', { count: 'exact', head: true }).eq('assignment_status', 'active'),
       supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'active'),
+      supabase.from('deliveries').select('id', { count: 'exact', head: true }).eq('status', 'queued'),
     ])
 
   return {
@@ -27,6 +28,7 @@ export async function fetchKpis() {
     unassignedCount: unassigned.count ?? 0,
     activeBrokers: activeBrokers.count ?? 0,
     activeOrders: activeOrders.count ?? 0,
+    queuedCount: queued.count ?? 0,
   }
 }
 

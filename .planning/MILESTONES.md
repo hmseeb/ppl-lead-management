@@ -30,3 +30,17 @@
 **Audit:** PASSED (14/14 requirements, 26/26 verification points, 11/11 cross-phase wires)
 
 ---
+
+## v1.2 Broker Hours Enforcement (Shipped: 2026-03-13)
+
+**Phases completed:** 3 phases (10-12), 4 plans
+**Timeline:** Mar 13, 2026
+
+**Key accomplishments:**
+- Contact hours check before delivery (business_hours, custom, anytime)
+- Weekend pause enforcement per broker
+- Per-broker timezone support (default America/Los_Angeles)
+- Queued delivery processing via pg_cron with FIFO release
+- Admin visibility: queued deliveries KPI, broker detail contact hours card, queue activity logging
+
+---

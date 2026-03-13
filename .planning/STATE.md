@@ -5,16 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** Phase 12 - Admin Visibility
+**Current focus:** v2.0 Smart Scoring Engine — Defining requirements
 
 ## Current Position
 
-Phase: 12 of 12 (Admin Visibility)
-Plan: 2 of 2 (Complete)
-Status: Phase 12 complete
-Last activity: 2026-03-13 — Completed 12-01 admin visibility KPI and broker detail
-
-Progress: [█████████████████████████] 100% v1.0+v1.1 | [██████████] 100% v1.2
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-13 — Milestone v2.0 started
 
 ## Performance Metrics
 
@@ -23,45 +21,17 @@ Progress: [███████████████████████
 - Average duration: 5min
 - Total execution time: ~1.5 hours
 
-**By Phase:**
-
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 01-foundation | 3 | 29min | 10min |
-| 02-webhook-ingestion | 2 | 7min | 4min |
-| 03-lead-delivery | 2 | 10min | 5min |
-| 04-admin-dashboard | 4 | — | — |
-| 05-realtime-polish | 2 | — | — |
-| 06-alert-foundation | 2 | 2min | 1min |
-| 07-real-time-alerts | 1 | 2min | 2min |
-| 08-delivery-stats-dashboard | 2 | 3min | 2min |
-| 09-daily-digest | 1 | 2min | 2min |
-| 10-hours-aware-delivery | 1 | 3min | 3min |
-| 11-queue-processing | 1 | 1min | 1min |
-| 12-admin-visibility | 2 | 5min | 3min |
-
 ## Accumulated Context
 
 ### Decisions
 
 All decisions logged in PROJECT.md Key Decisions table.
 
-**Phase 10:**
-- Default timezone America/Los_Angeles when broker has no timezone set (TZ-01)
-- Unknown contact_hours values fail-open as 'anytime' to avoid blocking deliveries
-- v_delivery_status computed once per assign_lead() call, shared across all channel INSERTs
-
-**Phase 11:**
-- crm_webhook deliveries set to 'sent' on release (mirrors fire_outbound_webhook trigger)
-- email/sms deliveries set to 'pending' on release (edge function handles final status)
-- Vault secrets fetched once before loop for efficiency
-
-**Phase 12:**
-- delivery_queued logged once per assign_lead() call (not per channel) since status is shared
-- delivery_released logged per individual delivery release to capture per-channel queued duration
-- Queued KPI card placed after Unassigned in 6-column grid (problem indicators grouped)
-- Contact Hours card between Profile and Orders on broker detail
-- Queued deliveries table only rendered when count > 0
+**v2.0 Context:**
+- Dan (client) confirmed order-based architecture stays — new spec adapted to orders, not brokers
+- Verticals are informational, credit score is the real routing criteria
+- Credit tiers: 580+ for MCA/Term loans, 680+ for term loans and 0% credit stacking
+- LEAD_ROUTING_SPEC.md in project root contains the full spec (broker-centric, needs order adaptation)
 
 ### Pending Todos
 
@@ -83,5 +53,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: Completed 12-01-PLAN.md (admin visibility KPI and broker detail)
+Stopped at: Milestone v2.0 initialization
 Resume file: None

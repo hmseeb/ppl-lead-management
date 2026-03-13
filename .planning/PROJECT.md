@@ -36,13 +36,22 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 - ✓ Alert deduplication (15-min window per broker/lead) — v1.1
 - ✓ Daily digest at 8 AM Pacific via pg_cron with HTML email + SMS — v1.1
 
+- ✓ Delivery respects broker contact hours (business_hours 9-5, custom range, anytime) — v1.2
+- ✓ Delivery paused on weekends when broker has weekend_pause enabled — v1.2
+- ✓ Per-broker timezone support (default America/Los_Angeles) — v1.2
+- ✓ Out-of-hours deliveries queued and released when broker's window opens — v1.2
+- ✓ Admin visibility into queued/delayed deliveries — v1.2
+
 ### Active
 
-- [ ] Delivery respects broker contact hours (business_hours 9-5, custom range, anytime)
-- [ ] Delivery paused on weekends when broker has weekend_pause enabled
-- [ ] Per-broker timezone support (default US Pacific)
-- [ ] Out-of-hours deliveries queued and released when broker's window opens
-- [ ] Admin visibility into queued/delayed deliveries
+- [ ] Pre-flight lead rejection (credit < 600, invalid loan amount, no active orders)
+- [ ] Scoring-based assignment engine (0-100 pts: credit fit, capacity, tier match, loan fit, bonuses)
+- [ ] Credit tier gating (680-tier orders never receive leads below 680)
+- [ ] Loan amount range filtering on orders (loan_min, loan_max)
+- [ ] Routing logs table with per-order scoring audit trail
+- [ ] Broker priority support (high/normal with scoring bonus)
+- [ ] Lead deduplication on email + phone (in addition to ghl_contact_id)
+- [ ] Monthly cap reset option on orders
 
 ### Out of Scope
 
@@ -96,16 +105,19 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 | 500ms debounce + 2s max wait for Realtime | Balances responsiveness vs efficiency for batch events | ✓ Good |
 
 ---
-## Current Milestone: v1.2 Broker Hours Enforcement
+## Current Milestone: v2.0 Smart Scoring Engine
 
-**Goal:** Respect broker contact hours during lead delivery. Leads assigned instantly but delivery queued until broker is within their contact window.
+**Goal:** Replace weighted rotation with a scoring-based assignment engine adapted from the lead routing spec. Orders remain the routing unit, but each lead is now scored against all eligible orders using credit fit, capacity, tier match, loan fit, and priority bonuses.
 
 **Target features:**
-- Contact hours check before delivery (business_hours, custom, anytime)
-- Weekend pause enforcement
-- Per-broker timezone (new column, default America/Los_Angeles)
-- Queued delivery processing via pg_cron
-- Admin dashboard visibility into delayed deliveries
+- Pre-flight lead rejection (credit < 600, invalid loan amount)
+- 0-100 scoring algorithm (credit fit 40pts, capacity 30pts, tier match 20pts, loan fit 10pts, bonuses)
+- Credit tier gating (680-min orders never receive sub-680 leads)
+- Loan amount range on orders (loan_min, loan_max)
+- Routing logs with per-order score breakdowns
+- Order priority (high/normal with +8pt bonus)
+- Lead dedup on email + phone
+- Monthly recurring order option with auto-reset
 
 ---
-*Last updated: 2026-03-13 after v1.2 milestone start*
+*Last updated: 2026-03-13 after v2.0 milestone start*

@@ -58,9 +58,10 @@ None.
 |---|-------------|------|--------|-----------|
 | 1 | Implement webhook delivery backend for sending assigned leads to broker CRM | 2026-03-12 | 0055c3e | [1-implement-webhook-delivery-backend-for-s](./quick/1-implement-webhook-delivery-backend-for-s/) |
 | 2 | Make KPI cards clickable with inline expandable preview tables | 2026-03-13 | 7ae360a | [2-make-kpi-cards-clickable-with-inline-exp](./quick/2-make-kpi-cards-clickable-with-inline-exp/) |
+| 3 | Add search and filters to brokers, orders, unassigned, activity pages | 2026-03-13 | 2b92f68 | [3-add-search-and-filters-to-brokers-orders](./quick/3-add-search-and-filters-to-brokers-orders/) |
 
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: Completed quick task 2 (KPI cards clickable)
+Stopped at: Completed quick task 3 (search and filters on all table pages)
 Resume file: None

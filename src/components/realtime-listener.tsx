@@ -29,7 +29,7 @@ export function RealtimeListener() {
       )
       .on(
         'postgres_changes',
-        { event: '*', schema: 'public', table: 'webhook_deliveries' },
+        { event: '*', schema: 'public', table: 'deliveries' },
         () => router.refresh()
       )
       .on(

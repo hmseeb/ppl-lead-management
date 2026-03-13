@@ -43,7 +43,7 @@ export async function fetchOrderDetail(id: string) {
     .from('leads')
     .select(`
       id, first_name, last_name, vertical, credit_score, assigned_at, status,
-      webhook_deliveries ( id, status )
+      deliveries ( id, status )
     `)
     .eq('assigned_order_id', id)
     .order('assigned_at', { ascending: false })

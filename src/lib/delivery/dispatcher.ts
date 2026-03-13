@@ -5,98 +5,99 @@ import { sendEmail, sendSms } from '@/lib/ghl/client'
 interface DispatchResult {
   method: string
   success: boolean
+  deliveryId?: string
   error?: string
 }
 
 /**
  * Dispatches lead delivery to all channels the broker selected during onboarding.
- * Runs each method independently. one failure doesn't block the others.
+ *
+ * The assign_lead() SQL function already creates delivery rows in the `deliveries` table
+ * for each channel. For crm_webhook, the pg trigger fires it via pg_net automatically.
+ * For email/sms, the pg trigger calls the deliver-ghl edge function.
+ *
+ * This dispatcher is the app-level fallback: it reads pending deliveries and fires them
+ * directly if the triggers haven't handled them yet (e.g. vault secrets not configured).
  */
 export async function dispatchDelivery(
   leadId: string,
   brokerId: string,
-  orderId: string,
-  deliveryId: string | null
+  _orderId?: string,
 ): Promise<DispatchResult[]> {
   const supabase = createAdminClient()
   const results: DispatchResult[] = []
 
-  // Fetch broker delivery preferences
-  const { data: broker } = await supabase
-    .from('brokers')
-    .select('delivery_methods, delivery_email, delivery_phone, crm_webhook_url, ghl_contact_id')
-    .eq('id', brokerId)
-    .single()
+  // Fetch pending deliveries for this lead (created by assign_lead)
+  const { data: deliveries } = await (supabase
+    .from('deliveries') as any)
+    .select('id, channel, target_url, ghl_contact_id, payload, status')
+    .eq('lead_id', leadId)
+    .eq('broker_id', brokerId)
+    .in('status', ['pending']) as { data: any[] | null }
 
-  if (!broker) {
-    return [{ method: 'all', success: false, error: 'broker_not_found' }]
+  if (!deliveries || deliveries.length === 0) {
+    return [{ method: 'all', success: true, error: 'no_pending_deliveries' }]
   }
 
-  const methods = broker.delivery_methods ?? []
-
-  // Fetch lead payload for GHL messages
-  const { data: lead } = await supabase
-    .from('leads')
-    .select('*')
-    .eq('id', leadId)
-    .single()
-
-  if (!lead) {
-    return [{ method: 'all', success: false, error: 'lead_not_found' }]
-  }
-
-  const leadPayload = {
-    lead_id: lead.id,
-    first_name: lead.first_name,
-    last_name: lead.last_name,
-    email: lead.email,
-    phone: lead.phone,
-    business_name: lead.business_name,
-    vertical: lead.vertical,
-    credit_score: lead.credit_score,
-    funding_amount: lead.funding_amount,
-    funding_purpose: lead.funding_purpose,
-    state: lead.state,
-    ai_call_notes: lead.ai_call_notes,
-    ai_call_status: lead.ai_call_status,
-    ghl_contact_id: lead.ghl_contact_id,
-    assigned_at: lead.assigned_at,
-    order_id: orderId,
-    broker_id: brokerId,
-  }
-
-  // Dispatch to each selected method in parallel
   const promises: Promise<void>[] = []
 
-  if (methods.includes('crm_webhook') && deliveryId) {
-    promises.push(
-      deliverWebhook(deliveryId).then((r) => {
-        results.push({ method: 'crm_webhook', success: r.success, error: r.error })
-      })
-    )
-  }
+  for (const delivery of deliveries) {
+    if (delivery.channel === 'crm_webhook' && delivery.target_url) {
+      // Webhook: use existing deliver function
+      promises.push(
+        deliverWebhook(delivery.id).then((r) => {
+          results.push({
+            method: 'crm_webhook',
+            success: r.success,
+            deliveryId: delivery.id,
+            error: r.error,
+          })
+        })
+      )
+    } else if (delivery.channel === 'email' && delivery.ghl_contact_id) {
+      const fromEmail = process.env.GHL_FROM_EMAIL ?? 'leads@pplleads.com'
+      promises.push(
+        sendEmail(delivery.ghl_contact_id, delivery.payload as any, fromEmail).then(async (r) => {
+          await (supabase
+            .from('deliveries') as any)
+            .update({
+              status: r.success ? 'sent' : 'failed',
+              sent_at: r.success ? new Date().toISOString() : undefined,
+              ghl_message_id: r.messageId ?? undefined,
+              error_message: r.error ?? null,
+            })
+            .eq('id', delivery.id)
 
-  if (methods.includes('email') && broker.ghl_contact_id) {
-    const fromEmail = process.env.GHL_FROM_EMAIL ?? 'leads@pplleads.com'
-    promises.push(
-      sendEmail(broker.ghl_contact_id, leadPayload, fromEmail).then((r) => {
-        results.push({ method: 'email', success: r.success, error: r.error })
-      })
-    )
-  }
+          results.push({
+            method: 'email',
+            success: r.success,
+            deliveryId: delivery.id,
+            error: r.error,
+          })
+        })
+      )
+    } else if (delivery.channel === 'sms' && delivery.ghl_contact_id) {
+      promises.push(
+        sendSms(delivery.ghl_contact_id, delivery.payload as any).then(async (r) => {
+          await (supabase
+            .from('deliveries') as any)
+            .update({
+              status: r.success ? 'sent' : 'failed',
+              sent_at: r.success ? new Date().toISOString() : undefined,
+              ghl_message_id: r.messageId ?? undefined,
+              error_message: r.error ?? null,
+            })
+            .eq('id', delivery.id)
 
-  if (methods.includes('sms') && broker.ghl_contact_id) {
-    promises.push(
-      sendSms(broker.ghl_contact_id, leadPayload).then((r) => {
-        results.push({ method: 'sms', success: r.success, error: r.error })
-      })
-    )
-  }
-
-  // If no methods matched, fall back to webhook if delivery exists
-  if (promises.length === 0 && deliveryId) {
-    const r = await deliverWebhook(deliveryId)
-    results.push({ method: 'webhook_fallback', success: r.success, error: r.error })
+          results.push({
+            method: 'sms',
+            success: r.success,
+            deliveryId: delivery.id,
+            error: r.error,
+          })
+        })
+      )
+    }
   }
 
   await Promise.allSettled(promises)

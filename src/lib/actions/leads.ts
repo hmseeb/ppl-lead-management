@@ -70,7 +70,7 @@ export async function manualAssignLead(leadId: string, brokerId: string, orderId
       .single()
 
     if (lead) {
-      await supabase.from('webhook_deliveries').insert({
+      await supabase.from('deliveries').insert({
         lead_id: leadId,
         broker_id: brokerId,
         order_id: orderId,

@@ -72,7 +72,7 @@ export async function fetchLeadDetail(id: string) {
 
   const [{ data: deliveries }, { data: activityLog }] = await Promise.all([
     supabase
-      .from('webhook_deliveries')
+      .from('deliveries')
       .select('*')
       .eq('lead_id', id)
       .order('created_at', { ascending: false }),

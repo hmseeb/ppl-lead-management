@@ -337,13 +337,16 @@ export type Database = {
           },
         ]
       }
-      webhook_deliveries: {
+      deliveries: {
         Row: {
           id: string
           lead_id: string
           broker_id: string
           order_id: string
-          target_url: string
+          channel: string
+          target_url: string | null
+          ghl_contact_id: string | null
+          ghl_message_id: string | null
           payload: Json
           status: string
           pg_net_request_id: number | null
@@ -359,7 +362,10 @@ export type Database = {
           lead_id: string
           broker_id: string
           order_id: string
-          target_url: string
+          channel?: string
+          target_url?: string | null
+          ghl_contact_id?: string | null
+          ghl_message_id?: string | null
           payload: Json
           status?: string
           pg_net_request_id?: number | null
@@ -375,7 +381,10 @@ export type Database = {
           lead_id?: string
           broker_id?: string
           order_id?: string
-          target_url?: string
+          channel?: string
+          target_url?: string | null
+          ghl_contact_id?: string | null
+          ghl_message_id?: string | null
           payload?: Json
           status?: string
           pg_net_request_id?: number | null
@@ -388,21 +397,21 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "webhook_deliveries_lead_id_fkey"
+            foreignKeyName: "deliveries_lead_id_fkey"
             columns: ["lead_id"]
             isOneToOne: false
             referencedRelation: "leads"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "webhook_deliveries_broker_id_fkey"
+            foreignKeyName: "deliveries_broker_id_fkey"
             columns: ["broker_id"]
             isOneToOne: false
             referencedRelation: "brokers"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "webhook_deliveries_order_id_fkey"
+            foreignKeyName: "deliveries_order_id_fkey"
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"

@@ -4,7 +4,7 @@ export interface AssignmentResult {
   status: 'assigned' | 'unassigned' | 'error'
   broker_id?: string
   order_id?: string
-  delivery_id?: string
+  delivery_ids?: string[]
   reason?: string
 }
 

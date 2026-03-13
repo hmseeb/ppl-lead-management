@@ -71,7 +71,7 @@ export function OrderDetail({ order, leads }: { order: any; leads: any[] }) {
               </TableHeader>
               <TableBody>
                 {leads.map((lead: any) => {
-                  const latestDelivery = lead.webhook_deliveries?.[0]
+                  const latestDelivery = lead.deliveries?.[0]
                   return (
                     <TableRow key={lead.id}>
                       <TableCell className="text-sm">

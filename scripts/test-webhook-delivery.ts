@@ -46,8 +46,8 @@ async function cleanup() {
   const testOrderIds = [TEST_ORDER_WITH_URL, TEST_ORDER_NO_URL]
   const testBrokerIds = [TEST_BROKER_WITH_URL, TEST_BROKER_NO_URL]
 
-  // webhook_deliveries first (references leads, brokers, orders)
-  await sb.from('webhook_deliveries').delete().in('lead_id', testLeadIds)
+  // deliveries first (references leads, brokers, orders)
+  await sb.from('deliveries').delete().in('lead_id', testLeadIds)
 
   // activity_log entries for our test leads
   await sb.from('activity_log').delete().in('lead_id', testLeadIds)
@@ -176,9 +176,9 @@ async function test1_deliveryCreatedOnAssignment() {
   // Wait a moment for the trigger to fire
   await new Promise((r) => setTimeout(r, 1500))
 
-  // Query webhook_deliveries for this lead
+  // Query deliveries for this lead
   const { data: deliveries, error: delErr } = await sb
-    .from('webhook_deliveries')
+    .from('deliveries')
     .select('*')
     .eq('lead_id', TEST_LEAD_1)
 
@@ -214,7 +214,7 @@ async function test2_payloadContainsRequiredFields() {
   console.log('\nTest 2: Delivery payload contains required fields')
 
   const { data: deliveries } = await sb
-    .from('webhook_deliveries')
+    .from('deliveries')
     .select('payload')
     .eq('lead_id', TEST_LEAD_1)
 
@@ -276,7 +276,7 @@ async function test3_noDeliveryWithoutWebhookUrl() {
 
   // Verify no delivery record exists
   const { data: deliveries } = await sb
-    .from('webhook_deliveries')
+    .from('deliveries')
     .select('id')
     .eq('lead_id', TEST_LEAD_2)
 
@@ -295,7 +295,7 @@ async function test4_deliveryStatusColumns() {
   console.log('\nTest 4: Delivery status tracking columns')
 
   const { data: deliveries } = await sb
-    .from('webhook_deliveries')
+    .from('deliveries')
     .select('*')
     .eq('lead_id', TEST_LEAD_1)
 

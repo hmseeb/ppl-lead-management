@@ -11,7 +11,7 @@ export async function deliverWebhook(deliveryId: string): Promise<DeliverResult>
 
     // Fetch the delivery record
     const { data: record, error: fetchError } = await supabase
-      .from('webhook_deliveries')
+      .from('deliveries')
       .select('*')
       .eq('id', deliveryId)
       .single()
@@ -26,6 +26,10 @@ export async function deliverWebhook(deliveryId: string): Promise<DeliverResult>
     }
 
     // Send HTTP POST to target URL
+    if (!record.target_url) {
+      return { success: false, error: 'no_target_url' }
+    }
+
     let response: Response
     try {
       response = await fetch(record.target_url, {
@@ -38,7 +42,7 @@ export async function deliverWebhook(deliveryId: string): Promise<DeliverResult>
       // Network error or timeout
       const errorMessage = err instanceof Error ? err.message : 'network_error'
       await supabase
-        .from('webhook_deliveries')
+        .from('deliveries')
         .update({
           status: 'failed',
           error_message: errorMessage,
@@ -54,7 +58,7 @@ export async function deliverWebhook(deliveryId: string): Promise<DeliverResult>
     if (response.ok) {
       // 2xx success
       await supabase
-        .from('webhook_deliveries')
+        .from('deliveries')
         .update({
           status: 'sent',
           sent_at: new Date().toISOString(),
@@ -68,7 +72,7 @@ export async function deliverWebhook(deliveryId: string): Promise<DeliverResult>
     // Non-2xx response
     const errorMessage = `HTTP ${response.status}: ${response.statusText}`
     await supabase
-      .from('webhook_deliveries')
+      .from('deliveries')
       .update({
         status: 'failed',
         error_message: errorMessage,

@@ -84,12 +84,13 @@ export async function POST(request: Request) {
   }
 
   // 6. Fire-and-forget multi-channel delivery if assigned
+  // assign_lead() creates delivery rows + triggers fire them automatically.
+  // dispatchDelivery() is a fallback that picks up any still-pending rows.
   if (assignment.status === 'assigned' && assignment.broker_id) {
     dispatchDelivery(
       lead.id,
       assignment.broker_id,
       assignment.order_id!,
-      assignment.delivery_id ?? null
     ).catch(console.error)
   }
 

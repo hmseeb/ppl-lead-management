@@ -69,11 +69,11 @@ Plans:
   3. Dashboard shows today's failed delivery count with per-channel breakdown
   4. All delivery stats update in real-time when new leads arrive or delivery statuses change (no manual refresh)
   5. Each delivery channel shows a color-coded health indicator (green/yellow/red) based on recent failure rate
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 08-01: delivery_stats_today SQL view, fetchDeliveryStats() query, and DeliveryStats UI component with KPI cards
-- [ ] 08-02: Channel health indicators with color-coded status and Realtime refresh wiring
+- [ ] 08-01-PLAN.md — fetchDeliveryStats() query, DeliveryStatsCards UI component with KPI cards, channel health indicators, and page wiring
+- [ ] 08-02-PLAN.md — Debounced RealtimeListener to prevent refresh storms from batch delivery events
 
 ### Phase 9: Daily Digest
 **Goal**: Admin receives a morning summary every day at 8 AM Pacific with overnight stats via email and SMS through GHL, so nothing slips through the cracks while they're not watching the dashboard

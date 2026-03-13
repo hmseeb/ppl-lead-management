@@ -35,7 +35,7 @@
 
 - [x] **Phase 10: Hours-Aware Delivery** - Timezone-aware contact hours check that queues out-of-window deliveries instead of firing
 - [x] **Phase 11: Queue Processing** - pg_cron job to release queued deliveries in FIFO order when broker windows open
-- [ ] **Phase 12: Admin Visibility** - Dashboard queued count, broker detail hours info, and activity log entries for queue/release events
+- [x] **Phase 12: Admin Visibility** - Dashboard queued count, broker detail hours info, and activity log entries for queue/release events (completed 2026-03-13)
 
 ## Phase Details
 
@@ -100,4 +100,4 @@ Phases execute in numeric order: 10 -> 11 -> 12
 | 9. Daily Digest | v1.1 | 1/1 | Complete | 2026-03-13 |
 | 10. Hours-Aware Delivery | v1.2 | Complete    | 2026-03-13 | 2026-03-13 |
 | 11. Queue Processing | v1.2 | Complete    | 2026-03-13 | 2026-03-13 |
-| 12. Admin Visibility | v1.2 | 0/2 | Not started | - |
+| 12. Admin Visibility | 2/2 | Complete   | 2026-03-13 | - |

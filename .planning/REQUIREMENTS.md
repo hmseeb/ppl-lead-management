@@ -24,7 +24,7 @@ Requirements for broker hours enforcement. Each maps to roadmap phases.
 
 - [ ] **VIS-01**: Admin dashboard shows queued delivery count (deliveries waiting for broker hours)
 - [ ] **VIS-02**: Broker detail page shows contact hours, timezone, and any queued deliveries
-- [ ] **VIS-03**: Activity log records when deliveries are queued and when they're released
+- [x] **VIS-03**: Activity log records when deliveries are queued and when they're released
 
 ## Future Requirements
 

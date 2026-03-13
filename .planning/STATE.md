@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** Phase 8 — Delivery Stats Dashboard (v1.1 Monitoring & Alerting) — Plan 2 of 2 COMPLETE
+**Current focus:** Phase 9 — Daily Digest (v1.1 Monitoring & Alerting) — Plan 1 of 1 COMPLETE
 
 ## Current Position
 
-Phase: 8 of 9 (Delivery Stats Dashboard)
-Plan: 2 of 2 in current phase
-Status: Phase 8 plan 02 complete
-Last activity: 2026-03-13 — Completed 08-02 debounced realtime listener
+Phase: 9 of 9 (Daily Digest)
+Plan: 1 of 1 in current phase
+Status: Phase 9 plan 01 complete. ALL PHASES COMPLETE.
+Last activity: 2026-03-13 — Completed 09-01 daily digest pipeline
 
-Progress: [██████████████████░░░░░░░░] 72% (18/25 plans across all milestones)
+Progress: [█████████████████████████] 76% (19/25 plans across all milestones)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 18 (v1.0 + v1.1 Phases 6-8)
+- Total plans completed: 19 (v1.0 + v1.1 Phases 6-9)
 - Average duration: 5min
 - Total execution time: ~1.5 hours
 
@@ -35,9 +35,10 @@ Progress: [██████████████████░░░░░
 | 06-alert-foundation | 2 | 2min | 1min |
 | 07-real-time-alerts | 1 | 2min | 2min |
 | 08-delivery-stats-dashboard | 2 | 3min | 2min |
+| 09-daily-digest | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 06-01 (1min), 06-02 (1min), 07-01 (2min), 08-01 (2min), 08-02 (1min)
+- Last 5 plans: 06-02 (1min), 07-01 (2min), 08-01 (2min), 08-02 (1min), 09-01 (2min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -62,6 +63,10 @@ Recent decisions affecting current work:
 - 12 parallel count queries for delivery stats (no SQL view, matches fetchKpis pattern)
 - Health threshold: 0% = healthy, <25% = degraded, >=25% = critical, 0 total = inactive
 - 500ms debounce delay with 2s max wait for RealtimeListener balances responsiveness vs efficiency
+- Edge function self-queries Supabase for digest stats (simpler than pre-computing in SQL)
+- Always send digest on zero-activity days (confirms system is running)
+- Partial digest failures (email ok, SMS failed) recorded as 'sent' with partial_failure flag
+- Native Intl.DateTimeFormat for edge function date formatting (no date-fns dependency)
 
 ### Pending Todos
 
@@ -82,5 +87,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: Completed 08-01-PLAN.md (delivery stats dashboard)
+Stopped at: Completed 09-01-PLAN.md (daily digest pipeline)
 Resume file: None

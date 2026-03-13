@@ -29,10 +29,10 @@ Requirements for milestone v1.1. Each maps to roadmap phases.
 
 ### Digest — Daily Morning Summary
 
-- [ ] **DGST-01**: Daily digest runs at 8 AM Pacific via pg_cron -> edge function
-- [ ] **DGST-02**: Email digest includes overnight stats (leads received, assigned, unassigned, deliveries by channel, failures)
-- [ ] **DGST-03**: SMS digest includes compact summary of overnight numbers
-- [ ] **DGST-04**: Digest delivered to admin via GHL Conversations API (email + SMS)
+- [x] **DGST-01**: Daily digest runs at 8 AM Pacific via pg_cron -> edge function
+- [x] **DGST-02**: Email digest includes overnight stats (leads received, assigned, unassigned, deliveries by channel, failures)
+- [x] **DGST-03**: SMS digest includes compact summary of overnight numbers
+- [x] **DGST-04**: Digest delivered to admin via GHL Conversations API (email + SMS)
 
 ## Future Requirements (Deferred)
 

@@ -19,6 +19,7 @@ export default async function ActivityPage({
 
   const [{ data, count }, eventTypes, brokers] = await Promise.all([
     fetchActivityLog({
+      search: params.search || undefined,
       event_type: params.event_type || undefined,
       broker_id: params.broker_id || undefined,
       date_from: params.date_from || undefined,

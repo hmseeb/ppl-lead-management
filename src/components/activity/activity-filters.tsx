@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { X } from 'lucide-react'
 
 const serverSync = { shallow: false } as const
+const searchSync = { shallow: false, throttleMs: 300 } as const
 
 interface ActivityFiltersProps {
   eventTypes: string[]
@@ -13,14 +14,16 @@ interface ActivityFiltersProps {
 }
 
 export function ActivityFilters({ eventTypes, brokers }: ActivityFiltersProps) {
+  const [search, setSearch] = useQueryState('search', parseAsString.withDefault('').withOptions(searchSync))
   const [eventType, setEventType] = useQueryState('event_type', parseAsString.withDefault('').withOptions(serverSync))
   const [brokerId, setBrokerId] = useQueryState('broker_id', parseAsString.withDefault('').withOptions(serverSync))
   const [dateFrom, setDateFrom] = useQueryState('date_from', parseAsString.withDefault('').withOptions(serverSync))
   const [dateTo, setDateTo] = useQueryState('date_to', parseAsString.withDefault('').withOptions(serverSync))
 
-  const hasFilters = eventType || brokerId || dateFrom || dateTo
+  const hasFilters = search || eventType || brokerId || dateFrom || dateTo
 
   function clearAll() {
+    setSearch('')
     setEventType('')
     setBrokerId('')
     setDateFrom('')
@@ -29,6 +32,14 @@ export function ActivityFilters({ eventTypes, brokers }: ActivityFiltersProps) {
 
   return (
     <div className="flex flex-wrap gap-3 items-end">
+      <div className="flex-1 min-w-[200px]">
+        <Input
+          placeholder="Search details..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value || '')}
+        />
+      </div>
+
       <select
         className="h-9 rounded-md border border-input bg-background px-3 text-sm"
         value={eventType}

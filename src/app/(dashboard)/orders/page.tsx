@@ -1,8 +1,10 @@
 export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { Button } from '@/components/ui/button'
 import { OrdersTable } from '@/components/orders/orders-table'
+import { OrdersFilters } from '@/components/orders/orders-filters'
 import { fetchOrdersWithBroker } from '@/lib/queries/orders'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
@@ -15,7 +17,13 @@ export default async function OrdersPage({
   const page = parseInt(params.page ?? '1')
   const perPage = 50
 
-  const { data: orders, count } = await fetchOrdersWithBroker({ page, per_page: perPage })
+  const { data: orders, count } = await fetchOrdersWithBroker({
+    search: params.search || undefined,
+    status: params.status || undefined,
+    vertical: params.vertical || undefined,
+    page,
+    per_page: perPage,
+  })
   const totalPages = Math.ceil(count / perPage)
 
   function paginationUrl(p: number) {
@@ -28,6 +36,7 @@ export default async function OrdersPage({
   }
 
   return (
+    <NuqsAdapter>
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Orders <span className="text-muted-foreground text-base font-normal">({count})</span></h1>
@@ -35,6 +44,7 @@ export default async function OrdersPage({
           <Button>New Order</Button>
         </Link>
       </div>
+      <OrdersFilters />
       <OrdersTable orders={orders as any} />
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2">
@@ -56,5 +66,6 @@ export default async function OrdersPage({
         </div>
       )}
     </div>
+    </NuqsAdapter>
   )
 }

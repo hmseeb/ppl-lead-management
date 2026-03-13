@@ -1,7 +1,9 @@
 export const dynamic = 'force-dynamic'
 
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { fetchUnassignedQueue, fetchActiveBrokersWithOrders } from '@/lib/queries/unassigned'
 import { UnassignedTable } from '@/components/unassigned/unassigned-table'
+import { UnassignedFilters } from '@/components/unassigned/unassigned-filters'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -16,7 +18,12 @@ export default async function UnassignedPage({
   const perPage = 50
 
   const [{ data: queue, count }, brokers] = await Promise.all([
-    fetchUnassignedQueue({ page, per_page: perPage }),
+    fetchUnassignedQueue({
+      search: params.search || undefined,
+      reason: params.reason || undefined,
+      page,
+      per_page: perPage,
+    }),
     fetchActiveBrokersWithOrders(),
   ])
 
@@ -32,11 +39,13 @@ export default async function UnassignedPage({
   }
 
   return (
+    <NuqsAdapter>
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold">
         Unassigned Queue{' '}
         <span className="text-muted-foreground text-base font-normal">({count})</span>
       </h1>
+      <UnassignedFilters />
       <UnassignedTable queue={queue as any} brokers={brokers as any} />
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2">
@@ -58,5 +67,6 @@ export default async function UnassignedPage({
         </div>
       )}
     </div>
+    </NuqsAdapter>
   )
 }

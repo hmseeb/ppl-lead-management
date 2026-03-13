@@ -103,7 +103,10 @@ Plans:
   1. Every lead assignment produces a routing_logs row for EVERY order considered (not just the winner), including eligible/disqualified status and score breakdown
   2. Lead status enum includes "rejected" and rejected leads display their reason in the leads table
   3. Admin can click a lead and see the full scoring breakdown: every order considered, their individual component scores (credit_fit, capacity, tier_match, loan_fit, bonuses), and why disqualified orders were excluded
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 16-01-PLAN.md -- DB migration for routing_logs table + scoreLeadFull() + assignment wiring
+- [ ] 16-02-PLAN.md -- Routing audit UI on lead detail page with score breakdown table
 
 ### Phase 17: Monthly Recurring Orders
 **Goal**: Monthly orders automatically reset their delivered count on the 1st so brokers get fresh lead allocation each month without manual intervention
@@ -138,5 +141,5 @@ Phases execute in numeric order: 13 -> 14 -> 15 -> 16 -> 17
 | 13. Order Model Expansion | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 14. Pre-flight Validation | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 15. Scoring Engine + Tier Gating | v2.0 | 2/2 | Complete | 2026-03-13 |
-| 16. Routing Audit Trail | v2.0 | 0/? | Not started | - |
+| 16. Routing Audit Trail | v2.0 | 0/2 | Not started | - |
 | 17. Monthly Recurring Orders | v2.0 | 0/? | Not started | - |

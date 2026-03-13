@@ -117,7 +117,9 @@ Plans:
   2. The reset is logged in activity_log with the order_id, reset timestamp, and previous delivered count
   3. Monthly orders that were "completed" (leads_remaining hit 0) are reactivated to "active" status on reset
   4. One-time orders are never affected by the monthly reset
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 17-01-PLAN.md -- Monthly reset SQL function + pg_cron schedule + activity log UI update
 
 ## Progress
 
@@ -142,4 +144,4 @@ Phases execute in numeric order: 13 -> 14 -> 15 -> 16 -> 17
 | 14. Pre-flight Validation | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 15. Scoring Engine + Tier Gating | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 16. Routing Audit Trail | v2.0 | 2/2 | Complete | 2026-03-13 |
-| 17. Monthly Recurring Orders | v2.0 | 0/? | Not started | - |
+| 17. Monthly Recurring Orders | v2.0 | 0/1 | Not started | - |

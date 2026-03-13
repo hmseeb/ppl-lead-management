@@ -97,6 +97,6 @@ Phases execute in numeric order: 10 -> 11 -> 12
 | 7. Real-time Alerts | v1.1 | 1/1 | Complete | 2026-03-13 |
 | 8. Delivery Stats Dashboard | v1.1 | 2/2 | Complete | 2026-03-13 |
 | 9. Daily Digest | v1.1 | 1/1 | Complete | 2026-03-13 |
-| 10. Hours-Aware Delivery | v1.2 | 1/1 | Complete | 2026-03-13 |
+| 10. Hours-Aware Delivery | v1.2 | Complete    | 2026-03-13 | 2026-03-13 |
 | 11. Queue Processing | v1.2 | 0/? | Not started | - |
 | 12. Admin Visibility | v1.2 | 0/? | Not started | - |

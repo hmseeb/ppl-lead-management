@@ -33,7 +33,7 @@
 
 **Milestone Goal:** Respect broker contact hours during lead delivery. Leads assigned instantly but delivery queued until the broker is within their contact window.
 
-- [ ] **Phase 10: Hours-Aware Delivery** - Timezone-aware contact hours check that queues out-of-window deliveries instead of firing
+- [x] **Phase 10: Hours-Aware Delivery** - Timezone-aware contact hours check that queues out-of-window deliveries instead of firing
 - [ ] **Phase 11: Queue Processing** - pg_cron job to release queued deliveries in FIFO order when broker windows open
 - [ ] **Phase 12: Admin Visibility** - Dashboard queued count, broker detail hours info, and activity log entries for queue/release events
 
@@ -52,7 +52,7 @@
 **Plans**: 1 plan
 
 Plans:
-- [ ] 10-01-PLAN.md — Hours-aware delivery migration + updated assign_lead with is_within_contact_hours helper
+- [x] 10-01-PLAN.md — Hours-aware delivery migration + updated assign_lead with is_within_contact_hours helper
 
 ### Phase 11: Queue Processing
 **Goal**: Queued deliveries are automatically released when the broker's contact window opens
@@ -97,6 +97,6 @@ Phases execute in numeric order: 10 -> 11 -> 12
 | 7. Real-time Alerts | v1.1 | 1/1 | Complete | 2026-03-13 |
 | 8. Delivery Stats Dashboard | v1.1 | 2/2 | Complete | 2026-03-13 |
 | 9. Daily Digest | v1.1 | 1/1 | Complete | 2026-03-13 |
-| 10. Hours-Aware Delivery | v1.2 | 0/1 | Planning | - |
+| 10. Hours-Aware Delivery | v1.2 | 1/1 | Complete | 2026-03-13 |
 | 11. Queue Processing | v1.2 | 0/? | Not started | - |
 | 12. Admin Visibility | v1.2 | 0/? | Not started | - |

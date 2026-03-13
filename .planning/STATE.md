@@ -10,16 +10,16 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 ## Current Position
 
 Phase: 10 of 12 (Hours-Aware Delivery)
-Plan: —
-Status: Ready to plan
-Last activity: 2026-03-13 — Roadmap created for v1.2 Broker Hours Enforcement
+Plan: 1 of 1 (Complete)
+Status: Phase 10 complete
+Last activity: 2026-03-13 — Completed 10-01 hours-aware delivery migration
 
-Progress: [█████████████████████████] 100% v1.0+v1.1 | [░░░░░░░░░░] 0% v1.2
+Progress: [█████████████████████████] 100% v1.0+v1.1 | [███░░░░░░░] 33% v1.2
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19 (v1.0: 13, v1.1: 6)
+- Total plans completed: 20 (v1.0: 13, v1.1: 6, v1.2: 1)
 - Average duration: 5min
 - Total execution time: ~1.5 hours
 
@@ -36,12 +36,18 @@ Progress: [███████████████████████
 | 07-real-time-alerts | 1 | 2min | 2min |
 | 08-delivery-stats-dashboard | 2 | 3min | 2min |
 | 09-daily-digest | 1 | 2min | 2min |
+| 10-hours-aware-delivery | 1 | 3min | 3min |
 
 ## Accumulated Context
 
 ### Decisions
 
 All decisions logged in PROJECT.md Key Decisions table.
+
+**Phase 10:**
+- Default timezone America/Los_Angeles when broker has no timezone set (TZ-01)
+- Unknown contact_hours values fail-open as 'anytime' to avoid blocking deliveries
+- v_delivery_status computed once per assign_lead() call, shared across all channel INSERTs
 
 ### Pending Todos
 
@@ -63,5 +69,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: Created roadmap for v1.2 Broker Hours Enforcement (phases 10-12)
+Stopped at: Completed 10-01-PLAN.md (hours-aware delivery migration)
 Resume file: None

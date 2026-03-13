@@ -78,9 +78,9 @@
 | ORDER-03 | Phase 17 | Pending |
 | ORDER-04 | Phase 13 | Done |
 | ORDER-05 | Phase 15 | Done |
-| AUDIT-01 | Phase 16 | Pending |
-| AUDIT-02 | Phase 16 | Pending |
-| AUDIT-03 | Phase 16 | Pending |
+| AUDIT-01 | Phase 16 | Done |
+| AUDIT-02 | Phase 14/16 | Done |
+| AUDIT-03 | Phase 16 | Done |
 | AUDIT-04 | Phase 17 | Pending |
 
 **Coverage:**

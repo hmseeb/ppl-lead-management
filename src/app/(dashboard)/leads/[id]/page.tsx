@@ -31,7 +31,7 @@ export default async function LeadDetailPage({
         <Link href="/leads"><Button variant="ghost" size="sm"><ChevronLeft className="size-4 mr-1" /> Leads</Button></Link>
         <h1 className="text-2xl font-semibold">{name}</h1>
       </div>
-      <LeadDetail lead={result.lead} deliveries={result.deliveries} activityLog={result.activityLog} />
+      <LeadDetail lead={result.lead} deliveries={result.deliveries} activityLog={result.activityLog} routingLogs={result.routingLogs} />
     </div>
   )
 }

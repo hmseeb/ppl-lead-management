@@ -517,6 +517,70 @@ export type Database = {
           },
         ]
       }
+      routing_logs: {
+        Row: {
+          broker_id: string
+          created_at: string
+          disqualify_reason: string | null
+          eligible: boolean
+          fill_rate: number
+          id: string
+          lead_id: string
+          order_id: string
+          score_breakdown: Json
+          selected: boolean
+          total_score: number
+        }
+        Insert: {
+          broker_id: string
+          created_at?: string
+          disqualify_reason?: string | null
+          eligible?: boolean
+          fill_rate?: number
+          id?: string
+          lead_id: string
+          order_id: string
+          score_breakdown?: Json
+          selected?: boolean
+          total_score?: number
+        }
+        Update: {
+          broker_id?: string
+          created_at?: string
+          disqualify_reason?: string | null
+          eligible?: boolean
+          fill_rate?: number
+          id?: string
+          lead_id?: string
+          order_id?: string
+          score_breakdown?: Json
+          selected?: boolean
+          total_score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "routing_logs_broker_id_fkey"
+            columns: ["broker_id"]
+            isOneToOne: false
+            referencedRelation: "brokers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "routing_logs_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "routing_logs_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       unassigned_queue: {
         Row: {
           created_at: string

@@ -46,7 +46,7 @@
 - [ ] **Phase 13: Order Model Expansion** - Add loan range, priority, and order type fields to orders with updated admin form
 - [ ] **Phase 14: Pre-flight Validation** - Reject bad leads before scoring and deduplicate on email + phone
 - [ ] **Phase 15: Scoring Engine + Tier Gating** - Replace ORDER BY with 0-100 scoring algorithm, hard credit tier filters, and loan range exclusion
-- [ ] **Phase 16: Routing Audit Trail** - Per-lead routing logs with score breakdowns viewable on lead detail page
+- [x] **Phase 16: Routing Audit Trail** - Per-lead routing logs with score breakdowns viewable on lead detail page
 - [ ] **Phase 17: Monthly Recurring Orders** - Auto-reset leads_delivered on the 1st for monthly orders with audit logging
 
 ## Phase Details
@@ -105,8 +105,8 @@ Plans:
   3. Admin can click a lead and see the full scoring breakdown: every order considered, their individual component scores (credit_fit, capacity, tier_match, loan_fit, bonuses), and why disqualified orders were excluded
 **Plans:** 2 plans
 Plans:
-- [ ] 16-01-PLAN.md -- DB migration for routing_logs table + scoreLeadFull() + assignment wiring
-- [ ] 16-02-PLAN.md -- Routing audit UI on lead detail page with score breakdown table
+- [x] 16-01-PLAN.md -- DB migration for routing_logs table + scoreLeadFull() + assignment wiring
+- [x] 16-02-PLAN.md -- Routing audit UI on lead detail page with score breakdown table
 
 ### Phase 17: Monthly Recurring Orders
 **Goal**: Monthly orders automatically reset their delivered count on the 1st so brokers get fresh lead allocation each month without manual intervention
@@ -141,5 +141,5 @@ Phases execute in numeric order: 13 -> 14 -> 15 -> 16 -> 17
 | 13. Order Model Expansion | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 14. Pre-flight Validation | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 15. Scoring Engine + Tier Gating | v2.0 | 2/2 | Complete | 2026-03-13 |
-| 16. Routing Audit Trail | v2.0 | 0/2 | Not started | - |
+| 16. Routing Audit Trail | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 17. Monthly Recurring Orders | v2.0 | 0/? | Not started | - |

@@ -14,10 +14,11 @@ const deliveryStatusColors: Record<string, string> = {
   failed_permanent: 'bg-red-100 text-red-800',
 }
 
-export function LeadDetail({ lead, deliveries, activityLog }: {
+export function LeadDetail({ lead, deliveries, activityLog, routingLogs = [] }: {
   lead: any
   deliveries: any[]
   activityLog: any[]
+  routingLogs?: any[]
 }) {
   const broker = lead.brokers
   const order = lead.orders
@@ -106,6 +107,101 @@ export function LeadDetail({ lead, deliveries, activityLog }: {
           )}
         </CardContent>
       </Card>
+
+      {/* Routing Audit */}
+      {routingLogs.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Routing Audit</CardTitle>
+            <p className="text-sm text-muted-foreground">{routingLogs.length} orders evaluated</p>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Order</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Reason</TableHead>
+                  <TableHead className="text-right">Credit Fit</TableHead>
+                  <TableHead className="text-right">Capacity</TableHead>
+                  <TableHead className="text-right">Tier Match</TableHead>
+                  <TableHead className="text-right">Loan Fit</TableHead>
+                  <TableHead className="text-right">Bonuses</TableHead>
+                  <TableHead className="text-right">Total</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {routingLogs.map((log: any) => {
+                  const sb = log.score_breakdown ?? {}
+                  const isDisqualified = !log.eligible
+                  const bonuses = (sb.priority_bonus ?? 0) + (sb.urgency_bonus ?? 0)
+                  const brokerName = log.brokers
+                    ? `${log.brokers.first_name} ${log.brokers.last_name}`
+                    : '-'
+                  const fillPct = Math.round(log.fill_rate * 100)
+
+                  return (
+                    <TableRow
+                      key={log.id}
+                      className={
+                        log.selected
+                          ? 'bg-green-50'
+                          : isDisqualified
+                            ? 'bg-red-50/50'
+                            : ''
+                      }
+                    >
+                      <TableCell>
+                        <Link href={`/orders/${log.order_id}`} className="font-mono text-xs hover:underline">
+                          {log.order_id.slice(0, 8)}
+                        </Link>
+                        <div className="text-xs text-muted-foreground">{brokerName}</div>
+                      </TableCell>
+                      <TableCell>
+                        {log.selected ? (
+                          <Badge variant="outline" className="text-xs border-0 bg-green-100 text-green-800">Selected</Badge>
+                        ) : log.eligible ? (
+                          <Badge variant="outline" className="text-xs border-0 bg-blue-100 text-blue-800">Eligible</Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-xs border-0 bg-red-100 text-red-800">Disqualified</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-xs">
+                        {isDisqualified
+                          ? (log.disqualify_reason ?? '').replace(/_/g, ' ').replace(/^\w/, (c: string) => c.toUpperCase())
+                          : ''}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums font-mono text-xs">
+                        {isDisqualified ? '-' : (sb.credit_fit ?? 0).toFixed(1)}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums font-mono text-xs">
+                        {isDisqualified ? '-' : (
+                          <div>
+                            {(sb.capacity ?? 0).toFixed(1)}
+                            <div className="text-muted-foreground">{fillPct}% full</div>
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums font-mono text-xs">
+                        {isDisqualified ? '-' : (sb.tier_match ?? 0)}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums font-mono text-xs">
+                        {isDisqualified ? '-' : (sb.loan_fit ?? 0)}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums font-mono text-xs">
+                        {isDisqualified ? '-' : (bonuses >= 0 ? `+${bonuses}` : bonuses)}
+                      </TableCell>
+                      <TableCell className={`text-right tabular-nums font-mono text-xs ${log.selected ? 'font-bold' : ''}`}>
+                        {isDisqualified ? '-' : (sb.total ?? 0).toFixed(1)}
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Webhook Deliveries */}
       <Card>

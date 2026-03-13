@@ -1,5 +1,5 @@
 import { createAdminClient } from '@/lib/supabase/admin'
-import { scoreLead, type OrderForScoring } from './scoring'
+import { scoreLeadFull, type OrderForScoring } from './scoring'
 
 export interface AssignmentResult {
   status: 'assigned' | 'unassigned' | 'error'
@@ -55,10 +55,31 @@ export async function assignLead(leadId: string): Promise<AssignmentResult> {
     broker_assignment_status: o.brokers.assignment_status,
   }))
 
-  // 4. Score all orders
-  const scoredOrders = scoreLead(lead, orders)
+  // 4. Score all orders (full results for audit trail)
+  const auditResult = scoreLeadFull(lead, orders)
+  const scoredOrders = auditResult.eligible
 
-  // 5. Call SQL function with winner (or without for unassigned path)
+  // 5. Persist routing logs (fire-and-forget, never blocks assignment)
+  if (auditResult.all.length > 0) {
+    const winnerId = scoredOrders.length > 0 ? scoredOrders[0].order_id : null
+    supabase.from('routing_logs').insert(
+      auditResult.all.map((so) => ({
+        lead_id: leadId,
+        order_id: so.order_id,
+        broker_id: so.broker_id,
+        eligible: !so.disqualified,
+        disqualify_reason: so.disqualify_reason ?? null,
+        score_breakdown: so.score as any,
+        total_score: so.score.total,
+        fill_rate: so.fill_rate,
+        selected: so.order_id === winnerId,
+      }))
+    ).then(({ error }) => {
+      if (error) console.error('Failed to persist routing logs:', error.message)
+    })
+  }
+
+  // 6. Call SQL function with winner (or without for unassigned path)
   if (scoredOrders.length > 0) {
     const { data, error } = await supabase.rpc('assign_lead', {
       p_lead_id: leadId,

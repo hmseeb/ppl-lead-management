@@ -150,12 +150,9 @@ function urgencyBonus(order: OrderForScoring): number {
   return 0
 }
 
-// ---- Main Scoring Function ----
+// ---- Internal Scoring Loop ----
 
-export function scoreLead(
-  lead: LeadForScoring,
-  orders: OrderForScoring[]
-): ScoredOrder[] {
+function scoreAllOrders(lead: LeadForScoring, orders: OrderForScoring[]): ScoredOrder[] {
   const results: ScoredOrder[] = []
 
   for (const order of orders) {
@@ -191,13 +188,41 @@ export function scoreLead(
     })
   }
 
-  // Sort: eligible first, then by score DESC, then fill_rate ASC (tie-breaker SCORE-08)
-  const eligible = results
+  return results
+}
+
+function sortEligible(results: ScoredOrder[]): ScoredOrder[] {
+  return results
     .filter((r) => !r.disqualified)
     .sort((a, b) => {
       if (b.score.total !== a.score.total) return b.score.total - a.score.total
-      return a.fill_rate - b.fill_rate // lower fill_rate wins
+      return a.fill_rate - b.fill_rate
     })
+}
 
-  return eligible
+// ---- Public API ----
+
+/** Returns only eligible orders, sorted by score DESC then fill_rate ASC */
+export function scoreLead(
+  lead: LeadForScoring,
+  orders: OrderForScoring[]
+): ScoredOrder[] {
+  return sortEligible(scoreAllOrders(lead, orders))
+}
+
+export interface FullScoringResult {
+  eligible: ScoredOrder[]
+  disqualified: ScoredOrder[]
+  all: ScoredOrder[]
+}
+
+/** Returns ALL orders (eligible + disqualified) for audit trail persistence */
+export function scoreLeadFull(
+  lead: LeadForScoring,
+  orders: OrderForScoring[]
+): FullScoringResult {
+  const results = scoreAllOrders(lead, orders)
+  const eligible = sortEligible(results)
+  const disqualified = results.filter((r) => r.disqualified)
+  return { eligible, disqualified, all: [...eligible, ...disqualified] }
 }

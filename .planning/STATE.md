@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** v2.0 Smart Scoring Engine — Phase 13: Order Model Expansion
+**Current focus:** v2.0 Smart Scoring Engine — Phase 17: Monthly Recurring Orders
 
 ## Current Position
 
-Phase: 15 of 17 (Scoring Engine + Tier Gating) — COMPLETE
+Phase: 16 of 17 (Routing Audit Trail) — COMPLETE
 Plan: 2 of 2 in current phase
-Status: Phase 15 complete, ready for Phase 16
-Last activity: 2026-03-13 — Phase 15 executed (scoring engine + SQL wiring)
+Status: Phase 16 complete, ready for Phase 17
+Last activity: 2026-03-13 — Phase 16 executed (routing logs + audit UI)
 
-Progress: [██████████████████████████░░░░] 88% (phases 1-15 complete, 16-17 pending)
+Progress: [████████████████████████████░░] 94% (phases 1-16 complete, 17 pending)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 23 (v1.0: 13, v1.1: 6, v1.2: 4)
+- Total plans completed: 25 (v1.0: 13, v1.1: 6, v1.2: 4, v2.0: 2)
 - Average duration: 5min
 - Total execution time: ~1.5 hours
 
@@ -58,5 +58,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: v2.0 roadmap created, ready to plan Phase 13
+Stopped at: Phase 16 complete, ready for Phase 17
 Resume file: None

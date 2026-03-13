@@ -70,7 +70,7 @@ export async function fetchLeadDetail(id: string) {
 
   if (!lead) return null
 
-  const [{ data: deliveries }, { data: activityLog }] = await Promise.all([
+  const [{ data: deliveries }, { data: activityLog }, { data: routingLogs }] = await Promise.all([
     supabase
       .from('deliveries')
       .select('*')
@@ -81,7 +81,18 @@ export async function fetchLeadDetail(id: string) {
       .select('*')
       .eq('lead_id', id)
       .order('created_at', { ascending: false }),
+    supabase
+      .from('routing_logs')
+      .select(`
+        id, order_id, broker_id, eligible, disqualify_reason,
+        score_breakdown, total_score, fill_rate, selected, created_at,
+        orders!inner ( id, verticals, total_leads, leads_delivered, credit_score_min, priority ),
+        brokers!inner ( id, first_name, last_name, company )
+      `)
+      .eq('lead_id', id)
+      .order('selected', { ascending: false })
+      .order('total_score', { ascending: false }),
   ])
 
-  return { lead, deliveries: deliveries ?? [], activityLog: activityLog ?? [] }
+  return { lead, deliveries: deliveries ?? [], activityLog: activityLog ?? [], routingLogs: routingLogs ?? [] }
 }

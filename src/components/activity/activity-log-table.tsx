@@ -7,6 +7,7 @@ import Link from 'next/link'
 import {
   UserPlus, ShoppingCart, Sparkles,
   AlertTriangle, ArrowRightLeft, Zap, FileText,
+  Clock, PlayCircle,
 } from 'lucide-react'
 
 type ActivityRow = {
@@ -32,6 +33,8 @@ const eventColors: Record<string, string> = {
   broker_status_changed: 'bg-blue-100 text-blue-800',
   bonus_mode_toggled: 'bg-indigo-100 text-indigo-800',
   webhook_failed_permanent: 'bg-red-100 text-red-800',
+  delivery_queued: 'bg-orange-100 text-orange-800',
+  delivery_released: 'bg-teal-100 text-teal-800',
 }
 
 const eventIcons: Record<string, typeof FileText> = {
@@ -41,6 +44,8 @@ const eventIcons: Record<string, typeof FileText> = {
   order_status_changed: ArrowRightLeft,
   bonus_mode_toggled: Sparkles,
   webhook_failed_permanent: AlertTriangle,
+  delivery_queued: Clock,
+  delivery_released: PlayCircle,
 }
 
 export function ActivityLogTable({ data }: { data: ActivityRow[] }) {

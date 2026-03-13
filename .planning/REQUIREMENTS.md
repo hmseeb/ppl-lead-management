@@ -1,68 +1,93 @@
 # Requirements: PPL Lead Management
 
 **Defined:** 2026-03-13
-**Core Value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
+**Core Value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail of why each assignment was made.
 
-## v1.2 Requirements
+## v2.0 Requirements
 
-Requirements for broker hours enforcement. Each maps to roadmap phases.
+### Pre-flight Validation
 
-### Delivery Hours
+- [ ] **VALID-01**: System rejects leads with credit_score < 600 (status = 'rejected', reason = 'credit_too_low')
+- [ ] **VALID-02**: System rejects leads with missing or invalid loan_amount (<= 0) (status = 'rejected', reason = 'invalid_loan_amount')
+- [ ] **VALID-03**: System rejects leads when no active orders exist (status = 'rejected', reason = 'no_active_orders')
+- [ ] **VALID-04**: System deduplicates leads on email + phone combination (in addition to existing ghl_contact_id dedup)
 
-- [x] **HOUR-01**: Delivery checks broker's contact_hours before firing (anytime = immediate, business_hours = 9-5, custom = start/end range)
-- [x] **HOUR-02**: Delivery checks weekend_pause and holds Saturday/Sunday deliveries for brokers with it enabled
-- [x] **HOUR-03**: Out-of-hours deliveries get status `queued` instead of firing immediately
-- [x] **HOUR-04**: pg_cron job runs every 5 minutes to release queued deliveries when broker's window opens
-- [x] **HOUR-05**: Queued deliveries fire in FIFO order (oldest first) when window opens
+### Scoring Engine
 
-### Timezone
+- [ ] **SCORE-01**: Assignment engine scores each eligible order 0-100 using: Credit Fit (40pts) + Capacity (30pts) + Tier Match (20pts) + Loan Fit (10pts) + Bonuses
+- [ ] **SCORE-02**: Credit Fit calculated as (lead.credit_score - order.credit_score_min) / (850 - order.credit_score_min) * 40
+- [ ] **SCORE-03**: Capacity calculated as (1 - fill_rate) * 30 where fill_rate = leads_delivered / total_leads
+- [ ] **SCORE-04**: Tier Match awards 20pts for exact tier match (680+ lead to 680-min order, 600-679 lead to 600-min order), 10pts for fallback (680+ lead to 600-min order)
+- [ ] **SCORE-05**: Loan Fit awards 10pts when lead.funding_amount falls within order.loan_min and order.loan_max
+- [ ] **SCORE-06**: Priority bonus +8pts for orders with priority = 'high'
+- [ ] **SCORE-07**: Urgency bonus +5pts when order fill_rate > 80%, penalty -5pts when fill_rate < 10%
+- [ ] **SCORE-08**: Tie-breaker uses lowest fill_rate (most capacity remaining)
 
-- [x] **TZ-01**: Read existing timezone column from brokers table (added in ppl-onboarding, IANA format, default America/Los_Angeles)
-- [x] **TZ-02**: All contact hours checks use broker's timezone for current time comparison
+### Credit Tier Gating
 
-### Admin Visibility
+- [ ] **TIER-01**: Orders with credit_score_min >= 680 NEVER receive leads with credit_score < 680 (hard filter)
+- [ ] **TIER-02**: Orders with credit_score_min >= 600 accept any lead scoring 600+ including 680+
+- [ ] **TIER-03**: 680+ leads route to 680-min orders first (20pts tier match), fall back to 600-min orders (10pts) only when no 680-min orders eligible
 
-- [x] **VIS-01**: Admin dashboard shows queued delivery count (deliveries waiting for broker hours)
-- [x] **VIS-02**: Broker detail page shows contact hours, timezone, and any queued deliveries
-- [x] **VIS-03**: Activity log records when deliveries are queued and when they're released
+### Order Model Changes
 
-## Future Requirements
+- [ ] **ORDER-01**: Orders have loan_min and loan_max fields (integer, nullable) for loan amount range filtering
+- [ ] **ORDER-02**: Orders have priority field (enum: high/normal, default normal)
+- [ ] **ORDER-03**: Orders support monthly recurring type with auto-reset of leads_delivered on the 1st of each month
+- [ ] **ORDER-04**: Order creation form includes loan range, priority, and order type (one-time/monthly) fields
+- [ ] **ORDER-05**: Hard filter excludes orders where lead.funding_amount is outside loan_min/loan_max range
 
-### Broker Self-Service
+### Audit Trail
 
-- **BRKR-01**: Broker-facing dashboard with magic link auth
-- **BRKR-02**: Broker can view assigned leads and order progress
-- **BRKR-03**: Broker can edit webhook URL, contact hours, timezone
+- [ ] **AUDIT-01**: Routing logs table records every order considered per lead (eligible, disqualify_reason, score_breakdown, selected)
+- [ ] **AUDIT-02**: Lead status enum includes 'rejected' for pre-flight failures
+- [ ] **AUDIT-03**: Routing log viewable on lead detail page showing all orders scored with breakdown
+- [ ] **AUDIT-04**: Monthly cap reset logged in activity_log (order_id, reset_at, previous_delivered_count)
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Broker-facing dashboard | Scoped for v2.0 after hours enforcement ships |
-| Per-timezone daily digest timing | Digest is admin-facing, not broker-facing |
-| Contact hours editing in admin UI | Managed via ppl-onboarding for now |
-| Delayed assignment (skip broker if off-hours) | Assignment stays instant, only delivery is delayed |
+| Broker-centric routing (remove orders) | Dan confirmed order-based architecture stays |
+| State/geo-based matching | Deferred — all clients operate nationwide |
+| HMAC webhook signatures (X-PPL-Signature) | Not needed for GHL delivery |
+| Broker-level loan range / credit min | Lives on orders, not brokers |
+| Scoring latency SLA (< 200ms) | Optimize later if needed |
 
 ## Traceability
 
-| Requirement | Phase | Plan | Status |
-|-------------|-------|------|--------|
-| HOUR-01 | Phase 10 | 10-01 | Complete |
-| HOUR-02 | Phase 10 | 10-01 | Complete |
-| HOUR-03 | Phase 10 | 10-01 | Complete |
-| HOUR-04 | Phase 11 | — | Pending |
-| HOUR-05 | Phase 11 | — | Pending |
-| TZ-01 | Phase 10 | 10-01 | Complete |
-| TZ-02 | Phase 10 | 10-01 | Complete |
-| VIS-01 | Phase 12 | — | Pending |
-| VIS-02 | Phase 12 | — | Pending |
-| VIS-03 | Phase 12 | — | Pending |
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| VALID-01 | — | Pending |
+| VALID-02 | — | Pending |
+| VALID-03 | — | Pending |
+| VALID-04 | — | Pending |
+| SCORE-01 | — | Pending |
+| SCORE-02 | — | Pending |
+| SCORE-03 | — | Pending |
+| SCORE-04 | — | Pending |
+| SCORE-05 | — | Pending |
+| SCORE-06 | — | Pending |
+| SCORE-07 | — | Pending |
+| SCORE-08 | — | Pending |
+| TIER-01 | — | Pending |
+| TIER-02 | — | Pending |
+| TIER-03 | — | Pending |
+| ORDER-01 | — | Pending |
+| ORDER-02 | — | Pending |
+| ORDER-03 | — | Pending |
+| ORDER-04 | — | Pending |
+| ORDER-05 | — | Pending |
+| AUDIT-01 | — | Pending |
+| AUDIT-02 | — | Pending |
+| AUDIT-03 | — | Pending |
+| AUDIT-04 | — | Pending |
 
 **Coverage:**
-- v1.2 requirements: 10 total
-- Mapped to phases: 10
-- Unmapped: 0
+- v2.0 requirements: 24 total
+- Mapped to phases: 0
+- Unmapped: 24 ⚠️
 
 ---
 *Requirements defined: 2026-03-13*
-*Last updated: 2026-03-13 after Phase 10 plan 01 execution*
+*Last updated: 2026-03-13 after initial definition*

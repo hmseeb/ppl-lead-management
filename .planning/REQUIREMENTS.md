@@ -22,8 +22,8 @@ Requirements for milestone v1.1. Each maps to roadmap phases.
 ### Alerts — Failure + Unassigned Notifications
 
 - [x] **ALRT-01**: Admin GHL contact ID stored in Supabase Vault for alert delivery
-- [ ] **ALRT-02**: SMS alert fires when delivery hits failed_permanent, includes lead name, broker name, channel, error
-- [ ] **ALRT-03**: SMS alert fires when lead goes to unassigned queue, includes lead details and match failure reason
+- [x] **ALRT-02**: SMS alert fires when delivery hits failed_permanent, includes lead name, broker name, channel, error
+- [x] **ALRT-03**: SMS alert fires when lead goes to unassigned queue, includes lead details and match failure reason
 - [x] **ALRT-04**: Alert deduplication prevents duplicate SMS for same broker/reason within 15-minute window
 - [x] **ALRT-05**: Reusable `send-alert` edge function serves both alert types via type discriminator
 

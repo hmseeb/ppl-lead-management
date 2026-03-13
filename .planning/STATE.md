@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** Phase 6 — Alert Foundation (v1.1 Monitoring & Alerting)
+**Current focus:** Phase 7 — Real-time Alerts (v1.1 Monitoring & Alerting) COMPLETE
 
 ## Current Position
 
-Phase: 6 of 9 (Alert Foundation)
-Plan: 2 of 2 in current phase
-Status: Phase 6 complete
-Last activity: 2026-03-13 — Completed 06-02 alert dedup table
+Phase: 7 of 9 (Real-time Alerts)
+Plan: 1 of 1 in current phase
+Status: Phase 7 complete
+Last activity: 2026-03-13 — Completed 07-01 alert triggers
 
-Progress: [███████████████░░░░░░░░░░░] 60% (15/25 plans across all milestones)
+Progress: [████████████████░░░░░░░░░░] 64% (16/25 plans across all milestones)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 15 (v1.0 + v1.1 Phase 6)
+- Total plans completed: 16 (v1.0 + v1.1 Phases 6-7)
 - Average duration: 6min
 - Total execution time: ~1.5 hours
 
@@ -33,9 +33,10 @@ Progress: [███████████████░░░░░░░░
 | 04-admin-dashboard | 4 | — | — |
 | 05-realtime-polish | 2 | — | — |
 | 06-alert-foundation | 2 | 2min | 1min |
+| 07-real-time-alerts | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (4min), 03-01 (2min), 03-02 (8min), 06-01 (1min), 06-02 (1min)
+- Last 5 plans: 03-01 (2min), 03-02 (8min), 06-01 (1min), 06-02 (1min), 07-01 (2min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -54,6 +55,9 @@ Recent decisions affecting current work:
 - Single send-alert edge function with type discriminator serves both failure and unassigned alerts
 - No write RLS on alert_state; Phase 7 triggers use SECURITY DEFINER for inserts/updates
 - alert_state context_id is text type for flexibility across broker_id and lead_id formats
+- WHEN clause on trigger definition (not inside function) to prevent unnecessary function invocations
+- PERFORM for pg_net alert calls (no request_id needed, cleaner than SELECT INTO)
+- NULL-safe name resolution: TRIM + NULLIF + fallback chain (email, phone, id::text)
 
 ### Pending Todos
 
@@ -74,5 +78,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: Re-executed 06-01-PLAN.md (admin settings + send-alert edge function)
+Stopped at: Completed 07-01-PLAN.md (alert triggers for delivery failures + unassigned leads)
 Resume file: None

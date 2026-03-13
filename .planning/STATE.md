@@ -5,22 +5,22 @@
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** Phase 7 — Real-time Alerts (v1.1 Monitoring & Alerting) COMPLETE
+**Current focus:** Phase 8 — Delivery Stats Dashboard (v1.1 Monitoring & Alerting) — Plan 2 of 2 COMPLETE
 
 ## Current Position
 
-Phase: 7 of 9 (Real-time Alerts)
-Plan: 1 of 1 in current phase
-Status: Phase 7 complete
-Last activity: 2026-03-13 — Completed 07-01 alert triggers
+Phase: 8 of 9 (Delivery Stats Dashboard)
+Plan: 2 of 2 in current phase
+Status: Phase 8 plan 02 complete
+Last activity: 2026-03-13 — Completed 08-02 debounced realtime listener
 
-Progress: [████████████████░░░░░░░░░░] 64% (16/25 plans across all milestones)
+Progress: [██████████████████░░░░░░░░] 72% (18/25 plans across all milestones)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 16 (v1.0 + v1.1 Phases 6-7)
-- Average duration: 6min
+- Total plans completed: 18 (v1.0 + v1.1 Phases 6-8)
+- Average duration: 5min
 - Total execution time: ~1.5 hours
 
 **By Phase:**
@@ -34,9 +34,10 @@ Progress: [████████████████░░░░░░░
 | 05-realtime-polish | 2 | — | — |
 | 06-alert-foundation | 2 | 2min | 1min |
 | 07-real-time-alerts | 1 | 2min | 2min |
+| 08-delivery-stats-dashboard | 2 | — | — |
 
 **Recent Trend:**
-- Last 5 plans: 03-01 (2min), 03-02 (8min), 06-01 (1min), 06-02 (1min), 07-01 (2min)
+- Last 5 plans: 06-01 (1min), 06-02 (1min), 07-01 (2min), 08-01 (—), 08-02 (1min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -58,6 +59,7 @@ Recent decisions affecting current work:
 - WHEN clause on trigger definition (not inside function) to prevent unnecessary function invocations
 - PERFORM for pg_net alert calls (no request_id needed, cleaner than SELECT INTO)
 - NULL-safe name resolution: TRIM + NULLIF + fallback chain (email, phone, id::text)
+- 500ms debounce delay with 2s max wait for RealtimeListener balances responsiveness vs efficiency
 
 ### Pending Todos
 
@@ -78,5 +80,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: Completed 07-01-PLAN.md (alert triggers for delivery failures + unassigned leads)
+Stopped at: Completed 08-02-PLAN.md (debounced realtime listener)
 Resume file: None

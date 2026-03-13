@@ -16,7 +16,7 @@ Requirements for milestone v1.1. Each maps to roadmap phases.
 - [ ] **MNTR-01**: Dashboard shows today's lead counts (received, assigned, unassigned)
 - [ ] **MNTR-02**: Dashboard shows today's delivery counts by channel (webhook, email, SMS)
 - [ ] **MNTR-03**: Dashboard shows today's failed delivery count with channel breakdown
-- [ ] **MNTR-04**: Delivery stats update in real-time via existing Supabase Realtime
+- [x] **MNTR-04**: Delivery stats update in real-time via existing Supabase Realtime
 - [ ] **MNTR-05**: Channel health indicators show color-coded status (green/yellow/red)
 
 ### Alerts — Failure + Unassigned Notifications
@@ -69,7 +69,7 @@ Requirements for milestone v1.1. Each maps to roadmap phases.
 | MNTR-01 | Phase 8 | — | Pending |
 | MNTR-02 | Phase 8 | — | Pending |
 | MNTR-03 | Phase 8 | — | Pending |
-| MNTR-04 | Phase 8 | — | Pending |
+| MNTR-04 | Phase 8 | 08-02 | Complete |
 | MNTR-05 | Phase 8 | — | Pending |
 | DGST-01 | Phase 9 | — | Pending |
 | DGST-02 | Phase 9 | — | Pending |

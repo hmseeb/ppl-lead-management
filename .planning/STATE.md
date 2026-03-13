@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** Milestone v1.1 — Monitoring & Alerting
+**Current focus:** Phase 6 — Alert Foundation (v1.1 Monitoring & Alerting)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-03-13 — Milestone v1.1 started
+Phase: 6 of 9 (Alert Foundation)
+Plan: 0 of 2 in current phase
+Status: Ready to plan
+Last activity: 2026-03-13 — v1.1 roadmap created
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█████████████░░░░░░░░░░░░░] 52% (13/25 plans across all milestones)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
+- Total plans completed: 13 (v1.0)
 - Average duration: 7min
-- Total execution time: 0.77 hours
+- Total execution time: ~1.5 hours
 
 **By Phase:**
 
@@ -30,6 +30,8 @@ Progress: [░░░░░░░░░░] 0%
 | 01-foundation | 3 | 29min | 10min |
 | 02-webhook-ingestion | 2 | 7min | 4min |
 | 03-lead-delivery | 2 | 10min | 5min |
+| 04-admin-dashboard | 4 | — | — |
+| 05-realtime-polish | 2 | — | — |
 
 **Recent Trend:**
 - Last 5 plans: 01-03 (7min), 02-01 (3min), 02-02 (4min), 03-01 (2min), 03-02 (8min)
@@ -44,14 +46,11 @@ Progress: [░░░░░░░░░░] 0%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- Roadmap v1.0: 5 phases all complete (schema+engine -> webhooks -> delivery -> dashboard -> realtime)
-- Research: Assignment engine is a single Postgres function with advisory locks
-- Research: Use Supavisor port 6543 from day one
-- Research: Pin zod to ~3.24.0 (v4 blocked by react-hook-form resolver issue)
-- Multi-channel delivery: unified `deliveries` table with channel column (crm_webhook/email/sms)
-- GHL integration: PIT token for Conversations API, edge function for email/SMS delivery
-- DB triggers: `trg_fire_outbound_webhook` for CRM webhooks, `trg_fire_ghl_delivery` for email/SMS via edge function
-- pg_cron retry pipeline handles all channels (every 2min, 3 retries, exponential backoff)
+- v1.1 architecture: DB triggers fire pg_net calls to edge functions (not application-level hooks)
+- Alert dedup: 15-minute window per broker/reason to prevent SMS storms
+- GHL rate limit: alerts share 100 req/10s budget with lead delivery, prioritize delivery
+- pg_cron UTC only: daily digest at 0 16 * * * UTC = 8 AM PST (accept 1hr DST drift)
+- Single send-alert edge function with type discriminator serves both failure and unassigned alerts
 
 ### Pending Todos
 
@@ -60,6 +59,8 @@ None yet.
 ### Blockers/Concerns
 
 - GHL webhook payload schema is not formally documented and may change. Store raw jsonb alongside parsed fields.
+- Admin must exist as a GHL contact with valid SMS-capable number before alerts work. Verify during Phase 6.
+- GHL rate limit behavior under real load (100 req/10s) not empirically tested. Monitor X-RateLimit-Remaining during Phase 6.
 
 ### Quick Tasks Completed
 
@@ -70,5 +71,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: Starting milestone v1.1 research
+Stopped at: v1.1 roadmap created, ready to plan Phase 6
 Resume file: None

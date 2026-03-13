@@ -61,17 +61,17 @@ Requirements for milestone v1.1. Each maps to roadmap phases.
 
 | Requirement | Phase | Plan | Status |
 |-------------|-------|------|--------|
-| MNTR-01 | — | — | Pending |
-| MNTR-02 | — | — | Pending |
-| MNTR-03 | — | — | Pending |
-| MNTR-04 | — | — | Pending |
-| MNTR-05 | — | — | Pending |
-| ALRT-01 | — | — | Pending |
-| ALRT-02 | — | — | Pending |
-| ALRT-03 | — | — | Pending |
-| ALRT-04 | — | — | Pending |
-| ALRT-05 | — | — | Pending |
-| DGST-01 | — | — | Pending |
-| DGST-02 | — | — | Pending |
-| DGST-03 | — | — | Pending |
-| DGST-04 | — | — | Pending |
+| ALRT-01 | Phase 6 | — | Pending |
+| ALRT-04 | Phase 6 | — | Pending |
+| ALRT-05 | Phase 6 | — | Pending |
+| ALRT-02 | Phase 7 | — | Pending |
+| ALRT-03 | Phase 7 | — | Pending |
+| MNTR-01 | Phase 8 | — | Pending |
+| MNTR-02 | Phase 8 | — | Pending |
+| MNTR-03 | Phase 8 | — | Pending |
+| MNTR-04 | Phase 8 | — | Pending |
+| MNTR-05 | Phase 8 | — | Pending |
+| DGST-01 | Phase 9 | — | Pending |
+| DGST-02 | Phase 9 | — | Pending |
+| DGST-03 | Phase 9 | — | Pending |
+| DGST-04 | Phase 9 | — | Pending |

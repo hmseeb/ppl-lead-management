@@ -1,16 +1,14 @@
 # Roadmap: PPL Lead Management
 
-## Overview
+## Milestones
 
-This roadmap delivers an internal lead distribution system in 5 phases following a strict dependency chain: database schema and assignment engine first (the loadbearing wall), then inbound webhook surface, then outbound delivery pipeline, then the admin dashboard that visualizes everything, and finally realtime updates and polish. Each phase produces a verifiable, working layer that the next phase builds on. The assignment engine ships before any webhook code exists because you can't build the caller before the callee.
+- ✅ **v1.0 MVP** - Phases 1-5 (shipped 2026-03-12)
+- 🚧 **v1.1 Monitoring & Alerting** - Phases 6-9 (in progress)
 
 ## Phases
 
-**Phase Numbering:**
-- Integer phases (1, 2, 3): Planned milestone work
-- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
-
-Decimal phases appear between their surrounding integers in numeric order.
+<details>
+<summary>✅ v1.0 MVP (Phases 1-5) - SHIPPED 2026-03-12</summary>
 
 - [x] **Phase 1: Foundation + Assignment Engine** - Schema, auth, broker/order CRUD, and the atomic assignment function with advisory locks
 - [x] **Phase 2: Webhook Ingestion** - Inbound lead endpoint and PATCH update endpoint wired to the assignment engine
@@ -18,96 +16,93 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Admin Dashboard** - Full admin UI with KPIs, all data tables, unassigned queue, and activity log
 - [x] **Phase 5: Realtime + Polish** - Live dashboard updates via Supabase Realtime, theme toggle, UX refinements
 
+</details>
+
+### v1.1 Monitoring & Alerting
+
+**Phase Numbering:**
+- Integer phases (6, 7, 8, 9): Planned milestone work
+- Decimal phases (6.1, 7.1): Urgent insertions (marked with INSERTED)
+
+- [ ] **Phase 6: Alert Foundation** - Reusable send-alert edge function, admin config with Vault, and deduplication infrastructure
+- [ ] **Phase 7: Real-time Alerts** - DB triggers that fire SMS alerts on delivery failures and unassigned leads
+- [ ] **Phase 8: Delivery Stats Dashboard** - Today's delivery metrics with channel breakdown and health indicators on the admin dashboard
+- [ ] **Phase 9: Daily Digest** - Scheduled morning summary via pg_cron with email and SMS delivered through GHL
+
 ## Phase Details
 
-### Phase 1: Foundation + Assignment Engine
-**Goal**: The database, auth, broker/order management, and atomic lead assignment logic all exist and work correctly, so that leads can be matched and assigned to brokers programmatically with zero race conditions
-**Depends on**: Nothing (first phase)
-**Requirements**: AUTH-01, BRKR-01, BRKR-02, BRKR-03, ORDR-01, ORDR-02, ORDR-03, ORDR-04, ORDR-05, ORDR-06, ASGN-01, ASGN-02, ASGN-03, ASGN-04, ASGN-05, ASGN-06, ASGN-07
+### Phase 6: Alert Foundation
+**Goal**: A tested, reusable alert pipeline exists so that any event in the system can send an SMS to the admin through GHL, with built-in deduplication to prevent alert storms
+**Depends on**: Phase 5 (v1.0 complete)
+**Requirements**: ALRT-01, ALRT-04, ALRT-05
 **Success Criteria** (what must be TRUE):
-  1. Admin can log in with password, access the app, and be redirected to login if session expires
-  2. Admin can create, edit, and change status of broker profiles through the UI
-  3. Admin can create orders with vertical/credit-score criteria and control their lifecycle (start, pause, resume, complete, bonus toggle)
-  4. Calling `assign_lead()` with a test lead correctly matches it to the right broker based on vertical + credit score, uses weighted rotation, decrements leads_remaining, logs the decision, and holds unmatched leads with failure reasons
-  5. Two concurrent `assign_lead()` calls never double-assign or produce rotation drift (advisory lock works)
-**Plans**: 3 plans
-
-Plans:
-- [x] 01-01-PLAN.md — Project scaffold, database schema, Supabase clients, and auth (iron-session + middleware)
-- [x] 01-02-PLAN.md — Broker and order management UI with CRUD, lifecycle actions, and data tables
-- [x] 01-03-PLAN.md — assign_lead() Postgres function with advisory locks, weighted rotation, and test suite
-
-### Phase 2: Webhook Ingestion
-**Goal**: External systems (GHL) can send leads into the system via HTTP and the full assignment flow triggers automatically
-**Depends on**: Phase 1
-**Requirements**: HOOK-01, HOOK-02, HOOK-03, HOOK-04, HOOK-05
-**Success Criteria** (what must be TRUE):
-  1. POSTing a valid GHL payload to /api/leads/incoming stores the lead, triggers assignment, and returns 200 within 2 seconds
-  2. POSTing a duplicate ghl_contact_id does not create a second lead (idempotency enforced)
-  3. PATCHing a lead by ghl_contact_id updates it with AI call notes without disrupting assignment
-  4. Malformed or incomplete payloads return appropriate error status without crashing the endpoint
-**Plans**: 2 plans
-
-Plans:
-- [x] 02-01-PLAN.md — POST /api/leads/incoming with Zod validation, idempotency on ghl_contact_id, and assignment trigger
-- [x] 02-02-PLAN.md — PATCH /api/leads/update for AI call notes by ghl_contact_id without disrupting assignment
-
-### Phase 3: Lead Delivery
-**Goal**: Assigned leads are automatically delivered to the correct broker's GHL sub-account via outbound webhook, with retries for failures and clear status tracking
-**Depends on**: Phase 2
-**Requirements**: DLVR-01, DLVR-02, DLVR-03, DLVR-04
-**Success Criteria** (what must be TRUE):
-  1. When a lead is assigned, an outbound POST fires to the broker's GHL webhook URL with full lead payload within seconds
-  2. Failed deliveries are retried up to 3 times via pg_cron without blocking the inbound handler
-  3. Permanently failed deliveries (3 strikes) are flagged with error details visible in the system
-  4. Every lead has a trackable delivery status (pending/sent/failed/retrying) with retry count and timestamps
-**Plans**: 2 plans
-
-Plans:
-- [x] 03-01-PLAN.md — webhook_deliveries table, pg_net outbound trigger, and updated assign_lead() with delivery wiring
-- [x] 03-02-PLAN.md — pg_cron retry pipeline (response checker + retry scanner) and end-to-end test script
-
-### Phase 4: Admin Dashboard
-**Goal**: Admin has full visibility into every lead, broker, order, and event in the system through a professional desktop UI with filtering, search, and inline actions
-**Depends on**: Phase 3
-**Requirements**: BRKR-04, DASH-01, DASH-02, DASH-03, DASH-04, DASH-05, DASH-06, DASH-07, DASH-08, DASH-09, DASH-10, DASH-11, DASH-12, DASH-13, DASH-14, DASH-15, DASH-16, DASH-17, UX-02
-**Success Criteria** (what must be TRUE):
-  1. Overview page displays live KPIs (leads today/week/month, assigned vs unassigned, active brokers, active orders) and a recent activity feed
-  2. Leads table shows all lead data with working filters (date, vertical, credit score, status, broker) and search (name, phone, email), and clicking a lead shows full detail including AI call notes and delivery status
-  3. Brokers table shows all brokers with status and stats, broker detail view shows profile plus all orders and full lead delivery history, and quick actions (pause all, resume all, new order) work
-  4. Orders table shows all orders with color-coded status (green/yellow/blue/gray), inline action buttons (pause/resume/bonus/complete) work, and order detail shows every assigned lead
-  5. Unassigned queue shows leads with match failure reasons and admin can manually assign any lead to a broker via dropdown
-**Plans**: 4 plans
-
-Plans:
-- [x] 04-01-PLAN.md — Install deps (nuqs, recharts, date-fns), overview dashboard with KPIs, activity feed, and updated sidebar
-- [x] 04-02-PLAN.md — Leads table with TanStack Table, nuqs filters/search, and lead detail view
-- [x] 04-03-PLAN.md — Enhanced brokers/orders tables with stats, detail views, quick actions, and color-coded status
-- [x] 04-04-PLAN.md — Unassigned queue with manual assignment and filterable activity log
-
-### Phase 5: Realtime + Polish
-**Goal**: The dashboard updates live as leads flow through the system without manual refresh, and the UI feels polished and complete
-**Depends on**: Phase 4
-**Requirements**: RT-01, RT-02, UX-01
-**Success Criteria** (what must be TRUE):
-  1. When a lead arrives or gets assigned, the dashboard KPIs, activity feed, and relevant tables update within seconds without page refresh
-  2. Webhook delivery status changes (sent/failed/retrying) appear live on the leads detail view
-  3. Admin can toggle between dark and light themes and the preference persists across sessions
+  1. Admin GHL contact ID is stored in Supabase Vault and retrievable by edge functions at runtime
+  2. Calling the `send-alert` edge function with a failure-type payload delivers an SMS to the admin via GHL Conversations API
+  3. Calling `send-alert` with an unassigned-type payload delivers a differently formatted SMS to the admin
+  4. Sending the same alert type for the same broker within 15 minutes results in only one SMS (dedup works)
 **Plans**: TBD
 
 Plans:
-- [x] 05-01-PLAN.md — Supabase Realtime postgres_changes listener for live dashboard updates
-- [x] 05-02-PLAN.md — Dark/light theme toggle with next-themes and persistent preference
+- [ ] 06-01: admin_settings table, Vault secret, and send-alert edge function with GHL SMS delivery
+- [ ] 06-02: Alert deduplication with alert_state table, 15-minute window, and cleanup cron
+
+### Phase 7: Real-time Alerts
+**Goal**: Admin receives an SMS within seconds when a delivery permanently fails or a lead goes unassigned, so problems are caught immediately instead of hours later on the dashboard
+**Depends on**: Phase 6
+**Requirements**: ALRT-02, ALRT-03
+**Success Criteria** (what must be TRUE):
+  1. When a delivery status changes to failed_permanent, admin receives an SMS with lead name, broker name, channel, and error details
+  2. When a lead enters the unassigned queue, admin receives an SMS with lead details and the match failure reason
+  3. Multiple correlated failures (same broker endpoint down) produce throttled alerts, not a flood of SMS messages
+**Plans**: TBD
+
+Plans:
+- [ ] 07-01: DB triggers on deliveries and unassigned_queue that fire pg_net calls to send-alert edge function
+
+### Phase 8: Delivery Stats Dashboard
+**Goal**: Admin can see today's delivery health at a glance on the existing dashboard, with real-time counts and color-coded channel status, without navigating to individual lead or broker pages
+**Depends on**: Phase 5 (v1.0 dashboard exists). No dependency on Phases 6-7 (parallel-safe)
+**Requirements**: MNTR-01, MNTR-02, MNTR-03, MNTR-04, MNTR-05
+**Success Criteria** (what must be TRUE):
+  1. Dashboard shows today's lead counts: received, assigned, and unassigned
+  2. Dashboard shows today's delivery counts broken down by channel (webhook, email, SMS)
+  3. Dashboard shows today's failed delivery count with per-channel breakdown
+  4. All delivery stats update in real-time when new leads arrive or delivery statuses change (no manual refresh)
+  5. Each delivery channel shows a color-coded health indicator (green/yellow/red) based on recent failure rate
+**Plans**: TBD
+
+Plans:
+- [ ] 08-01: delivery_stats_today SQL view, fetchDeliveryStats() query, and DeliveryStats UI component with KPI cards
+- [ ] 08-02: Channel health indicators with color-coded status and Realtime refresh wiring
+
+### Phase 9: Daily Digest
+**Goal**: Admin receives a morning summary every day at 8 AM Pacific with overnight stats via email and SMS through GHL, so nothing slips through the cracks while they're not watching the dashboard
+**Depends on**: Phase 6 (Vault config and GHL integration proven)
+**Requirements**: DGST-01, DGST-02, DGST-03, DGST-04
+**Success Criteria** (what must be TRUE):
+  1. A pg_cron job fires at 8 AM Pacific daily (16:00 UTC) and invokes the daily-digest edge function
+  2. Admin receives an email with overnight stats: leads received, assigned, unassigned, deliveries by channel, and failures
+  3. Admin receives an SMS with a compact summary of the same overnight numbers
+  4. Both email and SMS are delivered via GHL Conversations API to the configured admin contact
+**Plans**: TBD
+
+Plans:
+- [ ] 09-01: daily-digest edge function, pg_cron schedule, HTML email template, and SMS summary format
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
+Phases execute in numeric order: 6 → 7 → 8 → 9
+Note: Phase 8 has no dependency on 6-7 and can execute in parallel if desired.
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Foundation + Assignment Engine | 3/3 | Complete    | 2026-03-12 |
-| 2. Webhook Ingestion | 2/2 | Complete    | 2026-03-12 |
-| 3. Lead Delivery | 2/2 | Complete    | 2026-03-12 |
-| 4. Admin Dashboard | 4/4 | Complete    | 2026-03-12 |
-| 5. Realtime + Polish | 2/2 | Complete    | 2026-03-12 |
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1. Foundation + Assignment Engine | v1.0 | 3/3 | Complete | 2026-03-12 |
+| 2. Webhook Ingestion | v1.0 | 2/2 | Complete | 2026-03-12 |
+| 3. Lead Delivery | v1.0 | 2/2 | Complete | 2026-03-12 |
+| 4. Admin Dashboard | v1.0 | 4/4 | Complete | 2026-03-12 |
+| 5. Realtime + Polish | v1.0 | 2/2 | Complete | 2026-03-12 |
+| 6. Alert Foundation | v1.1 | 0/2 | Not started | - |
+| 7. Real-time Alerts | v1.1 | 0/1 | Not started | - |
+| 8. Delivery Stats Dashboard | v1.1 | 0/2 | Not started | - |
+| 9. Daily Digest | v1.1 | 0/1 | Not started | - |

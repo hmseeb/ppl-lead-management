@@ -5,7 +5,7 @@ export default async function NewOrderPage() {
   const supabase = createAdminClient()
   const { data: brokers } = await supabase
     .from('brokers')
-    .select('id, first_name, last_name, company')
+    .select('id, first_name, last_name, company, primary_vertical, secondary_vertical')
     .eq('assignment_status', 'active')
     .order('first_name')
 

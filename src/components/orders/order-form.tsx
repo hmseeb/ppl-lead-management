@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
@@ -16,6 +17,8 @@ interface Broker {
   first_name: string
   last_name: string
   company: string | null
+  primary_vertical: string | null
+  secondary_vertical: string | null
 }
 
 interface OrderFormProps {
@@ -42,6 +45,23 @@ export function OrderForm({ brokers }: OrderFormProps) {
   })
 
   const selectedVerticals = watch('verticals') || []
+  const selectedBrokerId = watch('broker_id')
+
+  // Auto-populate verticals from broker profile when broker changes
+  const prevBrokerRef = React.useRef('')
+  React.useEffect(() => {
+    if (selectedBrokerId && selectedBrokerId !== prevBrokerRef.current) {
+      prevBrokerRef.current = selectedBrokerId
+      const broker = brokers.find((b) => b.id === selectedBrokerId)
+      if (broker) {
+        const preselected = [broker.primary_vertical, broker.secondary_vertical]
+          .filter((v): v is string => v != null && VERTICALS.includes(v as (typeof VERTICALS)[number]))
+        if (preselected.length > 0) {
+          setValue('verticals', preselected as OrderFormData['verticals'])
+        }
+      }
+    }
+  }, [selectedBrokerId, brokers, setValue])
 
   function handleVerticalToggle(vertical: (typeof VERTICALS)[number]) {
     const current = selectedVerticals as string[]

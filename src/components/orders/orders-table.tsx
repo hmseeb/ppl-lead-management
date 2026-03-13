@@ -14,6 +14,10 @@ type OrderWithBroker = {
   leads_remaining: number
   verticals: string[]
   credit_score_min: number | null
+  priority: string
+  order_type: string
+  loan_min: number | null
+  loan_max: number | null
   status: string
   bonus_mode: boolean
   created_at: string
@@ -36,6 +40,8 @@ export function OrdersTable({ orders }: { orders: OrderWithBroker[] }) {
           <TableHead className="text-right">Remaining</TableHead>
           <TableHead>Verticals</TableHead>
           <TableHead className="text-right">Credit Min</TableHead>
+          <TableHead>Priority</TableHead>
+          <TableHead>Type</TableHead>
           <TableHead>Status</TableHead>
           <TableHead className="w-12">Actions</TableHead>
         </TableRow>
@@ -66,6 +72,16 @@ export function OrdersTable({ orders }: { orders: OrderWithBroker[] }) {
                 </div>
               </TableCell>
               <TableCell className="text-right">{order.credit_score_min ?? '-'}</TableCell>
+              <TableCell>
+                {order.priority === 'high' ? (
+                  <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">High</Badge>
+                ) : '-'}
+              </TableCell>
+              <TableCell>
+                {order.order_type === 'monthly' ? (
+                  <Badge variant="outline">Monthly</Badge>
+                ) : 'One-time'}
+              </TableCell>
               <TableCell>
                 <div className="flex gap-1">
                   <OrderStatusBadge status={order.status} />

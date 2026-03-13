@@ -73,10 +73,10 @@
 | TIER-01 | Phase 15 | Pending |
 | TIER-02 | Phase 15 | Pending |
 | TIER-03 | Phase 15 | Pending |
-| ORDER-01 | Phase 13 | Pending |
-| ORDER-02 | Phase 13 | Pending |
+| ORDER-01 | Phase 13 | Done |
+| ORDER-02 | Phase 13 | Done |
 | ORDER-03 | Phase 17 | Pending |
-| ORDER-04 | Phase 13 | Pending |
+| ORDER-04 | Phase 13 | Done |
 | ORDER-05 | Phase 15 | Pending |
 | AUDIT-01 | Phase 16 | Pending |
 | AUDIT-02 | Phase 16 | Pending |

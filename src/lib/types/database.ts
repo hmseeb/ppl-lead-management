@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.4"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       activity_log: {
@@ -434,6 +459,10 @@ export type Database = {
           last_assigned_at: string | null
           leads_delivered: number
           leads_remaining: number
+          loan_max: number | null
+          loan_min: number | null
+          order_type: string
+          priority: string
           status: string
           total_leads: number
           updated_at: string
@@ -448,6 +477,10 @@ export type Database = {
           last_assigned_at?: string | null
           leads_delivered?: number
           leads_remaining: number
+          loan_max?: number | null
+          loan_min?: number | null
+          order_type?: string
+          priority?: string
           status?: string
           total_leads: number
           updated_at?: string
@@ -462,6 +495,10 @@ export type Database = {
           last_assigned_at?: string | null
           leads_delivered?: number
           leads_remaining?: number
+          loan_max?: number | null
+          loan_min?: number | null
+          order_type?: string
+          priority?: string
           status?: string
           total_leads?: number
           updated_at?: string
@@ -530,6 +567,7 @@ export type Database = {
         Args: { p_broker_id: string }
         Returns: boolean
       }
+      process_queued_deliveries: { Args: never; Returns: number }
       process_webhook_retries: {
         Args: { p_batch_size?: number }
         Returns: undefined
@@ -662,6 +700,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {},
   },

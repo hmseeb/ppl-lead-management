@@ -13,7 +13,7 @@ export async function createOrder(data: unknown) {
   }
 
   const supabase = createAdminClient()
-  const { broker_id, total_leads, verticals, credit_score_min } = result.data
+  const { broker_id, total_leads, verticals, credit_score_min, loan_min, loan_max, priority, order_type } = result.data
 
   const { data: order, error } = await supabase
     .from('orders')
@@ -24,6 +24,10 @@ export async function createOrder(data: unknown) {
       leads_delivered: 0,
       verticals: verticals as string[],
       credit_score_min,
+      loan_min,
+      loan_max,
+      priority,
+      order_type,
       status: 'active',
       bonus_mode: false,
     })
@@ -39,7 +43,7 @@ export async function createOrder(data: unknown) {
     event_type: 'order_created',
     broker_id,
     order_id: order.id,
-    details: { total_leads, verticals, credit_score_min },
+    details: { total_leads, verticals, credit_score_min, loan_min, loan_max, priority, order_type },
   })
 
   revalidatePath('/orders')

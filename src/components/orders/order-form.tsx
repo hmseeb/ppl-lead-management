@@ -5,7 +5,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { orderSchema, type OrderFormData, VERTICALS } from '@/lib/schemas/order'
+import { orderSchema, type OrderFormData, VERTICALS, PRIORITIES, ORDER_TYPES } from '@/lib/schemas/order'
 import { createOrder } from '@/lib/actions/orders'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -41,6 +41,10 @@ export function OrderForm({ brokers }: OrderFormProps) {
       total_leads: 1,
       verticals: [],
       credit_score_min: null,
+      loan_min: null,
+      loan_max: null,
+      priority: 'normal' as const,
+      order_type: 'one_time' as const,
     },
   })
 
@@ -187,6 +191,57 @@ export function OrderForm({ brokers }: OrderFormProps) {
         {errors.credit_score_min && (
           <p className="text-sm text-destructive">{errors.credit_score_min.message}</p>
         )}
+      </div>
+
+      <div className="space-y-1.5">
+        <Label>Loan Amount Range (optional)</Label>
+        <div className="grid grid-cols-2 gap-3">
+          <Input
+            type="number"
+            min={0}
+            placeholder="Min ($)"
+            {...register('loan_min', {
+              setValueAs: (v: string) => (v === '' || v === undefined ? null : Number(v)),
+            })}
+          />
+          <Input
+            type="number"
+            min={0}
+            placeholder="Max ($)"
+            {...register('loan_max', {
+              setValueAs: (v: string) => (v === '' || v === undefined ? null : Number(v)),
+            })}
+          />
+        </div>
+        {errors.loan_max && (
+          <p className="text-sm text-destructive">{errors.loan_max.message}</p>
+        )}
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="priority">Priority</Label>
+        <select
+          id="priority"
+          className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          {...register('priority')}
+        >
+          {PRIORITIES.map((p) => (
+            <option key={p} value={p}>{p === 'normal' ? 'Normal' : 'High'}</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="order_type">Order Type</Label>
+        <select
+          id="order_type"
+          className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          {...register('order_type')}
+        >
+          {ORDER_TYPES.map((t) => (
+            <option key={t} value={t}>{t === 'one_time' ? 'One-time' : 'Monthly'}</option>
+          ))}
+        </select>
       </div>
 
       <Button type="submit" disabled={isSubmitting}>

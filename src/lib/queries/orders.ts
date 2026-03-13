@@ -18,7 +18,7 @@ export async function fetchOrdersWithBroker(params: OrderFilters = {}) {
     .from('orders')
     .select(`
       id, broker_id, total_leads, leads_delivered, leads_remaining,
-      verticals, credit_score_min, status, bonus_mode, created_at,
+      verticals, credit_score_min, status, bonus_mode, priority, order_type, loan_min, loan_max, created_at,
       brokers!inner ( first_name, last_name )
     `, { count: 'exact' })
 

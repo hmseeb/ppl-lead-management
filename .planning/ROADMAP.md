@@ -62,8 +62,8 @@
   4. Order creation/edit form includes all three new fields (loan range, priority, order type)
 **Plans:** 2 plans
 Plans:
-- [ ] 13-01-PLAN.md -- DB migration, type regen, Zod schema, and server action for new order fields
-- [ ] 13-02-PLAN.md -- Order form, table, and detail UI updates for new fields
+- [x] 13-01-PLAN.md -- DB migration, type regen, Zod schema, and server action for new order fields
+- [x] 13-02-PLAN.md -- Order form, table, and detail UI updates for new fields
 
 ### Phase 14: Pre-flight Validation
 **Goal**: Leads that can never be routed are rejected immediately with a clear reason, and duplicate leads are caught before assignment
@@ -129,7 +129,7 @@ Phases execute in numeric order: 13 -> 14 -> 15 -> 16 -> 17
 | 10. Hours-Aware Delivery | v1.2 | 1/1 | Complete | 2026-03-13 |
 | 11. Queue Processing | v1.2 | 1/1 | Complete | 2026-03-13 |
 | 12. Admin Visibility | v1.2 | 2/2 | Complete | 2026-03-13 |
-| 13. Order Model Expansion | v2.0 | 0/2 | In Progress | - |
+| 13. Order Model Expansion | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 14. Pre-flight Validation | v2.0 | 0/? | Not started | - |
 | 15. Scoring Engine + Tier Gating | v2.0 | 0/? | Not started | - |
 | 16. Routing Audit Trail | v2.0 | 0/? | Not started | - |

@@ -33,6 +33,26 @@ export function OrderDetail({ order, leads }: { order: any; leads: any[] }) {
               ))}</span>
             </div>
             <div><span className="text-muted-foreground">Credit Score Min:</span> {order.credit_score_min ?? 'None'}</div>
+            <div>
+              <span className="text-muted-foreground">Loan Range:</span>{' '}
+              {order.loan_min != null && order.loan_max != null
+                ? `$${order.loan_min.toLocaleString()} - $${order.loan_max.toLocaleString()}`
+                : order.loan_min != null
+                  ? `$${order.loan_min.toLocaleString()}+`
+                  : order.loan_max != null
+                    ? `Up to $${order.loan_max.toLocaleString()}`
+                    : 'Any'}
+            </div>
+            <div>
+              <span className="text-muted-foreground">Priority:</span>{' '}
+              {order.priority === 'high'
+                ? <span className="text-amber-600 font-medium">High</span>
+                : 'Normal'}
+            </div>
+            <div>
+              <span className="text-muted-foreground">Order Type:</span>{' '}
+              {order.order_type === 'monthly' ? 'Monthly' : 'One-time'}
+            </div>
             <div><span className="text-muted-foreground">Status:</span> <OrderStatusBadge status={order.status} /> {order.bonus_mode && <BonusBadge />}</div>
             <div><span className="text-muted-foreground">Created:</span> {format(new Date(order.created_at), 'MMM d, yyyy h:mm a')}</div>
           </div>

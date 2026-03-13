@@ -76,10 +76,11 @@ Plans:
   1. Admin dashboard shows a count of currently queued deliveries (waiting for broker hours)
   2. Broker detail page displays the broker's contact hours setting, timezone, weekend pause status, and any queued deliveries for that broker
   3. Activity log records entries when a delivery is queued (with reason) and when a queued delivery is released
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 12-01: TBD
+- [ ] 12-01-PLAN.md — Queued KPI card on dashboard + broker detail hours info and queued deliveries
+- [ ] 12-02-PLAN.md — Activity log entries for delivery_queued and delivery_released events
 
 ## Progress
 
@@ -99,4 +100,4 @@ Phases execute in numeric order: 10 -> 11 -> 12
 | 9. Daily Digest | v1.1 | 1/1 | Complete | 2026-03-13 |
 | 10. Hours-Aware Delivery | v1.2 | Complete    | 2026-03-13 | 2026-03-13 |
 | 11. Queue Processing | v1.2 | Complete    | 2026-03-13 | 2026-03-13 |
-| 12. Admin Visibility | v1.2 | 0/? | Not started | - |
+| 12. Admin Visibility | v1.2 | 0/2 | Not started | - |

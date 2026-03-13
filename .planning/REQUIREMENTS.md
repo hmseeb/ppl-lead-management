@@ -1,171 +1,77 @@
 # Requirements: PPL Lead Management
 
-**Defined:** 2026-03-12
+**Defined:** 2026-03-12 (v1.0), 2026-03-13 (v1.1)
 **Core Value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
 
-## v1 Requirements
+## v1.0 Requirements (Complete)
 
-Requirements for initial release. Each maps to roadmap phases.
+All 48 requirements delivered. See MILESTONES.md for details.
 
-### Webhook Ingestion
+## v1.1 Requirements — Monitoring & Alerting
 
-- [x] **HOOK-01**: System accepts incoming leads via POST /api/leads/incoming with full GHL payload (name, phone, email, business, funding amount/purpose, vertical, credit score, state, AI call notes/status, ghl_contact_id, timestamp)
-- [x] **HOOK-02**: System stores lead in database immediately on receipt and returns 200 within 2 seconds
-- [x] **HOOK-03**: System handles malformed payloads gracefully (log error, return appropriate status, don't crash)
-- [x] **HOOK-04**: System accepts lead updates via PATCH matching on ghl_contact_id (for AI call notes arriving later)
-- [x] **HOOK-05**: System enforces idempotency on ghl_contact_id to prevent duplicate lead creation
+Requirements for milestone v1.1. Each maps to roadmap phases.
 
-### Broker Management
+### Monitoring — Delivery Stats Dashboard
 
-- [x] **BRKR-01**: Admin can create broker profiles (name, company, email, phone, GHL webhook URL)
-- [x] **BRKR-02**: Admin can edit broker profiles
-- [x] **BRKR-03**: Admin can set broker status (Active / Paused / Completed)
-- [x] **BRKR-04**: Admin can view broker detail with all orders and full lead delivery history
+- [ ] **MNTR-01**: Dashboard shows today's lead counts (received, assigned, unassigned)
+- [ ] **MNTR-02**: Dashboard shows today's delivery counts by channel (webhook, email, SMS)
+- [ ] **MNTR-03**: Dashboard shows today's failed delivery count with channel breakdown
+- [ ] **MNTR-04**: Delivery stats update in real-time via existing Supabase Realtime
+- [ ] **MNTR-05**: Channel health indicators show color-coded status (green/yellow/red)
 
-### Order Management
+### Alerts — Failure + Unassigned Notifications
 
-- [x] **ORDR-01**: Admin can create orders linked to a broker with total leads purchased, vertical criteria (multi-select from MCA, SBA, Equipment Finance, Working Capital, Lines of Credit, All), and credit score minimum
-- [x] **ORDR-02**: System tracks leads_delivered and calculates leads_remaining per order
-- [x] **ORDR-03**: Admin can start, pause, resume, and complete orders
-- [x] **ORDR-04**: Admin can toggle bonus mode on an order (continues delivering leads past total purchased)
-- [x] **ORDR-05**: System auto-completes orders when leads_remaining hits 0 and bonus mode is off
-- [x] **ORDR-06**: Pausing an order removes broker from rotation without losing remaining count or position
+- [ ] **ALRT-01**: Admin GHL contact ID stored in Supabase Vault for alert delivery
+- [ ] **ALRT-02**: SMS alert fires when delivery hits failed_permanent, includes lead name, broker name, channel, error
+- [ ] **ALRT-03**: SMS alert fires when lead goes to unassigned queue, includes lead details and match failure reason
+- [ ] **ALRT-04**: Alert deduplication prevents duplicate SMS for same broker/reason within 15-minute window
+- [ ] **ALRT-05**: Reusable `send-alert` edge function serves both alert types via type discriminator
 
-### Assignment Engine
+### Digest — Daily Morning Summary
 
-- [x] **ASGN-01**: System filters eligible brokers by matching lead vertical against order accepted verticals (including "All") and lead credit score >= order credit score minimum
-- [x] **ASGN-02**: System uses weighted round-robin rotation based on leads_remaining (bigger orders get proportionally more leads)
-- [x] **ASGN-03**: System tracks last_assigned timestamp per broker per order for rotation fairness
-- [x] **ASGN-04**: System uses Postgres advisory locks for atomic lead assignment (prevents race conditions on concurrent leads)
-- [x] **ASGN-05**: System assigns lead, decrements leads_remaining (unless bonus mode), updates last_assigned, and fires outbound webhook in one atomic flow
-- [x] **ASGN-06**: System holds unmatched leads in unassigned queue with detailed match failure reasons (e.g. "no active orders for MCA vertical", "credit score 520 below all minimums")
-- [x] **ASGN-07**: System logs every assignment decision (which broker, why them, timestamp) for audit
+- [ ] **DGST-01**: Daily digest runs at 8 AM Pacific via pg_cron -> edge function
+- [ ] **DGST-02**: Email digest includes overnight stats (leads received, assigned, unassigned, deliveries by channel, failures)
+- [ ] **DGST-03**: SMS digest includes compact summary of overnight numbers
+- [ ] **DGST-04**: Digest delivered to admin via GHL Conversations API (email + SMS)
 
-### Lead Delivery
+## Future Requirements (Deferred)
 
-- [x] **DLVR-01**: System fires outbound POST webhook to assigned broker's GHL webhook URL with full lead payload + reference ID
-- [x] **DLVR-02**: System retries failed webhook deliveries up to 3 times with async pg_cron (non-blocking)
-- [x] **DLVR-03**: System flags permanently failed deliveries in admin dashboard
-- [x] **DLVR-04**: System tracks per-lead delivery status (pending/sent/failed/retrying) with retry count, last attempt timestamp, and error message
-
-### Admin Dashboard
-
-- [x] **DASH-01**: Overview page shows KPIs: total leads today/this week/this month, assigned vs unassigned count, active brokers count, active orders count
-- [x] **DASH-02**: Overview page shows recent activity feed (last 20 lead assignments with timestamp, lead name, broker, order ID, vertical, credit score)
-- [x] **DASH-03**: Leads table with columns: date/time, name, phone, email, vertical, credit score, funding amount, assigned broker, AI call status, assignment status
-- [x] **DASH-04**: Leads table supports filtering by date range, vertical, credit score range, assigned/unassigned, broker
-- [x] **DASH-05**: Leads table supports search by lead name, phone, or email
-- [x] **DASH-06**: Lead detail view shows full data including AI call notes, assignment history, and webhook delivery status
-- [x] **DASH-07**: Brokers table shows name, company, status, active orders count, total leads delivered, last delivery date
-- [x] **DASH-08**: Broker detail view shows profile, all orders (current and past), and every lead received
-- [x] **DASH-09**: Quick broker actions: pause all active orders, resume all, create new order
-- [x] **DASH-10**: Orders table shows order ID, broker name, total purchased, delivered, remaining, verticals, credit score min, status, date created
-- [x] **DASH-11**: Orders table has color coding: green=Active, yellow=Paused, blue=Bonus Mode, gray=Completed
-- [x] **DASH-12**: Orders table has inline action buttons: pause/resume/bonus mode toggle/complete
-- [x] **DASH-13**: Order detail view shows every lead assigned to that order
-- [x] **DASH-14**: Unassigned queue shows leads that couldn't be matched with reason why
-- [x] **DASH-15**: Admin can manually assign leads from unassigned queue to a broker via dropdown
-- [x] **DASH-16**: Activity log shows all events (lead received, assigned, order created/paused/completed, bonus toggled, manual assignments, webhook failures)
-- [x] **DASH-17**: Activity log filterable by event type, broker, date range
-
-### Real-time
-
-- [x] **RT-01**: Dashboard updates in real-time via Supabase Realtime when leads arrive, get assigned, or webhook status changes
-- [x] **RT-02**: KPI counters and activity feed update live without page refresh
-
-### Auth & UX
-
-- [x] **AUTH-01**: Admin access protected by simple password authentication with session cookie
-- [x] **UX-01**: Dark/light theme toggle with persistent preference
-- [x] **UX-02**: Desktop-first professional admin UI using ShadCN components
-
-## v2 Requirements
-
-Deferred to future release. Tracked but not in current roadmap.
-
-### Matching Enhancements
-
-- **MATCH-01**: Geographic/state-based matching criteria for broker orders
-- **MATCH-02**: Lead quality analytics and conversion pattern tracking
-
-### Scale & Access
-
-- **SCALE-01**: Multi-user admin with role-based access
-- **SCALE-02**: Broker self-service portal for order management
-- **SCALE-03**: Payment/billing integration for automated invoicing
+- Delivery success rate percentage on dashboard
+- Failed deliveries list with error details on dashboard
+- Deep links in SMS alerts to relevant dashboard pages
+- Daily digest comparison to prior day/week averages
+- Actionable items section in digest (unresolved unassigned, failing orders)
+- Suggested action text in unassigned alerts based on failure reason
+- Active orders summary in daily digest
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Ping/post bidding system | Fixed-price model with pre-negotiated orders. Zero value for single-operator. |
-| Lead scoring/quality engine | Credit score from GHL is the quality signal. Leads are pre-qualified upstream. |
-| Form builder / lead capture | System receives leads via webhook only. No direct capture. |
-| Email/SMS to brokers | GHL automations handle broker notifications natively. |
-| Lead deduplication engine | Single source (GHL). Unique constraint on ghl_contact_id handles edge cases. |
-| Mobile-first responsive UI | Desktop admin tool. Responsive enough for tablet, not mobile-optimized. |
-| Multi-tenant marketplace | Single operator. No buyer/seller portals. |
+| Historical delivery analytics with date range | Dashboard is for today's health, not historical analysis |
+| Per-broker delivery stats on main dashboard | Already visible on broker detail pages |
+| Configurable alert channels (Slack, email, push) | One admin, one channel (GHL SMS). Add if team grows |
+| Alert severity levels | One event type (failed_permanent). No gradient needed |
+| Alert acknowledgement / snooze / escalation | One-person operation. Manual retry endpoint is the "ack" |
+| Configurable digest schedule | One admin, hardcoded 8 AM Pacific. Change cron if needed |
+| Weekly/monthly roll-up digests | Defer until operational patterns emerge |
+| Delivery latency metrics | Need baseline data first |
 
 ## Traceability
 
-Which phases cover which requirements. Updated during roadmap creation.
-
-| Requirement | Phase | Status |
-|-------------|-------|--------|
-| AUTH-01 | Phase 1 | Complete |
-| BRKR-01 | Phase 1 | Complete |
-| BRKR-02 | Phase 1 | Complete |
-| BRKR-03 | Phase 1 | Complete |
-| BRKR-04 | Phase 4 | Complete |
-| ORDR-01 | Phase 1 | Complete |
-| ORDR-02 | Phase 1 | Complete |
-| ORDR-03 | Phase 1 | Complete |
-| ORDR-04 | Phase 1 | Complete |
-| ORDR-05 | Phase 1 | Complete |
-| ORDR-06 | Phase 1 | Complete |
-| ASGN-01 | Phase 1 | Complete |
-| ASGN-02 | Phase 1 | Complete |
-| ASGN-03 | Phase 1 | Complete |
-| ASGN-04 | Phase 1 | Complete |
-| ASGN-05 | Phase 1 | Complete |
-| ASGN-06 | Phase 1 | Complete |
-| ASGN-07 | Phase 1 | Complete |
-| HOOK-01 | Phase 2 | Complete |
-| HOOK-02 | Phase 2 | Complete |
-| HOOK-03 | Phase 2 | Complete |
-| HOOK-04 | Phase 2 | Complete |
-| HOOK-05 | Phase 2 | Complete |
-| DLVR-01 | Phase 3 | Complete |
-| DLVR-02 | Phase 3 | Complete |
-| DLVR-03 | Phase 3 | Complete |
-| DLVR-04 | Phase 3 | Complete |
-| DASH-01 | Phase 4 | Complete |
-| DASH-02 | Phase 4 | Complete |
-| DASH-03 | Phase 4 | Complete |
-| DASH-04 | Phase 4 | Complete |
-| DASH-05 | Phase 4 | Complete |
-| DASH-06 | Phase 4 | Complete |
-| DASH-07 | Phase 4 | Complete |
-| DASH-08 | Phase 4 | Complete |
-| DASH-09 | Phase 4 | Complete |
-| DASH-10 | Phase 4 | Complete |
-| DASH-11 | Phase 4 | Complete |
-| DASH-12 | Phase 4 | Complete |
-| DASH-13 | Phase 4 | Complete |
-| DASH-14 | Phase 4 | Complete |
-| DASH-15 | Phase 4 | Complete |
-| DASH-16 | Phase 4 | Complete |
-| DASH-17 | Phase 4 | Complete |
-| RT-01 | Phase 5 | Complete |
-| RT-02 | Phase 5 | Complete |
-| UX-01 | Phase 5 | Complete |
-| UX-02 | Phase 4 | Complete |
-
-**Coverage:**
-- v1 requirements: 48 total
-- Mapped to phases: 48
-- Unmapped: 0
-
----
-*Requirements defined: 2026-03-12*
-*Last updated: 2026-03-12 after roadmap creation*
+| Requirement | Phase | Plan | Status |
+|-------------|-------|------|--------|
+| MNTR-01 | — | — | Pending |
+| MNTR-02 | — | — | Pending |
+| MNTR-03 | — | — | Pending |
+| MNTR-04 | — | — | Pending |
+| MNTR-05 | — | — | Pending |
+| ALRT-01 | — | — | Pending |
+| ALRT-02 | — | — | Pending |
+| ALRT-03 | — | — | Pending |
+| ALRT-04 | — | — | Pending |
+| ALRT-05 | — | — | Pending |
+| DGST-01 | — | — | Pending |
+| DGST-02 | — | — | Pending |
+| DGST-03 | — | — | Pending |
+| DGST-04 | — | — | Pending |

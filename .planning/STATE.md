@@ -10,17 +10,17 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 ## Current Position
 
 Phase: 6 of 9 (Alert Foundation)
-Plan: 0 of 2 in current phase
-Status: Ready to plan
-Last activity: 2026-03-13 — v1.1 roadmap created
+Plan: 2 of 2 in current phase
+Status: Phase 6 complete
+Last activity: 2026-03-13 — Completed 06-02 alert dedup table
 
-Progress: [█████████████░░░░░░░░░░░░░] 52% (13/25 plans across all milestones)
+Progress: [███████████████░░░░░░░░░░░] 60% (15/25 plans across all milestones)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13 (v1.0)
-- Average duration: 7min
+- Total plans completed: 15 (v1.0 + v1.1 Phase 6)
+- Average duration: 6min
 - Total execution time: ~1.5 hours
 
 **By Phase:**
@@ -32,9 +32,10 @@ Progress: [█████████████░░░░░░░░░░
 | 03-lead-delivery | 2 | 10min | 5min |
 | 04-admin-dashboard | 4 | — | — |
 | 05-realtime-polish | 2 | — | — |
+| 06-alert-foundation | 2 | 2min | 1min |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (7min), 02-01 (3min), 02-02 (4min), 03-01 (2min), 03-02 (8min)
+- Last 5 plans: 02-02 (4min), 03-01 (2min), 03-02 (8min), 06-01 (1min), 06-02 (1min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -51,6 +52,8 @@ Recent decisions affecting current work:
 - GHL rate limit: alerts share 100 req/10s budget with lead delivery, prioritize delivery
 - pg_cron UTC only: daily digest at 0 16 * * * UTC = 8 AM PST (accept 1hr DST drift)
 - Single send-alert edge function with type discriminator serves both failure and unassigned alerts
+- No write RLS on alert_state; Phase 7 triggers use SECURITY DEFINER for inserts/updates
+- alert_state context_id is text type for flexibility across broker_id and lead_id formats
 
 ### Pending Todos
 
@@ -71,5 +74,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: v1.1 roadmap created, ready to plan Phase 6
+Stopped at: Completed 06-02-PLAN.md (Phase 6 complete)
 Resume file: None

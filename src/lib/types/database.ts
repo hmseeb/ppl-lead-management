@@ -154,6 +154,7 @@ export type Database = {
           state: string | null
           status: string
           step_data: Json | null
+          timezone: string | null
           token: string
           weekend_pause: boolean | null
         }
@@ -184,6 +185,7 @@ export type Database = {
           state?: string | null
           status?: string
           step_data?: Json | null
+          timezone?: string | null
           token?: string
           weekend_pause?: boolean | null
         }
@@ -214,6 +216,7 @@ export type Database = {
           state?: string | null
           status?: string
           step_data?: Json | null
+          timezone?: string | null
           token?: string
           weekend_pause?: boolean | null
         }
@@ -523,6 +526,10 @@ export type Database = {
         Returns: string
       }
       check_delivery_responses: { Args: never; Returns: undefined }
+      is_within_contact_hours: {
+        Args: { p_broker_id: string }
+        Returns: boolean
+      }
       process_webhook_retries: {
         Args: { p_batch_size?: number }
         Returns: undefined

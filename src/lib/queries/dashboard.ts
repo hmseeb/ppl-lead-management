@@ -55,6 +55,67 @@ export async function fetchLeadVolume7Days() {
   return days
 }
 
+export type DeliveryStats = {
+  leads: { received: number; assigned: number; unassigned: number }
+  total: number
+  sent: number
+  failed: number
+  channels: {
+    crm_webhook: { total: number; failed: number }
+    email: { total: number; failed: number }
+    sms: { total: number; failed: number }
+  }
+}
+
+export async function fetchDeliveryStats(): Promise<DeliveryStats> {
+  const supabase = createAdminClient()
+  const todayStart = startOfDay(new Date()).toISOString()
+
+  const [
+    totalDeliveries,
+    sentDeliveries,
+    failedDeliveries,
+    webhookTotal,
+    emailTotal,
+    smsTotal,
+    webhookFailed,
+    emailFailed,
+    smsFailed,
+    leadsReceived,
+    leadsAssigned,
+    leadsUnassigned,
+  ] = await Promise.all([
+    supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart),
+    supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('status', 'sent'),
+    supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).in('status', ['failed', 'failed_permanent']),
+    supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('channel', 'crm_webhook'),
+    supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('channel', 'email'),
+    supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('channel', 'sms'),
+    supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('channel', 'crm_webhook').in('status', ['failed', 'failed_permanent']),
+    supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('channel', 'email').in('status', ['failed', 'failed_permanent']),
+    supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('channel', 'sms').in('status', ['failed', 'failed_permanent']),
+    supabase.from('leads').select('id', { count: 'exact', head: true }).gte('created_at', todayStart),
+    supabase.from('leads').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('status', 'assigned'),
+    supabase.from('leads').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('status', 'unassigned'),
+  ])
+
+  return {
+    leads: {
+      received: leadsReceived.count ?? 0,
+      assigned: leadsAssigned.count ?? 0,
+      unassigned: leadsUnassigned.count ?? 0,
+    },
+    total: totalDeliveries.count ?? 0,
+    sent: sentDeliveries.count ?? 0,
+    failed: failedDeliveries.count ?? 0,
+    channels: {
+      crm_webhook: { total: webhookTotal.count ?? 0, failed: webhookFailed.count ?? 0 },
+      email: { total: emailTotal.count ?? 0, failed: emailFailed.count ?? 0 },
+      sms: { total: smsTotal.count ?? 0, failed: smsFailed.count ?? 0 },
+    },
+  }
+}
+
 export async function fetchRecentActivity(limit = 20) {
   const supabase = createAdminClient()
 

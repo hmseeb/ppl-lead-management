@@ -1,5 +1,5 @@
 const GHL_BASE_URL = 'https://services.leadconnectorhq.com'
-const GHL_API_VERSION = '2021-04-15'
+const GHL_API_VERSION = '2021-07-28'
 
 function getApiToken(): string {
   const token = process.env.GHL_API_TOKEN
@@ -87,7 +87,7 @@ export async function sendEmail(
         type: 'Email',
         contactId,
         subject: `New Lead Assigned: ${[lead.first_name, lead.last_name].filter(Boolean).join(' ') || 'Unknown'}`,
-        message: buildEmailHtml(lead),
+        html: buildEmailHtml(lead),
         emailFrom: fromEmail,
       }),
       signal: AbortSignal.timeout(15_000),

@@ -7,11 +7,18 @@ import { BrokerStatusBadge } from './broker-status-badge'
 import { format } from 'date-fns'
 import Link from 'next/link'
 
-export function BrokerDetail({ broker, orders, leads }: {
+export function BrokerDetail({ broker, orders, leads, queuedDeliveries }: {
   broker: any
   orders: any[]
   leads: any[]
+  queuedDeliveries: any[]
 }) {
+  const scheduleLabel = broker.contact_hours === 'business_hours'
+    ? 'Business Hours (9-5)'
+    : broker.contact_hours === 'custom'
+      ? 'Custom'
+      : 'Anytime'
+
   return (
     <div className="space-y-6">
       {/* Profile */}
@@ -28,6 +35,57 @@ export function BrokerDetail({ broker, orders, leads }: {
           </div>
         </CardContent>
       </Card>
+
+      {/* Contact Hours */}
+      <Card>
+        <CardHeader><CardTitle className="text-lg">Contact Hours</CardTitle></CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div><span className="text-muted-foreground">Schedule:</span> {scheduleLabel}</div>
+            {broker.contact_hours === 'custom' && (
+              <div><span className="text-muted-foreground">Window:</span> {broker.custom_hours_start} - {broker.custom_hours_end}</div>
+            )}
+            <div><span className="text-muted-foreground">Weekend Pause:</span> {broker.weekend_pause ? 'Yes' : 'No'}</div>
+            <div><span className="text-muted-foreground">Timezone:</span> {broker.timezone || 'America/Los_Angeles (default)'}</div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Queued Deliveries */}
+      {queuedDeliveries.length > 0 && (
+        <Card>
+          <CardHeader><CardTitle className="text-lg">Queued Deliveries ({queuedDeliveries.length})</CardTitle></CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Lead</TableHead>
+                  <TableHead>Channel</TableHead>
+                  <TableHead>Queued At</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {queuedDeliveries.map((d: any) => {
+                  const lead = d.leads as { first_name: string | null; last_name: string | null } | null
+                  return (
+                    <TableRow key={d.id}>
+                      <TableCell>
+                        {lead ? `${lead.first_name} ${lead.last_name}` : '-'}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary" className="text-xs uppercase">{d.channel}</Badge>
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        {format(new Date(d.created_at), 'MMM d, h:mm a')}
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Orders */}
       <Card>

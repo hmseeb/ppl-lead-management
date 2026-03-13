@@ -60,7 +60,7 @@ export async function fetchBrokerDetail(id: string) {
 
   if (!broker) return null
 
-  const [{ data: orders }, { data: leads }] = await Promise.all([
+  const [{ data: orders }, { data: leads }, { data: queuedDeliveries }] = await Promise.all([
     supabase
       .from('orders')
       .select('id, status, total_leads, leads_delivered, leads_remaining, verticals, credit_score_min, bonus_mode, created_at')
@@ -75,11 +75,18 @@ export async function fetchBrokerDetail(id: string) {
       .eq('assigned_broker_id', id)
       .order('assigned_at', { ascending: false })
       .limit(100),
+    supabase
+      .from('deliveries')
+      .select('id, channel, created_at, lead_id, leads ( first_name, last_name )')
+      .eq('broker_id', id)
+      .eq('status', 'queued')
+      .order('created_at', { ascending: true }),
   ])
 
   return {
     broker,
     orders: orders ?? [],
     leads: leads ?? [],
+    queuedDeliveries: queuedDeliveries ?? [],
   }
 }

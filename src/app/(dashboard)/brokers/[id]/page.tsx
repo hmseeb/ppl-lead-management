@@ -36,7 +36,7 @@ export default async function BrokerDetailPage({
         </div>
         <BrokerQuickActions brokerId={id} activeOrdersCount={activeCount} pausedOrdersCount={pausedCount} />
       </div>
-      <BrokerDetail broker={result.broker} orders={result.orders} leads={result.leads} />
+      <BrokerDetail broker={result.broker} orders={result.orders} leads={result.leads} queuedDeliveries={result.queuedDeliveries} />
     </div>
   )
 }

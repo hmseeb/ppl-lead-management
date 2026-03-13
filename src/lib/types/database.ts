@@ -641,6 +641,7 @@ export type Database = {
         Args: { p_batch_size?: number }
         Returns: undefined
       }
+      reset_monthly_orders: { Args: never; Returns: number }
     }
     Enums: {
       [_ in never]: never

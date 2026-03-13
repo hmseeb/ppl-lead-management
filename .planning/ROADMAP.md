@@ -5,7 +5,7 @@
 - ✅ **v1.0 MVP** - Phases 1-5 (shipped 2026-03-12)
 - ✅ **v1.1 Monitoring & Alerting** - Phases 6-9 (shipped 2026-03-13)
 - ✅ **v1.2 Broker Hours Enforcement** - Phases 10-12 (shipped 2026-03-13)
-- 🚧 **v2.0 Smart Scoring Engine** - Phases 13-17 (in progress)
+- ✅ **v2.0 Smart Scoring Engine** - Phases 13-17 (shipped 2026-03-13)
 
 ## Phases
 
@@ -47,7 +47,7 @@
 - [ ] **Phase 14: Pre-flight Validation** - Reject bad leads before scoring and deduplicate on email + phone
 - [ ] **Phase 15: Scoring Engine + Tier Gating** - Replace ORDER BY with 0-100 scoring algorithm, hard credit tier filters, and loan range exclusion
 - [x] **Phase 16: Routing Audit Trail** - Per-lead routing logs with score breakdowns viewable on lead detail page
-- [ ] **Phase 17: Monthly Recurring Orders** - Auto-reset leads_delivered on the 1st for monthly orders with audit logging
+- [x] **Phase 17: Monthly Recurring Orders** - Auto-reset leads_delivered on the 1st for monthly orders with audit logging
 
 ## Phase Details
 
@@ -119,7 +119,7 @@ Plans:
   4. One-time orders are never affected by the monthly reset
 **Plans:** 1 plan
 Plans:
-- [ ] 17-01-PLAN.md -- Monthly reset SQL function + pg_cron schedule + activity log UI update
+- [x] 17-01-PLAN.md -- Monthly reset SQL function + pg_cron schedule + activity log UI update
 
 ## Progress
 
@@ -144,4 +144,4 @@ Phases execute in numeric order: 13 -> 14 -> 15 -> 16 -> 17
 | 14. Pre-flight Validation | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 15. Scoring Engine + Tier Gating | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 16. Routing Audit Trail | v2.0 | 2/2 | Complete | 2026-03-13 |
-| 17. Monthly Recurring Orders | v2.0 | 0/1 | Not started | - |
+| 17. Monthly Recurring Orders | v2.0 | 1/1 | Complete | 2026-03-13 |

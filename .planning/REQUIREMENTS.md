@@ -75,13 +75,13 @@
 | TIER-03 | Phase 15 | Done |
 | ORDER-01 | Phase 13 | Done |
 | ORDER-02 | Phase 13 | Done |
-| ORDER-03 | Phase 17 | Pending |
+| ORDER-03 | Phase 17 | Done |
 | ORDER-04 | Phase 13 | Done |
 | ORDER-05 | Phase 15 | Done |
 | AUDIT-01 | Phase 16 | Done |
 | AUDIT-02 | Phase 14/16 | Done |
 | AUDIT-03 | Phase 16 | Done |
-| AUDIT-04 | Phase 17 | Pending |
+| AUDIT-04 | Phase 17 | Done |
 
 **Coverage:**
 - v2.0 requirements: 24 total

@@ -58,36 +58,36 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| VALID-01 | — | Pending |
-| VALID-02 | — | Pending |
-| VALID-03 | — | Pending |
-| VALID-04 | — | Pending |
-| SCORE-01 | — | Pending |
-| SCORE-02 | — | Pending |
-| SCORE-03 | — | Pending |
-| SCORE-04 | — | Pending |
-| SCORE-05 | — | Pending |
-| SCORE-06 | — | Pending |
-| SCORE-07 | — | Pending |
-| SCORE-08 | — | Pending |
-| TIER-01 | — | Pending |
-| TIER-02 | — | Pending |
-| TIER-03 | — | Pending |
-| ORDER-01 | — | Pending |
-| ORDER-02 | — | Pending |
-| ORDER-03 | — | Pending |
-| ORDER-04 | — | Pending |
-| ORDER-05 | — | Pending |
-| AUDIT-01 | — | Pending |
-| AUDIT-02 | — | Pending |
-| AUDIT-03 | — | Pending |
-| AUDIT-04 | — | Pending |
+| VALID-01 | Phase 14 | Pending |
+| VALID-02 | Phase 14 | Pending |
+| VALID-03 | Phase 14 | Pending |
+| VALID-04 | Phase 14 | Pending |
+| SCORE-01 | Phase 15 | Pending |
+| SCORE-02 | Phase 15 | Pending |
+| SCORE-03 | Phase 15 | Pending |
+| SCORE-04 | Phase 15 | Pending |
+| SCORE-05 | Phase 15 | Pending |
+| SCORE-06 | Phase 15 | Pending |
+| SCORE-07 | Phase 15 | Pending |
+| SCORE-08 | Phase 15 | Pending |
+| TIER-01 | Phase 15 | Pending |
+| TIER-02 | Phase 15 | Pending |
+| TIER-03 | Phase 15 | Pending |
+| ORDER-01 | Phase 13 | Pending |
+| ORDER-02 | Phase 13 | Pending |
+| ORDER-03 | Phase 17 | Pending |
+| ORDER-04 | Phase 13 | Pending |
+| ORDER-05 | Phase 15 | Pending |
+| AUDIT-01 | Phase 16 | Pending |
+| AUDIT-02 | Phase 16 | Pending |
+| AUDIT-03 | Phase 16 | Pending |
+| AUDIT-04 | Phase 17 | Pending |
 
 **Coverage:**
 - v2.0 requirements: 24 total
-- Mapped to phases: 0
-- Unmapped: 24 ⚠️
+- Mapped to phases: 24
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-13*
-*Last updated: 2026-03-13 after initial definition*
+*Last updated: 2026-03-13 after roadmap creation*

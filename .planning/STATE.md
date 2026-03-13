@@ -5,14 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** v2.0 Smart Scoring Engine — Defining requirements
+**Current focus:** v2.0 Smart Scoring Engine — Phase 13: Order Model Expansion
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-03-13 — Milestone v2.0 started
+Phase: 13 of 17 (Order Model Expansion)
+Plan: 0 of ? in current phase
+Status: Ready to plan
+Last activity: 2026-03-13 — Roadmap created for v2.0 milestone
+
+Progress: [████████████████████░░░░░░░░░░] 71% (phases 1-12 complete, 13-17 pending)
 
 ## Performance Metrics
 
@@ -28,10 +30,12 @@ Last activity: 2026-03-13 — Milestone v2.0 started
 All decisions logged in PROJECT.md Key Decisions table.
 
 **v2.0 Context:**
-- Dan (client) confirmed order-based architecture stays — new spec adapted to orders, not brokers
-- Verticals are informational, credit score is the real routing criteria
-- Credit tiers: 580+ for MCA/Term loans, 680+ for term loans and 0% credit stacking
-- LEAD_ROUTING_SPEC.md in project root contains the full spec (broker-centric, needs order adaptation)
+- Dan confirmed order-based architecture stays. Spec adapted: orders are the routing unit, not brokers.
+- Credit tiers: 600+ for MCA/Term loans, 680+ for term loans and 0% credit stacking
+- LEAD_ROUTING_SPEC.md is broker-centric reference. Our implementation uses orders (leads_remaining/leads_delivered on orders, not brokers).
+- Current assign_lead() uses advisory locks + ORDER BY weighted rotation. Scoring replaces the ORDER BY clause.
+- fill_rate = leads_delivered / total_leads (on orders table)
+- Existing fields: leads_remaining, leads_delivered, total_leads, credit_score_min, bonus_mode on orders
 
 ### Pending Todos
 
@@ -39,8 +43,9 @@ None.
 
 ### Blockers/Concerns
 
-- GHL webhook payload schema is not formally documented and may change. Store raw jsonb alongside parsed fields.
+- GHL webhook payload schema not formally documented. Raw jsonb stored alongside parsed fields.
 - GHL rate limit behavior under real load (100 req/10s) not empirically tested.
+- Scoring function complexity: the new assign_lead will be significantly larger. Consider breaking scoring into a helper function.
 
 ### Quick Tasks Completed
 
@@ -53,5 +58,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: Milestone v2.0 initialization
+Stopped at: v2.0 roadmap created, ready to plan Phase 13
 Resume file: None

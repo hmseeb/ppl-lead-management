@@ -12,8 +12,8 @@ Requirements for broker hours enforcement. Each maps to roadmap phases.
 - [x] **HOUR-01**: Delivery checks broker's contact_hours before firing (anytime = immediate, business_hours = 9-5, custom = start/end range)
 - [x] **HOUR-02**: Delivery checks weekend_pause and holds Saturday/Sunday deliveries for brokers with it enabled
 - [x] **HOUR-03**: Out-of-hours deliveries get status `queued` instead of firing immediately
-- [ ] **HOUR-04**: pg_cron job runs every 5 minutes to release queued deliveries when broker's window opens
-- [ ] **HOUR-05**: Queued deliveries fire in FIFO order (oldest first) when window opens
+- [x] **HOUR-04**: pg_cron job runs every 5 minutes to release queued deliveries when broker's window opens
+- [x] **HOUR-05**: Queued deliveries fire in FIFO order (oldest first) when window opens
 
 ### Timezone
 

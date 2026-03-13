@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** Phase 10 - Hours-Aware Delivery
+**Current focus:** Phase 11 - Queue Processing
 
 ## Current Position
 
-Phase: 10 of 12 (Hours-Aware Delivery)
+Phase: 11 of 12 (Queue Processing)
 Plan: 1 of 1 (Complete)
-Status: Phase 10 complete
-Last activity: 2026-03-13 — Completed 10-01 hours-aware delivery migration
+Status: Phase 11 complete
+Last activity: 2026-03-13 — Completed 11-01 queue processing migration
 
-Progress: [█████████████████████████] 100% v1.0+v1.1 | [███░░░░░░░] 33% v1.2
+Progress: [█████████████████████████] 100% v1.0+v1.1 | [██████░░░░] 67% v1.2
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 20 (v1.0: 13, v1.1: 6, v1.2: 1)
+- Total plans completed: 21 (v1.0: 13, v1.1: 6, v1.2: 2)
 - Average duration: 5min
 - Total execution time: ~1.5 hours
 
@@ -37,6 +37,7 @@ Progress: [███████████████████████
 | 08-delivery-stats-dashboard | 2 | 3min | 2min |
 | 09-daily-digest | 1 | 2min | 2min |
 | 10-hours-aware-delivery | 1 | 3min | 3min |
+| 11-queue-processing | 1 | 1min | 1min |
 
 ## Accumulated Context
 
@@ -48,6 +49,11 @@ All decisions logged in PROJECT.md Key Decisions table.
 - Default timezone America/Los_Angeles when broker has no timezone set (TZ-01)
 - Unknown contact_hours values fail-open as 'anytime' to avoid blocking deliveries
 - v_delivery_status computed once per assign_lead() call, shared across all channel INSERTs
+
+**Phase 11:**
+- crm_webhook deliveries set to 'sent' on release (mirrors fire_outbound_webhook trigger)
+- email/sms deliveries set to 'pending' on release (edge function handles final status)
+- Vault secrets fetched once before loop for efficiency
 
 ### Pending Todos
 
@@ -69,5 +75,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: Completed 10-01-PLAN.md (hours-aware delivery migration)
+Stopped at: Completed 11-01-PLAN.md (queue processing migration)
 Resume file: None

@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** Phase 9 — Daily Digest (v1.1 Monitoring & Alerting) — Plan 1 of 1 COMPLETE
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: 9 of 9 (Daily Digest)
-Plan: 1 of 1 in current phase
-Status: Phase 9 plan 01 complete. ALL PHASES COMPLETE.
-Last activity: 2026-03-13 — Completed 09-01 daily digest pipeline
+Phase: — (between milestones)
+Plan: —
+Status: v1.0 + v1.1 shipped. Planning next milestone.
+Last activity: 2026-03-13 — Completed v1.1 Monitoring & Alerting milestone
 
-Progress: [█████████████████████████] 76% (19/25 plans across all milestones)
+Progress: [█████████████████████████] 100% (19/19 plans across v1.0 + v1.1)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19 (v1.0 + v1.1 Phases 6-9)
+- Total plans completed: 19 (v1.0: 13, v1.1: 6)
 - Average duration: 5min
 - Total execution time: ~1.5 hours
 
@@ -37,46 +37,20 @@ Progress: [███████████████████████
 | 08-delivery-stats-dashboard | 2 | 3min | 2min |
 | 09-daily-digest | 1 | 2min | 2min |
 
-**Recent Trend:**
-- Last 5 plans: 06-02 (1min), 07-01 (2min), 08-01 (2min), 08-02 (1min), 09-01 (2min)
-- Trend: stable
-
-*Updated after each plan completion*
-
 ## Accumulated Context
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
-
-- v1.1 architecture: DB triggers fire pg_net calls to edge functions (not application-level hooks)
-- Alert dedup: 15-minute window per broker/reason to prevent SMS storms
-- GHL rate limit: alerts share 100 req/10s budget with lead delivery, prioritize delivery
-- pg_cron UTC only: daily digest at 0 16 * * * UTC = 8 AM PST (accept 1hr DST drift)
-- Single send-alert edge function with type discriminator serves both failure and unassigned alerts
-- No write RLS on alert_state; Phase 7 triggers use SECURITY DEFINER for inserts/updates
-- alert_state context_id is text type for flexibility across broker_id and lead_id formats
-- WHEN clause on trigger definition (not inside function) to prevent unnecessary function invocations
-- PERFORM for pg_net alert calls (no request_id needed, cleaner than SELECT INTO)
-- NULL-safe name resolution: TRIM + NULLIF + fallback chain (email, phone, id::text)
-- 12 parallel count queries for delivery stats (no SQL view, matches fetchKpis pattern)
-- Health threshold: 0% = healthy, <25% = degraded, >=25% = critical, 0 total = inactive
-- 500ms debounce delay with 2s max wait for RealtimeListener balances responsiveness vs efficiency
-- Edge function self-queries Supabase for digest stats (simpler than pre-computing in SQL)
-- Always send digest on zero-activity days (confirms system is running)
-- Partial digest failures (email ok, SMS failed) recorded as 'sent' with partial_failure flag
-- Native Intl.DateTimeFormat for edge function date formatting (no date-fns dependency)
+All decisions logged in PROJECT.md Key Decisions table.
 
 ### Pending Todos
 
-None yet.
+None.
 
 ### Blockers/Concerns
 
 - GHL webhook payload schema is not formally documented and may change. Store raw jsonb alongside parsed fields.
-- Admin must exist as a GHL contact with valid SMS-capable number before alerts work. Verify during Phase 6.
-- GHL rate limit behavior under real load (100 req/10s) not empirically tested. Monitor X-RateLimit-Remaining during Phase 6.
+- GHL rate limit behavior under real load (100 req/10s) not empirically tested.
 
 ### Quick Tasks Completed
 
@@ -87,5 +61,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: Completed 09-01-PLAN.md (daily digest pipeline)
+Stopped at: v1.1 milestone complete
 Resume file: None

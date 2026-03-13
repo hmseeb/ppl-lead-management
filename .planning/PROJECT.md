@@ -42,11 +42,22 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 ### Out of Scope
 
 - State/geo-based matching criteria — deferred to future iteration
-- Direct SMS/email notifications to brokers — GHL automations handle this
 - Mobile-optimized UI — desktop-first admin tool
 - Multi-user admin accounts — single shared password for now
 - Broker self-service portal — admin-only for v1
 - Payment/billing integration — orders are tracked manually
+
+## Current Milestone: v1.1 Monitoring & Alerting
+
+**Goal:** Give the admin full visibility into delivery health with real-time stats, instant failure/unassigned alerts via GHL, and a daily digest so nothing slips through the cracks overnight.
+
+**Target features:**
+- Delivery Stats Dashboard — today's numbers (leads in, assigned, delivered per channel, failed) on the existing admin dashboard with realtime updates
+- Failure Alerts — immediate GHL SMS to admin when a delivery hits failed_permanent
+- Daily Digest — morning summary at 8 AM Pacific (3 PM PKT) with overnight stats sent via GHL email/SMS
+- Unassigned Lead Alerts — real-time GHL notification when a lead can't be matched to any order
+
+**Tech:** Supabase (pg_cron, pg_net, edge functions, vault), GHL Conversations API, existing Next.js dashboard
 
 ## Context
 
@@ -79,4 +90,4 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 | Weighted rotation by leads_remaining | Fair distribution proportional to order size, prevents starvation | — Pending |
 
 ---
-*Last updated: 2026-03-12 after initialization*
+*Last updated: 2026-03-13 — milestone v1.1 started*

@@ -2,19 +2,19 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-12)
+See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** Phase 4: Admin Dashboard
+**Current focus:** Milestone v1.1 — Monitoring & Alerting
 
 ## Current Position
 
-Phase: 4 of 5 (Admin Dashboard)
-Plan: 0 of 3 in current phase
-Status: In Progress
-Last activity: 2026-03-12 - Completed quick task 1: Implement webhook delivery backend for sending assigned leads to broker CRM
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-13 — Milestone v1.1 started
 
-Progress: [███████░░░] 57%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -44,30 +44,14 @@ Progress: [███████░░░] 57%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- Roadmap: 5 phases following strict dependency chain (schema+engine -> webhooks -> delivery -> dashboard -> realtime)
-- Research: Assignment engine must be a single Postgres function with advisory locks. No application-level rotation state.
-- Research: Use Supavisor port 6543 from day one to prevent connection exhaustion on Vercel.
-- Research: Pin zod to ~3.24.0 (v4 blocked by react-hook-form resolver issue).
-- 01-01: Used assignment_status column instead of reusing existing brokers.status (which stores onboarding status)
-- 01-01: Added anon SELECT policies on all tables for ppl-onboarding compatibility when enabling RLS
-- 01-01: Used text CHECK constraints instead of enum types for status columns
-- 01-02: Used native HTML select for broker dropdown (base-ui Select too complex for RHF integration)
-- 01-02: Split name into first_name/last_name server-side to match existing brokers schema
-- 01-02: Server Actions with Zod safeParse pattern established for all mutations
-- 01-03: Used pg_advisory_xact_lock(1,0) two-integer form to avoid GoTrue lock collision
-- 01-03: Weighted rotation: leads_remaining/total_leads DESC, last_assigned_at ASC NULLS FIRST
-- 01-03: Used assignment_status (not status) for broker eligibility in assign_lead()
-- 02-01: SELECT-first idempotency over upsert for ghl_contact_id duplicate detection
-- 02-01: Graceful assignment errors: catch and return in response, never lose the lead
-- 02-01: Empty string handling for email/phone via z.literal('') to handle GHL inconsistency
-- 02-02: Inline Zod schema for PATCH (different from POST schema, self-contained per endpoint)
-- 02-02: PROTECTED_FIELDS array explicitly blocks assignment columns from PATCH updates
-- 03-01: Delivery payload is a jsonb snapshot of lead data at assignment time (not a reference)
-- 03-01: delivery_id returned as null when broker has no crm_webhook_url (graceful skip)
-- 03-02: Retry uses stored payload jsonb snapshot (not re-fetch from leads table) for consistent data
-- 03-02: Permanent failures logged to activity_log with webhook_failed_permanent event_type
-- 03-02: pg_net _http_response rows cleaned up after processing to prevent table bloat
-- [Phase quick-1]: Added delivery_id to AssignmentResult interface for webhook wiring
+- Roadmap v1.0: 5 phases all complete (schema+engine -> webhooks -> delivery -> dashboard -> realtime)
+- Research: Assignment engine is a single Postgres function with advisory locks
+- Research: Use Supavisor port 6543 from day one
+- Research: Pin zod to ~3.24.0 (v4 blocked by react-hook-form resolver issue)
+- Multi-channel delivery: unified `deliveries` table with channel column (crm_webhook/email/sms)
+- GHL integration: PIT token for Conversations API, edge function for email/SMS delivery
+- DB triggers: `trg_fire_outbound_webhook` for CRM webhooks, `trg_fire_ghl_delivery` for email/SMS via edge function
+- pg_cron retry pipeline handles all channels (every 2min, 3 retries, exponential backoff)
 
 ### Pending Todos
 
@@ -75,7 +59,7 @@ None yet.
 
 ### Blockers/Concerns
 
-- GHL webhook payload schema is not formally documented and may change. Store raw jsonb alongside parsed fields. Validate with real test webhook during Phase 2.
+- GHL webhook payload schema is not formally documented and may change. Store raw jsonb alongside parsed fields.
 
 ### Quick Tasks Completed
 
@@ -85,6 +69,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12
-Stopped at: Completed 03-02-PLAN.md (Phase 3 complete)
+Last session: 2026-03-13
+Stopped at: Starting milestone v1.1 research
 Resume file: None

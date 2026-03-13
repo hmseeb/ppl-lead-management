@@ -84,10 +84,10 @@ Plans:
   2. Admin receives an email with overnight stats: leads received, assigned, unassigned, deliveries by channel, and failures
   3. Admin receives an SMS with a compact summary of the same overnight numbers
   4. Both email and SMS are delivered via GHL Conversations API to the configured admin contact
-**Plans**: TBD
+**Plans:** 1 plan
 
 Plans:
-- [ ] 09-01: daily-digest edge function, pg_cron schedule, HTML email template, and SMS summary format
+- [ ] 09-01-PLAN.md — digest_runs table, pg_cron schedule, send-digest edge function with HTML email and SMS via GHL
 
 ## Progress
 

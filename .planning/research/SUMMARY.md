@@ -1,195 +1,162 @@
 # Project Research Summary
 
 **Project:** PPL Lead Management
-**Domain:** Internal Lead Distribution & Round-Robin Management System (Pay-Per-Lead Vertical)
-**Researched:** 2026-03-12
+**Domain:** Monitoring, Alerting & Daily Digest for Lead Distribution System (v1.1 Milestone)
+**Researched:** 2026-03-13
 **Confidence:** HIGH
 
 ## Executive Summary
 
-PPL Lead Management is a single-operator internal admin tool for routing leads from a GHL main account to broker GHL sub-accounts via weighted round-robin distribution. Unlike multi-tenant lead marketplaces (Boberdoo, LeadsPedia, CAKE), this system has a narrowly scoped mandate: receive leads via webhook, match them against active broker orders using vertical + credit score criteria, distribute proportionally by leads remaining, and deliver to brokers via outbound webhook. The research is unambiguous on the right approach: the entire matching and assignment logic must live as a single Postgres function with advisory locks. No application-level rotation state, no round-trips between TypeScript and SQL during assignment. This is the architectural loadbearing wall.
+This milestone adds a monitoring and alerting layer on top of an already-functional lead distribution system. The existing infrastructure (Supabase with pg_cron, pg_net, Realtime, GHL Conversations API, activity_log, deliveries table) provides nearly all the building blocks needed. The v1.1 scope is four features: delivery stats dashboard, failure alerts (SMS), unassigned lead alerts (SMS), and a daily digest (email + SMS). All four are independent of each other, meaning they can be built in any order. The total new code footprint is small: one npm package (`@date-fns/tz`), one ShadCN component (`chart`), two Supabase Edge Functions, one SQL migration file with triggers and a cron job, and a handful of UI components.
 
-The recommended stack is tightly constrained by ecosystem alignment with ppl-onboarding: Next.js 16 on Vercel, Supabase (Postgres + Realtime + pg_cron + pg_net), ShadCN + Tailwind v4, TanStack Table, and nuqs for URL state. The delivery pipeline is the most opinionated stack decision: pg_net fires outbound webhooks asynchronously after transaction commit, pg_cron retries failures every 2 minutes, and the inbound handler returns 200 in under 2 seconds without blocking on delivery. This is non-negotiable given Vercel's serverless timeout constraints and GHL's expectation of fast responses.
+The recommended approach is event-driven: DB triggers on existing tables fire pg_net calls to a single reusable `send-alert` edge function. This avoids modifying any core assignment or delivery logic. The daily digest uses a pg_cron scheduled edge function. The dashboard stats are server-rendered queries refreshed via the already-wired Realtime listener. The architecture is deliberately thin. No new queuing systems, no new notification providers, no new state management.
 
-The top risk is concurrent webhook handling. Two leads arriving within milliseconds can produce double assignments, rotation drift, or over-delivery to a single broker if the assignment function is not properly serialized with `pg_advisory_xact_lock(1, 0)`. This must be addressed in Phase 1, before any webhook code ships. Secondary risks are connection exhaustion on Vercel (use Supavisor port 6543 from day one) and webhook idempotency (unique constraint on `ghl_contact_id` + delivery ID). Every other pitfall is recoverable. These three are not.
+The primary risk is alert storms. When a broker's endpoint goes down, correlated failures produce dozens of `failed_permanent` events simultaneously, each firing an SMS alert. This exhausts the admin's patience AND the shared GHL API rate limit (100 req/10s), potentially blocking actual lead deliveries. This must be solved with alert deduplication/throttling BEFORE shipping alert triggers. Secondary risks include pg_cron's UTC-only scheduling (manageable with fixed UTC offset) and Realtime refresh storms during batch lead processing (fixable with debouncing).
 
 ## Key Findings
 
 ### Recommended Stack
 
-The stack is fully determined by ecosystem constraints and has no ambiguous choices. Next.js 16 + React 19 + TypeScript 5 is the core. Supabase provides the database, auth-adjacent cookie sessions, realtime broadcast, pg_cron scheduled jobs, and pg_net async HTTP. ShadCN (Tailwind v4, Radix UI primitives) handles UI components. TanStack Table v8 powers all data tables. nuqs manages URL filter/sort state. Zod v3 (NOT v4) validates webhook payloads and forms. react-hook-form with @hookform/resolvers bridges forms to Zod schemas.
+The existing stack (Next.js 16, React 19, Supabase, ShadCN, recharts, date-fns v4, iron-session) requires almost no additions. The v1.1 milestone needs exactly one new npm dependency and one new ShadCN component. Everything else is Supabase-side infrastructure (SQL migrations, edge functions, pg_cron jobs).
 
-**Core technologies:**
-- **Next.js 16 + React 19**: Full-stack framework, Server Components for dashboard shells, Server Actions for mutations, Route Handlers for webhook endpoints.
-- **Supabase (Postgres + extensions)**: pg_advisory_xact_lock for race-free assignment, pg_net for async outbound webhooks, pg_cron for retry scheduling, Realtime Broadcast for live dashboard updates.
-- **ShadCN + Tailwind v4**: UI components, no external dependency (copy-paste model), Radix UI accessibility primitives included.
-- **TanStack Table v8**: Headless table engine for leads, brokers, orders, unassigned queue — all server-side sortable and filterable.
-- **Zod v3 + react-hook-form**: Shared validation schemas across webhook handlers and admin forms. Zod v4 blocked by active resolver compatibility issues.
-- **nuqs v2**: URL-synced filter/sort state for shareable filtered dashboard views.
-- **Simple cookie auth**: bcrypt hash in env var + HttpOnly cookie + Next.js middleware. No Supabase Auth, no NextAuth. Explicitly scoped to single shared password.
+**Core additions:**
+- `@date-fns/tz` (^1.4.1): Pacific Time calculations for daily digest scheduling. Official companion to date-fns v4, provides `TZDate` class. 761 bytes.
+- ShadCN `chart` component: Theme-aware recharts wrapper (`ChartContainer`, `ChartTooltip`). Zero runtime dependencies, just copied component files. New stats charts should use this instead of manual theme handling.
+- Two Supabase Edge Functions (`send-alert`, `daily-digest`): Deno runtime, no npm packages needed. Use `@supabase/supabase-js@2` via esm.sh (same pattern as existing `deliver-ghl`).
+- `admin_settings` table: Single-row config table for admin alert preferences. Enforced by unique index on `((true))`.
+- `delivery_stats_today` view: Query convenience for dashboard stats. Server components use it, Realtime refreshes it indirectly.
 
-**Critical version constraint:** Pin `zod` to `~3.24.0`. Do NOT upgrade to v4 until the @hookform/resolvers issue is resolved (tracked at github.com/react-hook-form/resolvers/issues/813).
+**Explicitly not adding:** Resend/SendGrid/Twilio (already using GHL), Supabase Queues/pgmq (overkill for alert volume), node-cron (pg_cron handles scheduling), additional toast libraries (Sonner already installed).
 
 ### Expected Features
 
-The system is a well-understood domain (internal lead routing), and the feature set is fully determined by what must exist for leads to flow from GHL to brokers. Competitor benchmarking (Boberdoo, LeadsPedia, CAKE, Lead Prosper) confirms the table stakes list and makes anti-feature choices clear.
+**Must have (table stakes):**
+- Today's delivery counts (total, sent, failed, by channel) on the dashboard
+- Real-time stat updates via existing Supabase Realtime
+- SMS alert on `failed_permanent` with lead name, broker name, channel, and error
+- SMS alert on unassigned lead with lead details and match failure reason
+- Daily digest at 8 AM Pacific via email (detailed) and SMS (summary)
+- Admin GHL contact ID configuration (stored in Vault)
 
-**Must have (table stakes, v1):**
-- Inbound webhook endpoint (GHL lead ingestion) + PATCH endpoint (AI call notes update)
-- Lead storage with full GHL payload capture
-- Broker profiles CRUD (name, company, GHL webhook URL, status)
-- Order management with criteria (vertical multi-select, credit score min, lead cap) and full lifecycle (start/pause/resume/complete)
-- Criteria matching + weighted round-robin distribution (proportional to leads_remaining)
-- Atomic assignment with advisory locks (race condition prevention)
-- Outbound webhook delivery to broker GHL sub-accounts
-- Unassigned queue (visible, with match failure reasons)
-- Admin dashboard with KPIs, leads table, brokers table, orders table, activity log
-- Simple password auth
+**Should have (differentiators for v1.1.x):**
+- Alert deduplication/throttling (prevents SMS spam from correlated failures)
+- Channel health indicators (color-coded green/yellow/red per delivery channel)
+- Delivery success rate percentage
+- Failed deliveries list with error details for quick triage
+- Deep links in SMS alerts to relevant dashboard pages
 
-**Should have (v1.x fast-follow):**
-- Webhook retry via pg_cron (3 attempts, exponential backoff with jitter)
-- Real-time dashboard updates via Supabase Realtime Broadcast
-- Auto order completion when leads_remaining hits 0
-- Bonus mode toggle per order (continue receiving leads past cap)
-- Manual assignment from unassigned queue
-- Match failure reason per unassigned lead
-- Webhook delivery status UI per lead
-
-**Defer (v2+):**
-- Geographic/state-based routing (explicitly out of scope per PROJECT.md)
-- Broker self-service portal
-- Payment/billing integration
-- Multi-user admin with roles
-- Lead quality analytics
-
-**Anti-features to avoid entirely:** Ping/post bidding (unnecessary complexity for fixed-price model), lead deduplication engine (unique constraint on ghl_contact_id is sufficient), form builder (webhook-only ingestion), email/SMS broker notifications (GHL automations handle this), mobile-responsive admin (desktop-only tool).
+**Defer (v1.2+):**
+- Historical delivery analytics with date range picker
+- Delivery latency metrics
+- Configurable alert channels (Slack, email, push)
+- Per-broker delivery stats breakdown
+- Weekly/monthly roll-up digests
+- Alert acknowledgement/escalation systems
 
 ### Architecture Approach
 
-The architecture has four clean layers: Ingestion (Next.js Route Handlers), Assignment Engine (Postgres `assign_lead()` function), Delivery Layer (pg_net + pg_cron), and Presentation (Server Components + Realtime). The critical design principle is that the assignment engine lives entirely in SQL. The TypeScript layer validates and stores the lead, then calls `SELECT assign_lead(lead_id)` as a single RPC. All matching, rotation, decrement, logging, and delivery queuing happens inside that one transaction. After commit, a database trigger fires pg_net for async outbound delivery. A pg_cron job scans for failures every 2 minutes and retries with batching and jitter.
+The v1.1 layer sits entirely downstream of existing logic. No core functions (`assign_lead`, `process_webhook_retries`, `fire_outbound_webhook`) are modified. Monitoring hooks into outputs, not internals. The pattern is: DB event -> trigger -> pg_net -> edge function -> GHL API. A single `send-alert` edge function serves both failure and unassigned alerts via a `type` discriminator. The daily digest is a separate edge function because it needs to query and aggregate before sending. The dashboard stats component plugs into the existing server component data fetching pattern and gets free Realtime updates.
 
 **Major components:**
-1. **Inbound Webhook Handler** (`app/api/webhooks/inbound/route.ts`) — validates GHL payload via Zod, inserts lead, calls assign_lead() RPC, returns 200 in <2 seconds.
-2. **Assignment Engine** (`supabase/migrations/` Postgres function) — advisory lock, criteria matching, weighted rotation, atomic assignment, event logging, webhook delivery queuing.
-3. **Delivery Layer** (pg_net trigger + pg_cron retry scanner) — async outbound webhook fire, 3-attempt retry with exponential backoff + jitter, permanent failure after max retries.
-4. **Dashboard** (Next.js App Router route group `(dashboard)/`) — SSR data fetch, Server Actions for mutations, RealtimeProvider for live updates.
-5. **Realtime Provider** (`components/realtime/realtime-provider.tsx`) — Supabase Broadcast channel subscriber, distributes events to dashboard components via React context.
-6. **Auth Guard** (`middleware.ts`) — session cookie check, redirects unauthenticated requests.
-
-**Build order from architecture research:** Schema first, then assignment engine, then webhook layer, then dashboard, then realtime. Dashboard SSR + manual refresh works fine while realtime is added last.
+1. `send-alert` edge function -- Generic alert sender. Receives alert type + payload, formats SMS body, sends via GHL Conversations API to admin contact.
+2. `daily-digest` edge function -- Queries last 24h stats from Supabase, builds HTML email + compact SMS, sends both via GHL.
+3. DB triggers (`trg_alert_delivery_failed`, `trg_alert_unassigned_lead`) -- Fire on `deliveries` UPDATE to `failed_permanent` and `unassigned_queue` INSERT. Route through pg_net to `send-alert`.
+4. `<DeliveryStats />` component + `fetchDeliveryStats()` query -- Server-rendered KPI cards for today's delivery metrics. Refreshed by existing Realtime listener.
+5. `admin_settings` table -- Single-row config for admin alert preferences and GHL contact ID.
 
 ### Critical Pitfalls
 
-1. **Double lead assignment from concurrent webhooks** — Use `pg_advisory_xact_lock(1, 0)` as a global serializer inside `assign_lead()`. Add UNIQUE constraint on `(lead_id, broker_id)` as backstop. Must be in Phase 1, cannot be retrofitted.
-
-2. **Synchronous business logic in webhook endpoint** — Webhook handler must return 200 in <2 seconds. Assignment RPC + pg_net are async after transaction commit. Never block the inbound handler on outbound delivery.
-
-3. **Advisory lock ID collisions with Supabase internals** — Use two-integer form `pg_advisory_xact_lock(namespace, id)` where namespace is your own constant (1 for assignment, 2 for retry). Supabase GoTrue uses single-bigint form, so two-int form avoids collision.
-
-4. **Supabase connection exhaustion on Vercel** — Always connect via Supavisor transaction mode (port 6543). Configure from day one. Known issue with connection growth on Vercel Fluid Compute if misconfigured.
-
-5. **Retry storms exhausting pg_cron** — Batch retry scanner to process max 10 failures per cron execution. Add exponential backoff with jitter to `next_retry_at`. Prevents cascade when a broker endpoint recovers from downtime.
+1. **Alert storm from batch failures** -- When a broker's endpoint goes down, 10-50 deliveries fail simultaneously, each firing an SMS. Prevent with per-broker debounce (15-minute window), batch summaries, and a cap of 5 alert SMS per hour.
+2. **GHL API rate limit exhaustion** -- Alert SMS shares the same 100 req/10s budget as lead delivery SMS/email. A 429 response on alerts can cascade into more failures and more alerts. Prevent by never treating 429 as permanent failure, reading `X-RateLimit-Remaining`, and prioritizing lead delivery over alerts.
+3. **Trigger cascade / infinite loop** -- New trigger on `deliveries` UPDATE can cascade through existing triggers and Realtime listeners. Prevent with `WHEN` clause on trigger definition (not inside function), never updating the triggering row from the alert handler, and tracking alert state in a separate table.
+4. **pg_cron UTC-only scheduling** -- pg_cron on Supabase cannot be configured for local timezones. Schedule daily digest at `0 16 * * *` UTC (= 8 AM PST / 9 AM PDT). Accept the 1-hour DST drift for a non-urgent morning summary.
+5. **Realtime refresh storm** -- Batch lead arrivals create 20-30 delivery rows, each emitting a Realtime event that triggers `router.refresh()`. Prevent by debouncing refresh calls (500ms window, 2s max wait) and filtering Realtime subscriptions to relevant status transitions.
 
 ## Implications for Roadmap
 
-Based on architecture's explicit build order dependency chain and pitfall phase mapping, the suggested phase structure is 5 phases:
+Based on research, the suggested phase structure follows the dependency graph: shared infrastructure first, then high-value alerting features, then visual dashboard, then the more complex scheduled digest.
 
-### Phase 1: Foundation + Assignment Engine
-**Rationale:** Everything depends on the database schema. The assignment logic (the hardest, most critical part) must be built and tested before any webhook code exists. All 6 Phase 1 pitfalls must be prevented here, and they cannot be retrofitted. This phase is the loadbearing foundation.
-**Delivers:** Working Postgres schema, `assign_lead()` function with advisory locks, local dev environment, generated TypeScript types, simple auth.
-**Addresses:** Lead storage, broker profiles, order management, assignment engine, advisory lock namespace, connection pooling configuration.
-**Avoids:** Double assignment (advisory lock), lock collisions (namespace convention), connection exhaustion (Supavisor config), rotation drift (single-function atomicity).
+### Phase 1: Alert Foundation
+**Rationale:** Both failure alerts and unassigned alerts depend on the `send-alert` edge function and admin contact ID configuration. Build the shared pipeline first and validate that GHL SMS delivery works before wiring up triggers.
+**Delivers:** `send-alert` edge function, `admin_settings` table, Vault secret for admin contact ID, alert deduplication mechanism (`alert_state` table with cleanup cron).
+**Addresses:** Admin GHL contact ID config (P1 blocker), alert throttling infrastructure.
+**Avoids:** Alert storm pitfall by building deduplication BEFORE triggers. GHL rate limit pitfall by adding 429 handling to edge function from day one.
 
-### Phase 2: Webhook Layer
-**Rationale:** With the assignment engine proven, wire up the inbound surface. GHL sends leads here. This is the system's external interface. Must be fast (<2s) and idempotent.
-**Delivers:** Inbound webhook endpoint, lead update PATCH endpoint, webhook secret validation, payload normalization, integration with assign_lead() RPC.
-**Addresses:** Inbound webhook, lead update (PATCH), webhook idempotency constraint.
-**Avoids:** Synchronous webhook handler timeout, missing idempotency, PATCH-before-POST ordering.
+### Phase 2: Real-time Alerts
+**Rationale:** Highest operational value. Admin learns about failures and unassigned leads immediately instead of discovering them hours later on the dashboard. Depends on Phase 1's `send-alert` function.
+**Delivers:** `trg_alert_delivery_failed` trigger on `deliveries` table, `trg_alert_unassigned_lead` trigger on `unassigned_queue`, SMS alerts to admin with contextual details.
+**Addresses:** Failure alert SMS (P1), unassigned lead alert SMS (P1).
+**Avoids:** Trigger cascade pitfall by using `WHEN` clause and separate alert state table. GHL rate limit pitfall by debouncing per-broker.
 
-### Phase 3: Delivery + Retry
-**Rationale:** Leads are being assigned but not yet delivered. This phase closes the loop: outbound webhook to broker GHL sub-accounts, delivery tracking, and the retry mechanism. Once this works, the system can actually route leads end-to-end.
-**Delivers:** pg_net outbound webhook trigger, webhook_deliveries table, pg_cron retry scanner with batching and jitter, permanent failure marking.
-**Addresses:** Outbound webhook delivery, webhook retry, dead letter pattern.
-**Avoids:** Retry storms (batch + jitter), silent failures (delivery status tracking), broker delivery failures going unnoticed.
+### Phase 3: Delivery Stats Dashboard
+**Rationale:** Purely additive UI work with no backend dependencies. Builds on existing data and existing Realtime wiring. Lower urgency than alerts because the admin can already see delivery status on individual lead/broker pages.
+**Delivers:** `fetchDeliveryStats()` query, `<DeliveryStats />` component with KPI cards, channel health indicators, `delivery_stats_today` view.
+**Addresses:** Today's delivery counts (P1), real-time stats refresh (P1), channel health indicators (P1), delivery success rate (P2).
+**Avoids:** Realtime refresh storm pitfall by adding debounce to `RealtimeListener` before wiring new stats components.
 
-### Phase 4: Admin Dashboard
-**Rationale:** The assignment pipeline works end-to-end. Now build the admin visibility layer. All tables are populated with real data at this point, which makes dashboard development efficient.
-**Delivers:** KPI overview page, leads table + detail views, brokers management, orders management with inline actions, unassigned queue + manual assignment, activity log.
-**Addresses:** All admin UI table stakes (leads table, orders table, brokers table, unassigned queue, activity log, KPIs).
-**Avoids:** Unassigned queue invisible (prominent KPI placement), activity log without filtering, order status changes without confirmation dialog.
-
-### Phase 5: Realtime + Polish
-**Rationale:** Dashboard SSR works fine with manual refresh. Realtime is enhancement, not foundation. Add it once the dashboard views are stable. Also covers bonus mode, auto-completion edge cases, match failure reasons, and theme toggle.
-**Delivers:** Supabase Realtime Broadcast setup, database event triggers, RealtimeProvider component, live update handlers, bonus mode toggle, dark/light theme, UX polish.
-**Addresses:** Real-time updates, auto order completion, bonus mode, match failure reason tracking, webhook delivery status UI.
-**Avoids:** Polling antipattern (Broadcast vs setInterval), Realtime subscription without filters (cost and noise), stale dashboard after disconnect (reconnection handler).
+### Phase 4: Daily Digest
+**Rationale:** Most complex feature (new edge function, pg_cron job, HTML email template, timezone handling). Benefits from having Phases 1-3 deployed and validated first. The Vault config and GHL contact ID are already proven by alert features. Least urgent because the dashboard and alerts already cover real-time monitoring.
+**Delivers:** `daily-digest` edge function, pg_cron schedule at `0 16 * * *` UTC, HTML email + SMS summary, `digest_runs` tracking table.
+**Addresses:** Daily digest email + SMS (P1).
+**Avoids:** pg_cron UTC pitfall by using fixed UTC offset with documented DST behavior. Unbounded query pitfall by tracking last digest run timestamp. Edge function timeout pitfall by pre-computing stats in Postgres.
 
 ### Phase Ordering Rationale
 
-- Schema + engine before webhooks because the webhook handler calls the engine. Can't build the caller before the callee.
-- Webhooks before dashboard because the dashboard displays data that only exists after webhooks are processed.
-- Delivery before dashboard because the dashboard needs to show delivery status, which only exists after the delivery layer runs.
-- Dashboard before realtime because Realtime pushes updates to UI components that must already exist.
-- Advisory lock, connection pooling, and idempotency in Phase 1 because all three are impossible to retrofit safely once data flows through the system.
+- **Phase 1 before Phase 2:** Triggers without the alert sender are useless. The deduplication mechanism must exist before triggers fire to prevent alert storms from day one.
+- **Phase 2 before Phase 3:** Alerts deliver more operational value than a dashboard. The admin finds out about problems within seconds via SMS instead of having to check a webpage.
+- **Phase 3 before Phase 4:** The dashboard is simpler to build and test (pure frontend + query, no scheduling). Getting it live early gives the admin visibility while the digest is being built.
+- **Phase 4 last:** Depends on scheduling infrastructure that's harder to test (must wait for cron to fire). Benefits from validated Vault config and GHL integration proven by earlier phases.
+- **All phases avoid modifying core logic:** No changes to `assign_lead()`, `process_webhook_retries()`, `fire_outbound_webhook()`, or `fire_ghl_delivery()`.
 
 ### Research Flags
 
 Phases likely needing deeper research during planning:
-- **Phase 3:** pg_net trigger + pg_cron retry interaction has nuanced timing. The net._http_response table polling logic for retry detection needs careful implementation. The ARCHITECTURE.md example is a solid starting point but retry scanner edge cases (response timeout vs 4xx vs 5xx) need validation.
-- **Phase 2:** GHL webhook payload schema is not formally documented and "can change without notice" per PITFALLS.md. Store raw jsonb alongside parsed fields. The defensive parsing pattern needs to be locked in before Phase 2 ships.
+- **Phase 2 (Real-time Alerts):** Needs careful mapping of all existing triggers on `deliveries` and `unassigned_queue` tables before adding new ones. The cascade graph must be drawn out to verify no infinite loops. Worth running `/gsd:research-phase`.
+- **Phase 4 (Daily Digest):** The HTML email template needs design decisions (what sections, what layout). The `digest_runs` tracking table adds state management. DST handling should be validated. Worth running `/gsd:research-phase`.
 
 Phases with standard patterns (skip research-phase):
-- **Phase 1:** Postgres advisory locks + schema design are well-documented. The assign_lead() function is fully specified in ARCHITECTURE.md. Supavisor configuration is documented in official Vercel/Supabase guides.
-- **Phase 4:** ShadCN + TanStack Table + nuqs dashboard patterns are extremely well-documented. Standard implementation. No novel integration.
-- **Phase 5:** Supabase Realtime Broadcast pattern is documented and the RealtimeProvider pattern is specified in ARCHITECTURE.md.
+- **Phase 1 (Alert Foundation):** Well-documented Supabase patterns (edge functions, Vault, admin config tables). The `send-alert` function mirrors the existing `deliver-ghl` function.
+- **Phase 3 (Delivery Stats Dashboard):** Standard ShadCN + server component + Supabase query pattern. Identical to existing dashboard code. Just new queries and components.
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | All technologies verified against official docs, versions confirmed active/stable, ecosystem constraints from ppl-onboarding explicitly honored. One known gotcha: zod v4 compatibility. |
-| Features | HIGH | Competitor analysis across 5 major lead distribution platforms. Feature scope is tightly bounded by PROJECT.md constraints. Anti-feature list is well-reasoned. |
-| Architecture | HIGH | Official Supabase docs for pg_net, pg_cron, Realtime. PostgreSQL docs for advisory locks. assign_lead() function is fully specified. Build order dependency chain is explicit. |
-| Pitfalls | HIGH | Mix of official docs (Vercel timeouts, Supabase connection limits, RLS) and community-verified patterns. GoTrue advisory lock collision and Supavisor growth bug are MEDIUM (community reports, not reproduced internally). |
+| Stack | HIGH | Nearly zero new dependencies. `@date-fns/tz` is the official date-fns companion. ShadCN chart is well-documented. All verified against official docs. |
+| Features | HIGH | Feature landscape is narrow (4 features, all well-scoped). Industry comparisons (Hookdeck, HubSpot, LeadCenter) validate the table stakes. Anti-features are clearly identified. |
+| Architecture | HIGH | All patterns already exist in the codebase (`deliver-ghl` edge function, pg_cron jobs, Vault secrets, Realtime subscriptions). v1.1 replicates proven patterns. |
+| Pitfalls | HIGH | Critical pitfalls verified against Supabase official docs, GHL API docs, and actual codebase analysis. Alert storm and rate limit pitfalls are based on how `process_webhook_retries()` actually works (verified in migration 00011). |
 
 **Overall confidence:** HIGH
 
 ### Gaps to Address
 
-- **GHL payload schema stability:** Store raw `jsonb` payload on every lead record. Parse defensively with Zod `.partial()` for optional fields. Validate this assumption with a real GHL test webhook during Phase 2.
-- **Supavisor connection growth bug on Vercel Fluid Compute:** Monitor connection count after first Vercel deployment. If connections grow without releasing, switch from `attachDatabasePool` approach. Mitigation is well-understood (transaction mode port 6543) but the specific bug is community-reported, not officially resolved.
-- **Advisory lock scope:** The research recommends `pg_advisory_xact_lock(1, 0)` as a global assignment serializer (all verticals queue through one lock). This is correct for fairness at current lead volumes. If per-vertical parallelism is needed later, lock granularity can be changed to `(1, hashtext(vertical))`. Document this decision in the first migration.
-- **Zod v4 upgrade path:** Track github.com/react-hook-form/resolvers/issues/813. Once resolved, upgrade path is straightforward (zod v4 is largely compatible with v3 schemas).
+- **GHL rate limit behavior under load:** The 100 req/10s limit is documented, but real-world enforcement (hard cutoff vs graceful degradation) is not well-documented for PIT tokens. Test empirically during Phase 1 by monitoring `X-RateLimit-Remaining` headers.
+- **RealtimeListener debounce impact:** The current listener has no debouncing. Adding it might affect existing features (lead list updates, activity feed). Test the debounce threshold (500ms) against the existing dashboard experience before deploying.
+- **Admin GHL contact creation:** The admin must exist as a contact in GHL to receive SMS/email. The research assumes this contact exists. Verify during Phase 1 setup that the contact ID is valid and SMS-capable.
+- **FEATURES.md trigger mechanism disagreement:** FEATURES.md recommends application-level hooks (Option B), while ARCHITECTURE.md and STACK.md recommend DB triggers (Option A). ARCHITECTURE.md's approach is more robust (triggers fire regardless of code path) and aligns with existing patterns in the codebase. **Recommendation: use DB triggers** (ARCHITECTURE.md approach).
 
 ## Sources
 
 ### Primary (HIGH confidence)
-- Next.js 16 + 16.1 release blogs — framework features, Server Actions, Turbopack
-- Supabase pg_net docs — async HTTP, 200 req/sec limit, at-most-once delivery
-- Supabase pg_cron docs — scheduling, max concurrent jobs
-- Supabase Realtime getting started + limits — Broadcast vs postgres_changes recommendation
-- Supabase SSR package docs — server/browser client creation, cookie-based sessions
-- Supabase Queues (pgmq) docs — guaranteed delivery, visibility timeouts
-- PostgreSQL advisory locks official docs — transaction-scoped lock behavior
-- Vercel function timeout docs — 10s free tier, 60s Pro tier
-- Vercel connection pooling guide — Supavisor transaction mode requirement
-- ShadCN Tailwind v4 docs — migration guide, CSS-first config
-- ShadCN data table + chart docs — TanStack Table integration, Recharts usage
-- Supabase RLS + API keys docs — security boundaries
-- GoHighLevel webhook documentation — payload format, custom webhook actions
+- [Supabase Scheduling Edge Functions](https://supabase.com/docs/guides/functions/schedule-functions) -- pg_cron + pg_net patterns
+- [Supabase Cron Docs](https://supabase.com/docs/guides/cron) -- Scheduling, UTC behavior
+- [Supabase Edge Functions Architecture](https://supabase.com/docs/guides/functions/architecture) -- Cold start times, limits
+- [Supabase Vault Docs](https://supabase.com/docs/guides/database/vault) -- Secret storage patterns
+- [Supabase Realtime postgres_changes](https://supabase.com/docs/guides/realtime/postgres-changes) -- Subscription patterns
+- [date-fns v4 timezone docs](https://date-fns.org/v4.0.0/docs/Time-Zones) -- TZDate, @date-fns/tz usage
+- [ShadCN Chart component](https://ui.shadcn.com/docs/components/radix/chart) -- ChartContainer, ChartConfig
+- [pg_cron GitHub - Timezone Issue #16](https://github.com/citusdata/pg_cron/issues/16) -- UTC-only confirmed
+- Existing codebase analysis (migrations 00008, 00010, 00011; realtime-listener.tsx; deliver-ghl/index.ts; ghl/client.ts)
 
 ### Secondary (MEDIUM confidence)
-- PostgreSQL advisory locks blog posts (flaviodelgrosso.com, rclayton.silvrback.com) — practical patterns
-- Next.js App Router patterns 2026 (dev.to) — route groups, Server Actions conventions
-- Supabase webhook retry community discussion (github.com/orgs/supabase) — pg_cron + pg_net retry pattern
-- Supavisor connection growth issue (github.com/orgs/supabase/discussions/40671) — known bug, community-reported
-- GoTrue advisory lock deadlocks (github.com/supabase/supabase-js/issues/1594) — known issue
-- Webhook idempotency patterns (hookdeck.com) — implementation guidance
-- Webhook retry best practices (svix.com, hookdeck.com) — exponential backoff, jitter, dead letter
-
-### Tertiary (LOW confidence)
-- Lead distribution systems overview (leadops.io) — domain patterns, hybrid routing
+- [GoHighLevel API Rate Limits](https://help.gohighlevel.com/support/solutions/articles/48001060529) -- 100 req/10s burst, 200K/day
+- [GHL Conversations API](https://marketplace.gohighlevel.com/docs/ghl/conversations/) -- SMS/Email sending patterns
+- [HubSpot Daily Digest](https://yourhubspotexpert.com/boost-productivity-with-hubspots-sales-workspace-daily-digest-email/) -- Digest format patterns
+- [Hookdeck Webhook Monitoring](https://hookdeck.com/webhooks/guides/monitoring) -- Failure rate monitoring patterns
+- [Alert Fatigue Best Practices - OneUpTime](https://oneuptime.com/blog/post/2026-02-20-monitoring-alerting-best-practices/view) -- Deduplication patterns
+- [Alert Deduplication - Atlassian Opsgenie](https://support.atlassian.com/opsgenie/docs/what-is-alert-de-duplication/) -- Industry standard patterns
 
 ---
-*Research completed: 2026-03-12*
+*Research completed: 2026-03-13*
 *Ready for roadmap: yes*

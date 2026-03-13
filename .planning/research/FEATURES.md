@@ -1,220 +1,280 @@
 # Feature Research
 
-**Domain:** Lead Distribution & Round-Robin Management (Internal Admin Tool, Pay-Per-Lead Vertical)
-**Researched:** 2026-03-12
+**Domain:** Monitoring, Alerting & Daily Digest for Lead Distribution (v1.1 Milestone)
+**Researched:** 2026-03-13
 **Confidence:** HIGH
 
-## Feature Landscape
+This research maps the feature landscape for four specific capabilities being added to an existing lead management tool: delivery stats dashboard, failure alerts, daily digest, and unassigned lead alerts. All four build on existing infrastructure (deliveries table, GHL client, Supabase Realtime, pg_cron, activity_log).
 
-This research maps the feature landscape of lead distribution systems (Boberdoo, LeadsPedia, CAKE, Lead Prosper, LeanData, and custom CRM lead routing) against what PPL Lead Management actually needs as an internal admin tool. The critical distinction: PPL is NOT a multi-tenant lead marketplace. It is a single-operator tool that receives leads from one source (GHL), matches them to brokers based on order criteria, and fires them to broker GHL sub-accounts. This context shapes every recommendation below.
+## Feature 1: Delivery Stats Dashboard
 
 ### Table Stakes (Users Expect These)
 
-Features the admin expects to exist. Missing these = the tool is broken for its purpose.
-
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
-| **Inbound webhook endpoint** | Core data ingestion. Every competitor accepts leads via POST. Without this, leads don't enter the system. | LOW | Single endpoint, validate payload, store immediately. GHL sends standard webhook payloads. |
-| **Lead storage with full data capture** | Every system stores the raw lead record. Needed for audit, debugging, manual review. | LOW | Store all fields from GHL payload. Include timestamps, source metadata. |
-| **Lead update via PATCH** | AI call notes arrive after initial lead creation. Every mature system handles lead enrichment post-capture. | LOW | Match on ghl_contact_id. Merge new fields, preserve originals. |
-| **Broker profile management** | Boberdoo, LeadsPedia, CAKE all have buyer/broker management. Can't route leads without knowing who the brokers are. | LOW | CRUD for broker records. Name, company, GHL webhook URL, status (active/inactive). |
-| **Order management with criteria matching** | Core of pay-per-lead. Boberdoo calls these "filter sets," LeadsPedia calls them "buyer criteria." Orders define what a broker wants and how many. | MEDIUM | Vertical multi-select + credit score minimum + total leads purchased. Start/pause/resume/complete lifecycle. |
-| **Criteria-based lead-to-order matching** | Every competitor routes on criteria (geo, vertical, score, etc.). Without matching, leads go to wrong brokers. | MEDIUM | Match lead vertical + credit score against active orders. Must handle multiple matching orders (then apply rotation). |
-| **Weighted round-robin distribution** | Industry standard. Boberdoo supports weighted logic. LeanData, CAKE support weighted distribution. Pure round-robin is too simplistic for variable order sizes. | MEDIUM | Weight by leads_remaining so bigger orders get proportionally more leads. This is the core algorithm. |
-| **Outbound webhook delivery to brokers** | Every system delivers leads to buyers. Boberdoo uses "lead delivery," LeadsPedia uses "real-time delivery." For PPL, this means POST to broker's GHL webhook URL. | MEDIUM | Fire lead data to broker's GHL sub-account webhook. Must be fast (sub-second) and reliable. |
-| **Webhook retry with failure handling** | Industry standard. Every serious system retries failed deliveries. Svix, Hookdeck, and all major platforms recommend 3-7 retries with exponential backoff. | MEDIUM | pg_cron async retries. 3 attempts with backoff. Flag failures in dashboard. Dead letter pattern for permanent failures. |
-| **Unassigned lead queue** | Salesforce calls this a "lead queue," Boberdoo has reject/hold queues. Leads that match no criteria must go somewhere visible, not disappear silently. | LOW | Store with reason for non-match (no active orders, no criteria match, all orders paused). |
-| **Manual lead assignment** | Every system with an unassigned queue allows manual override. Admin must be able to fix routing decisions. | LOW | Pick lead from unassigned queue, select broker/order, assign. Log the manual action. |
-| **Admin dashboard with KPIs** | Boberdoo has "premium dashboards," LeadsPedia has "real-time analytics," CAKE has reporting. An admin tool without a dashboard is just a database. | MEDIUM | Total leads today, assignment rate, avg assignment time, leads by broker, failed webhooks count, unassigned count. |
-| **Leads table with filtering and search** | Every competitor has lead browsing. Admin needs to find specific leads, filter by status/broker/date, and view details. | MEDIUM | Sortable, filterable table. Status filter (assigned, unassigned, failed). Search by name/email/phone. Detail view showing full lead data + assignment history. |
-| **Brokers table with lead history** | Boberdoo tracks "line-by-line transactions." Admin needs to see which leads went to which broker and their order fulfillment status. | LOW | Broker list with active order counts, total leads delivered, last delivery timestamp. Click-through to broker detail with lead history. |
-| **Orders table with status and actions** | Core operational view. Admin needs to see all orders, their fulfillment progress, and take actions (pause/resume/complete). | MEDIUM | Color-coded status (active/paused/completed). Progress bars showing leads_delivered/leads_purchased. Inline action buttons. |
-| **Activity log** | Boberdoo tracks all vendor/partner activity. LeadsPedia has "dynamic tracking." Audit trail is table stakes for any system handling money-adjacent operations. | MEDIUM | Log every event: lead received, lead assigned, webhook sent, webhook failed, order created, order paused, manual assignment, etc. Filterable by type, date, broker. |
-| **Atomic lead assignment (concurrency safety)** | Race conditions in lead distribution cause duplicate assignments. Every production system needs locking. Postgres advisory locks are the right tool here. | MEDIUM | Advisory lock on the assignment function. Prevent two concurrent leads from being assigned to the same order slot. Critical for data integrity. |
-| **Simple auth** | Even internal tools need auth. Single password + session cookie is appropriate for a small team admin tool. | LOW | Match ppl-onboarding pattern. bcrypt password, httpOnly session cookie. |
+| **Today's lead count** | Admin needs the most basic "how many leads came in today" number. Every CRM dashboard starts here. | LOW | Already exists via `fetchKpis()` in `dashboard.ts`. Reuse or extend. |
+| **Assigned vs unassigned counts (today)** | Admin needs to know what percentage of today's leads were successfully matched. Split view is standard in every distribution dashboard. | LOW | Already exists as total counts. Need to add today-scoped variant. Filter `leads` where `created_at >= today AND status = 'assigned'` vs `'unassigned'`. |
+| **Delivered count by channel** | Multi-channel delivery (webhook, email, SMS) means the admin needs to see delivery volume per channel. Boberdoo and LeadsPedia both break down delivery stats by method. | LOW | Query `deliveries` table grouped by `channel` where `status = 'sent'` and `created_at >= today`. Three numbers. |
+| **Failed delivery count** | The single most critical health metric. If failures spike, the system is broken. Every webhook monitoring tool (Hookdeck, Svix, Latenode) shows failure counts front and center. | LOW | Query `deliveries` where `status IN ('failed', 'failed_permanent')` and `created_at >= today`. |
+| **Real-time updates** | Stats must update live as new leads arrive and deliveries complete. The existing dashboard already uses Supabase Realtime to refresh on changes to `leads`, `deliveries`, and `unassigned_queue`. | LOW | Already wired. `RealtimeListener` triggers `router.refresh()` on `deliveries` table changes. New stats components will auto-refresh. |
 
-### Differentiators (Competitive Advantage)
-
-Features that aren't expected for a v1 internal tool but add significant operational value.
+### Differentiators
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| **Real-time dashboard updates** | Most internal admin tools require manual refresh. Live-updating KPIs and tables via Supabase Realtime give the admin instant visibility. Matches the speed requirement (leads assigned in seconds, dashboard reflects immediately). | MEDIUM | Supabase Realtime subscriptions on leads, assignments, webhook_logs tables. Dashboard components subscribe to changes. |
-| **Automatic order completion** | When leads_remaining hits 0, order auto-completes. Boberdoo and LeadsPedia have cap management, but auto-completion with optional bonus mode override is a nice touch. Prevents over-delivery. | LOW | Check leads_remaining after each assignment. If 0 and bonus_mode is false, set status to completed. |
-| **Bonus mode toggle** | Unique to PPL's model. Allows a broker to keep receiving leads after their order is technically fulfilled. Not a standard feature in competitors (they use hard caps). This rewards good brokers and generates additional revenue. | LOW | Boolean flag on order. When true, skip the leads_remaining check during assignment. Track bonus leads separately for billing. |
-| **Match failure reason tracking** | Most systems just dump leads in an unassigned queue. Showing WHY a lead didn't match (no active orders for vertical X, credit score too low for all orders, all matching orders paused) gives the admin actionable intelligence. | LOW | During matching, collect rejection reasons per order. Store as JSON array on the unassigned lead record. Display in unassigned queue UI. |
-| **Sub-second assignment latency** | Research confirms: responding within 1 minute increases conversion by 391%. The PPL use case (business owner waiting on thank-you page for AI call) demands even faster. Most systems aim for "under 10 seconds." Sub-second is a real differentiator. | MEDIUM | Optimized matching query, advisory lock, outbound webhook fire. All in one synchronous flow. No queue-based delay for the happy path. |
-| **Webhook delivery status visibility** | Lead Prosper shows "complete lead lifecycle." Most basic admin tools don't show webhook delivery status per lead. Seeing sent/pending/failed/retrying per delivery gives operational confidence. | LOW | Status column on lead detail: pending -> sent -> confirmed or failed. Show retry count, last attempt timestamp, error message. |
-| **Dark/light theme toggle** | Not a differentiator competitively, but a quality-of-life feature for an admin who stares at this dashboard all day. Matches ppl-onboarding. | LOW | ShadCN theme provider. Persistent preference in localStorage. |
+| **Channel health indicators** | Color-coded status per channel (green = all sent, yellow = some failed, red = all failed). Gives instant visual read on which delivery method is having trouble. More useful than raw numbers. | LOW | Derive from counts: green if failed = 0, yellow if failed > 0 but sent > 0, red if sent = 0 and failed > 0. |
+| **Delivery success rate percentage** | "95% delivery rate" is more meaningful than "190 sent, 10 failed." Hookdeck and Svix dashboards lead with success rates. | LOW | Math: `sent / (sent + failed + failed_permanent) * 100`. Display as percentage with color coding. |
+| **Failed deliveries list with error details** | Clickable list of today's failures showing broker name, channel, error message, retry count. Turns a scary red number into actionable items. | MEDIUM | Join `deliveries` to `brokers` and `leads`. Filter by failed status. Show in expandable section or modal. |
+| **Sparkline or mini-chart for lead volume** | Existing 7-day volume chart covers history. A small sparkline showing hourly volume for today gives a sense of current pace. | MEDIUM | Query leads grouped by hour for today. Use a simple bar or area chart. Nice-to-have, defer if scope is tight. |
+| **Delivery latency metrics** | Time between `leads.created_at` and `deliveries.sent_at`. Shows how fast the system is working. Critical given the "business owner waiting on thank-you page" context. | MEDIUM | Compute `avg(deliveries.sent_at - leads.created_at)` for today. Display as "avg delivery time: 1.2s." |
 
-### Anti-Features (Commonly Requested, Often Problematic)
-
-Features that seem good but create problems for this specific project.
+### Anti-Features
 
 | Feature | Why Requested | Why Problematic | Alternative |
 |---------|---------------|-----------------|-------------|
-| **Ping/post bidding system** | Boberdoo, CAKE, and Lead Prosper all offer ping/post for real-time price negotiation. Seems like the "pro" way to distribute leads. | PPL has a fixed-price model with pre-negotiated orders. Adding bidding adds massive complexity (bid collection, timeout handling, fallback logic) with zero value for a single-operator system. | Fixed criteria matching + weighted rotation. Price is determined at order creation time, not per-lead. |
-| **Multi-tenant buyer portal** | Boberdoo and Lead Prosper offer buyer self-service portals. Brokers could manage their own criteria. | Adds auth complexity, permission management, and UI surface area. PPL has a small number of brokers managed by one admin. The ppl-onboarding app already handles broker data collection. | Admin manages all broker/order config. Broker preferences flow through the onboarding app. |
-| **Lead scoring/quality engine** | Boberdoo has LeadQC. LeadsPedia has lead validation. CAKE has enrichment. Seems like every competitor has it. | PPL receives pre-qualified leads (credit pull already done, AI call in progress). Adding a separate scoring engine duplicates work already done upstream. The credit score IS the quality signal. | Use the credit score from GHL as the quality filter. No separate scoring engine. |
-| **Geographic/state-based routing** | Every major competitor supports geo-targeting. Boberdoo filters by zip radius, LeadsPedia by county/state/zip. | Explicitly out of scope per PROJECT.md. Adding geo adds schema complexity, matching complexity, and UI complexity. Can be layered on later if needed. | Defer to future iteration. Schema should be extensible (JSONB criteria field) so geo can be added without migration. |
-| **Email/SMS notifications to brokers** | Lead Prosper and others send alerts. Seems basic to notify brokers of new leads. | GHL automations already handle broker notifications. Building notification infrastructure duplicates what GHL does natively and better. | Webhook to GHL triggers the broker's existing notification automations. |
-| **Payment/billing integration** | Boberdoo has automated invoicing. LeadsPedia has credit management. | Orders are tracked manually for now. Billing adds Stripe integration, invoice generation, credit tracking. Massive scope expansion for a v1. | Track leads_delivered count per order. Manual billing off those numbers. Add billing in v2 if volume justifies it. |
-| **Lead deduplication engine** | Lead Prosper, Boberdoo, CAKE all have dupe checking. Standard in lead marketplaces. | PPL receives leads from a single source (GHL main account). Duplicates would be a GHL problem, not a PPL problem. A simple unique constraint on ghl_contact_id handles the edge case. | Unique constraint on ghl_contact_id. PATCH endpoint handles updates to existing leads. |
-| **Form builder / lead capture** | Boberdoo has a form builder. LeadsPedia has lead capture forms. | PPL doesn't capture leads. It receives them via webhook from GHL. Building capture UI is completely out of scope. | Webhook-only ingestion. |
-| **Multi-user admin with roles** | Most enterprise tools have role-based access. Seems like good practice. | Single admin for v1. Adding user management, roles, permissions is a full auth system. Over-engineered for the current team size. | Single shared password. Add multi-user auth if/when more admins are needed. |
-| **Mobile-responsive admin UI** | Modern tools "should" be mobile-friendly. | This is a desktop-first admin tool used at a workstation. Mobile optimization doubles CSS work for zero operational value. | Desktop-optimized layouts. Responsive enough not to break on tablet, but not mobile-first. |
+| **Historical delivery analytics with date range picker** | "Show me last month's stats" seems useful. | Adds query complexity, chart libraries, date picker UI. The v1.1 goal is today's health, not historical analysis. Activity log already provides historical browsing. | Ship today-only stats. Add date range in v1.2 if the admin actually asks for it. |
+| **Per-broker delivery stats breakdown** | "Show me how each broker's deliveries are doing" seems like a natural drill-down. | Multiplies the dashboard surface area. Each broker's delivery history is already visible on their detail page. Duplicating it on the main dashboard adds complexity without new information. | Link failed deliveries to broker detail pages. The broker detail page already shows their leads. |
+| **Delivery performance comparison charts** | Side-by-side comparison of channels over time. Sounds like a "real" monitoring dashboard. | This is an internal admin tool with one user, not a Datadog instance. Building comparison charts is engineering theater for this use case. | Single success rate number per channel. If one is broken, the admin will see it. |
+
+---
+
+## Feature 2: Failure Alerts (GHL SMS to Admin)
+
+### Table Stakes (Users Expect These)
+
+| Feature | Why Expected | Complexity | Notes |
+|---------|--------------|------------|-------|
+| **SMS alert on `failed_permanent`** | The whole point. When a delivery exhausts all 3 retries, the admin needs to know immediately. Every monitoring system (Hookdeck, UptimeRobot, Datadog) sends alerts on permanent failure. | LOW | The `process_webhook_retries()` function already marks `failed_permanent` and inserts into `activity_log`. Hook into this event. Send SMS via existing `sendSms()` in the GHL client. |
+| **Alert includes lead name and broker name** | A bare "delivery failed" SMS is useless. Admin needs to know WHICH lead and WHICH broker so they can take action. Standard in all alerting systems. | LOW | The `activity_log` entry for `delivery_failed_permanent` already contains `lead_id`, `broker_id`, and `details` with channel and error. Resolve names for the SMS body. |
+| **Alert includes failure channel and error** | "SMS to John Smith for Broker XYZ failed: HTTP 429 rate limited" is actionable. "Something failed" is not. | LOW | Already in the `activity_log.details` JSONB. Extract `channel` and `error_message` for the SMS. |
+
+### Differentiators
+
+| Feature | Value Proposition | Complexity | Notes |
+|---------|-------------------|------------|-------|
+| **Alert deduplication / throttling** | If 10 deliveries fail in 1 minute (e.g., broker's webhook URL is down), don't send 10 SMS. Send one summary. Hookdeck groups related failures. | MEDIUM | Track last alert time. If another failure arrives within N minutes for the same broker, batch them. Could use a simple `last_alert_sent_at` column or in-memory check. Worth doing at MVP because broker URL outages cause cascading failures. |
+| **Alert includes retry history** | "Failed after 3 retries over 7 minutes" gives context about persistence of the problem vs a fluke. | LOW | Already tracked: `retry_count` and timing from delivery record. Include in SMS body. |
+| **Deep link to dashboard** | SMS contains a URL to the lead detail page or deliveries view so admin can jump straight to investigating. | LOW | Append `https://[app-url]/leads/[lead-id]` to the SMS. Trivial. |
+
+### Anti-Features
+
+| Feature | Why Requested | Why Problematic | Alternative |
+|---------|---------------|-----------------|-------------|
+| **Configurable alert channels (Slack, email, push)** | "What if the admin wants Slack instead of SMS?" | One admin, one phone. Building a notification preferences UI with multiple channels is over-engineering. GHL SMS is already integrated. If the admin wants Slack, that's v2. | Hardcode GHL SMS to admin's phone number (stored in env var or Supabase Vault). |
+| **Alert severity levels** | "Critical vs warning vs info" seems like proper alerting. | One event triggers alerts: `failed_permanent`. There's no gradient. It either permanently failed or it didn't. Severity tiers add complexity for one signal. | Single alert type: permanent failure. Everything else shows on the dashboard. |
+| **Alert acknowledgement / snooze** | "Mark alert as handled" like PagerDuty. | This is a one-person operation. The admin sees the SMS, looks at the dashboard, fixes the issue. No need for an ack system. The delivery can be manually retried from the existing retry endpoint. | Manual retry endpoint (`/api/deliveries/[id]/retry`) already exists. That's the "ack." |
+| **Escalation chains** | "If not acknowledged in 10 min, escalate to backup admin." | One admin. No one to escalate to. | Out of scope permanently unless the team grows. |
+
+---
+
+## Feature 3: Daily Digest (Morning Summary)
+
+### Table Stakes (Users Expect These)
+
+| Feature | Why Expected | Complexity | Notes |
+|---------|--------------|------------|-------|
+| **Scheduled delivery at 8 AM Pacific** | The spec says 8 AM Pacific (3 PM PKT). HubSpot sends theirs at "each morning at 8 AM based on portal timezone." LeadCenter sends at 6 AM local. Consistent timing builds a habit. | MEDIUM | Use pg_cron to trigger a Supabase Edge Function at `0 15 * * *` (3 PM UTC = 8 AM Pacific). Edge Function queries stats and sends via GHL. |
+| **Yesterday's lead count** | How many leads came in during the overnight period. The most basic "what happened while I was asleep" metric. | LOW | `SELECT count(*) FROM leads WHERE created_at BETWEEN yesterday_start AND today_start`. |
+| **Assignment breakdown** | How many were assigned vs unassigned. If unassigned count is high, the admin needs to check order config. | LOW | Filter leads by status for yesterday's date range. |
+| **Delivery results per channel** | How many webhook/email/SMS deliveries succeeded vs failed yesterday. The admin needs to know if overnight deliveries landed. | LOW | Query `deliveries` grouped by channel and status for yesterday. |
+| **Failed delivery count with details** | If any deliveries permanently failed overnight, list them. This is the "don't let failures slip through" safety net. | LOW | Query `deliveries` where `status = 'failed_permanent'` and yesterday. Include lead name and broker. |
+| **Unassigned lead count** | How many leads hit the unassigned queue overnight. Non-zero means the admin has work to do. | LOW | Query `unassigned_queue` where `created_at` is yesterday and `resolved = false`. |
+| **Dual delivery via GHL (email + SMS)** | The spec calls for both. Email has the detailed version, SMS has the summary. HubSpot does the same: email with full details, mobile push with highlight. | MEDIUM | Use existing `sendEmail()` for HTML digest and `sendSms()` for a compact summary. Both target the admin's GHL contact ID. |
+
+### Differentiators
+
+| Feature | Value Proposition | Complexity | Notes |
+|---------|-------------------|------------|-------|
+| **Comparison to prior day/week** | "42 leads yesterday (up 15% from last week average)." Gives trend context without building a full analytics dashboard. LeadCenter and HubSpot both include comparative metrics. | LOW | Query previous 7-day average. Compare to yesterday. Include delta. Simple math. |
+| **Actionable items section** | Separate section for "things that need your attention": unresolved unassigned leads, permanently failed deliveries, orders about to complete (leads_remaining < 5). Turns digest from informational to actionable. | MEDIUM | Multiple queries, but all straightforward. Adds real operational value. The admin opens the email and knows exactly what needs doing. |
+| **HTML-formatted email** | Clean, styled email vs plain text. The existing `buildEmailHtml()` in the GHL client already builds styled HTML tables. Reuse the pattern for the digest. | LOW | Build an HTML template with sections. Style inline (email client compatibility). Use the same aesthetic as lead delivery emails. |
+| **Active orders summary** | List active orders with fill progress (e.g., "Broker A: 45/100 leads, 55 remaining"). Gives the admin a quick pulse on order health without opening the dashboard. | LOW | Query `orders` where `status = 'active'`. Join broker name. Show `leads_delivered / total_leads`. |
+
+### Anti-Features
+
+| Feature | Why Requested | Why Problematic | Alternative |
+|---------|---------------|-----------------|-------------|
+| **Configurable digest schedule** | "What if the admin wants it at 7 AM instead of 8?" | One admin, one hardcoded time. Building a schedule picker UI, storing preferences, handling timezone conversion. All for one person. | Hardcode 8 AM Pacific in the pg_cron job. Change it by updating the cron expression if needed. Takes 10 seconds. |
+| **Digest opt-in/opt-out toggle** | "Let the admin disable it." | One admin. If they don't want it, remove the cron job. A UI toggle for one user is silly. | Comment out the cron schedule or set an env flag. |
+| **Weekly/monthly roll-up digests** | "Also send a weekly summary every Friday." | Scope creep. Weekly analytics belong in the dashboard, not in email. The daily digest handles the "what happened overnight" use case. | If weekly is needed later, it's just another cron job with a wider date range. Trivial to add, but defer. |
+| **Digest preview / test send** | "Let me see what it'll look like before enabling." | Build a "send test" button, preview mode, etc. Over-engineering. | Test by triggering the edge function manually once. Verify the email looks right. Done. |
+
+---
+
+## Feature 4: Unassigned Lead Alerts (Real-time GHL Notification)
+
+### Table Stakes (Users Expect These)
+
+| Feature | Why Expected | Complexity | Notes |
+|---------|--------------|------------|-------|
+| **Immediate notification when a lead goes unassigned** | The whole point. When `assign_lead()` returns `status: 'unassigned'`, the admin needs to know NOW. Speed-to-lead research shows response time directly impacts conversion. Every unassigned lead is revenue sitting on the table. | LOW | The `assign_lead()` function already inserts into `unassigned_queue` and `activity_log` with `event_type = 'lead_unassigned'`. Hook into this event. |
+| **Alert includes lead details** | Admin needs to know WHO the lead is to decide whether to manually assign. Name, vertical, credit score are the minimum context. | LOW | The `activity_log` entry already stores `vertical` and `credit_score` in `details`. The `unassigned_queue` stores `reason` and `details`. |
+| **Alert includes match failure reason** | "No active orders for vertical: MCA" or "Credit score 580 below minimum for all orders" tells the admin exactly what to fix. The existing `build_match_failure_reason()` function already generates this. | LOW | Already stored in `unassigned_queue.reason` and `unassigned_queue.details`. Include in the alert. |
+| **SMS delivery to admin** | Consistent with failure alerts. SMS is the immediate channel. Admin's phone buzzes, they see the problem, they act. | LOW | Reuse the same `sendSms()` pattern from failure alerts. Same admin GHL contact ID. |
+
+### Differentiators
+
+| Feature | Value Proposition | Complexity | Notes |
+|---------|-------------------|------------|-------|
+| **Suggested action in alert** | "Lead unassigned: John Smith (MCA, 720). No active MCA orders. Create an order or manually assign." Tells the admin what to DO, not just what happened. | LOW | Based on the failure reason, append a suggestion: "no matching orders" -> "Create an order"; "all orders paused" -> "Resume an order"; "credit score too low" -> "Manually assign or adjust order criteria." |
+| **Batch alert for burst arrivals** | If 5 leads go unassigned within 2 minutes (e.g., batch of MCA leads arrives and no MCA orders exist), send one SMS summarizing all 5 instead of 5 separate messages. Same pattern as failure alert throttling. | MEDIUM | Debounce: hold alerts for 30-60 seconds, then send one summary if multiple accumulated. Prevents SMS fatigue. |
+| **Deep link to unassigned queue** | SMS includes URL to the unassigned queue page where the admin can take action. | LOW | Append `https://[app-url]/unassigned` to the SMS. |
+
+### Anti-Features
+
+| Feature | Why Requested | Why Problematic | Alternative |
+|---------|---------------|-----------------|-------------|
+| **Auto-assign to fallback broker** | "If no match, automatically send to a default broker." | Defeats the purpose of criteria matching. Sending an MCA lead to a broker who only handles SBA loans wastes everyone's time. The admin needs to make a human decision about mismatches. | Alert the admin. Let them manually assign from the queue with full context. |
+| **Scheduled retry of matching** | "Re-run matching every 5 minutes for unassigned leads in case a new order was created." | Creates unpredictable behavior. A lead could suddenly get assigned hours later. The admin should explicitly trigger re-matching after creating a new order. | Manual "re-match" button on the unassigned queue (future feature). For now, manual assignment. |
+| **Email + SMS for every unassigned lead** | "Send both channels like the daily digest." | Email is not immediate enough for this use case. The admin needs a phone buzz, not an inbox notification. Dual-channel for individual real-time alerts is noisy. | SMS only for real-time alerts. Email is for the daily digest (summary format). |
+
+---
 
 ## Feature Dependencies
 
 ```
-[Inbound Webhook]
-    +---> [Lead Storage]
-              +---> [Lead Update (PATCH)]
-              +---> [Criteria Matching] --requires--> [Order Management] --requires--> [Broker Profiles]
-                        +---> [Weighted Round-Robin] --requires--> [Atomic Assignment (Advisory Locks)]
-                                    +---> [Outbound Webhook Delivery] --requires--> [Broker Profiles (GHL URL)]
-                                                +---> [Webhook Retry (pg_cron)]
-                                    +---> [Auto Order Completion] --enhances--> [Bonus Mode Toggle]
-              +---> [Unassigned Queue] --enhances--> [Match Failure Reasons]
-                        +---> [Manual Assignment]
+[Existing: deliveries table + status lifecycle]
+    +---> [Delivery Stats Dashboard] (reads deliveries grouped by channel/status)
+    +---> [Failure Alerts] (triggered by failed_permanent status)
+              +---> [Alert Throttling] (enhancement, prevents SMS spam)
 
-[Activity Log] --observes--> [All of the above]
+[Existing: activity_log + event types]
+    +---> [Failure Alerts] (listens for delivery_failed_permanent event)
+    +---> [Unassigned Alerts] (listens for lead_unassigned event)
 
-[Admin Dashboard]
-    +---> [KPI Overview] --reads--> [Lead Storage, Assignments, Webhooks]
-    +---> [Leads Table] --reads--> [Lead Storage]
-    +---> [Brokers Table] --reads--> [Broker Profiles, Assignments]
-    +---> [Orders Table] --reads--> [Order Management]
-    +---> [Unassigned Queue View] --reads--> [Unassigned Queue]
-    +---> [Activity Feed] --reads--> [Activity Log]
+[Existing: GHL client (sendSms, sendEmail)]
+    +---> [Failure Alerts] (sends SMS via GHL)
+    +---> [Unassigned Alerts] (sends SMS via GHL)
+    +---> [Daily Digest] (sends email + SMS via GHL)
 
-[Real-time Updates (Supabase Realtime)] --enhances--> [All Dashboard Views]
+[Existing: pg_cron infrastructure]
+    +---> [Daily Digest] (scheduled at 8 AM Pacific via cron)
 
-[Auth] --gates--> [Admin Dashboard]
+[Existing: Supabase Realtime on deliveries table]
+    +---> [Delivery Stats Dashboard] (auto-refreshes on delivery changes)
+
+[Admin GHL Contact ID] --required-by--> [Failure Alerts, Unassigned Alerts, Daily Digest]
+
+[Delivery Stats Dashboard] --independent-of--> [Failure Alerts]
+[Delivery Stats Dashboard] --independent-of--> [Unassigned Alerts]
+[Failure Alerts] --independent-of--> [Unassigned Alerts]
+[Daily Digest] --independent-of--> [all three above]
+
+[Alert Throttling] --shared-by--> [Failure Alerts, Unassigned Alerts]
 ```
 
 ### Dependency Notes
 
-- **Criteria Matching requires Order Management and Broker Profiles:** Cannot match leads without knowing what criteria exist (orders) and who to send to (brokers). These must be built first.
-- **Weighted Round-Robin requires Atomic Assignment:** The rotation algorithm and the locking mechanism are inseparable. Building rotation without concurrency safety creates a ticking time bomb.
-- **Outbound Webhook requires Broker Profiles:** Need the GHL webhook URL from the broker record to deliver leads.
-- **Webhook Retry enhances Outbound Webhook:** Retry logic is layered on top of the basic delivery mechanism. Can ship basic delivery first, add retry second.
-- **Auto Order Completion enhances Bonus Mode:** Bonus mode is a flag that modifies the auto-completion behavior. Auto-completion must exist first for the toggle to make sense.
-- **Activity Log observes everything:** It's a cross-cutting concern. Best implemented as database triggers or middleware that logs events as they happen.
-- **Real-time Updates enhances all Dashboard Views:** Can be added after the dashboard is functional with manual refresh. Doesn't block core functionality.
+- **All four features are independent of each other.** They can be built in any order or in parallel. No feature blocks another.
+- **Admin GHL Contact ID is required by all three alert/digest features.** The admin's GHL contact must exist in the GHL system to receive SMS/email. This is a config prerequisite, not a code dependency. Store in Supabase Vault or env var.
+- **Alert Throttling is shared between Failure Alerts and Unassigned Alerts.** If built, the throttle/debounce logic should be a shared utility, not duplicated. However, throttling is a differentiator, not table stakes. Can be added after the base alerts work.
+- **Delivery Stats Dashboard relies only on existing data.** No new tables, no new APIs. Just queries on the existing `deliveries` and `leads` tables.
+- **Daily Digest requires a new Edge Function and pg_cron job.** It's the most complex feature because it introduces a new execution context (Edge Function) and a new scheduled job.
 
 ## MVP Definition
 
-### Launch With (v1)
+### Launch With (v1.1 MVP)
 
-Minimum viable product. What's needed to actually route leads to brokers.
+Minimum viable monitoring and alerting. Every feature ships with its table stakes only.
 
-- [ ] **Inbound webhook endpoint** - without it, no leads enter the system
-- [ ] **Lead storage** - without it, data is lost
-- [ ] **Lead update (PATCH)** - AI call notes must be captured
-- [ ] **Broker profiles CRUD** - must know who to send leads to
-- [ ] **Order management with criteria** - must know what each broker wants
-- [ ] **Criteria matching + weighted round-robin** - core value of the product
-- [ ] **Atomic assignment with advisory locks** - can't ship rotation without safety
-- [ ] **Outbound webhook to broker GHL** - leads must actually be delivered
-- [ ] **Unassigned queue** - leads that don't match must be visible, not lost
-- [ ] **Admin dashboard (KPIs + all tables)** - admin needs to see what's happening
-- [ ] **Activity log** - audit trail is non-negotiable for a system that handles lead assignment
-- [ ] **Simple password auth** - protect the admin interface
+- [ ] **Delivery Stats Dashboard** (today's numbers) -- new KPI row on existing dashboard: leads in, assigned, delivered per channel, failed. Real-time via existing Supabase Realtime.
+- [ ] **Failure Alerts** (SMS to admin) -- GHL SMS when `failed_permanent` fires. Include lead name, broker name, channel, error. Use existing `sendSms()`.
+- [ ] **Unassigned Lead Alerts** (SMS to admin) -- GHL SMS when `lead_unassigned` fires. Include lead name, vertical, credit score, failure reason.
+- [ ] **Daily Digest** (8 AM Pacific) -- pg_cron triggers Edge Function. Email with yesterday's stats (leads, assignments, deliveries, failures, unassigned). SMS with compact summary.
+- [ ] **Admin GHL Contact ID config** -- store admin's GHL contact ID for alert/digest delivery. Env var or Supabase Vault.
 
-### Add After Validation (v1.x)
+### Add After Validation (v1.1.x)
 
-Features to add once core routing is proven reliable.
+Features to add once base alerts are running and patterns are observed.
 
-- [ ] **Webhook retry with pg_cron** - add once basic delivery is stable and failure patterns are understood
-- [ ] **Real-time dashboard updates** - add once the dashboard views are finalized and stable
-- [ ] **Bonus mode toggle** - add once order lifecycle (start/pause/complete) is proven
-- [ ] **Match failure reason tracking** - add once the unassigned queue is being actively used
-- [ ] **Manual assignment from queue** - add once unassigned queue has leads that need human intervention
-- [ ] **Dark/light theme** - quality of life, add anytime
+- [ ] **Alert throttling/deduplication** -- add after seeing real failure patterns. If broker URL outages cause 10+ alerts in a burst, this becomes urgent.
+- [ ] **Delivery success rate percentage** -- add to dashboard once raw counts are validated.
+- [ ] **Failed deliveries list with error details** -- add expandable section on dashboard for quick triage.
+- [ ] **Daily digest comparison to prior day** -- add "vs yesterday" deltas once the digest format is stabilized.
+- [ ] **Actionable items in digest** -- add "needs attention" section (unresolved unassigned, failing orders).
+- [ ] **Suggested action in unassigned alerts** -- add contextual suggestions based on failure reason.
+- [ ] **Deep links in SMS alerts** -- add URL to relevant dashboard page.
 
-### Future Consideration (v2+)
+### Future Consideration (v1.2+)
 
-Features to defer until the system has operational history.
+Features to defer until monitoring has operational history.
 
-- [ ] **Geographic/state-based matching** - PROJECT.md explicitly defers this. Add when brokers demand it.
-- [ ] **Broker self-service portal** - add if broker count grows beyond what one admin can manage
-- [ ] **Payment/billing integration** - add if manual billing becomes unsustainable
-- [ ] **Multi-user admin with roles** - add if team grows
-- [ ] **Lead quality analytics** - add once there's enough data to analyze conversion patterns
+- [ ] **Delivery latency metrics** -- add once there's enough data to establish baselines.
+- [ ] **Hourly sparkline on dashboard** -- add if the admin needs intra-day volume visibility.
+- [ ] **Active orders summary in digest** -- add if the admin finds the daily digest missing order context.
+- [ ] **Configurable alert channels** -- add if the team grows beyond one admin or Slack becomes preferred.
+- [ ] **Historical delivery analytics** -- add date range picker and charts if the admin needs to look back.
 
 ## Feature Prioritization Matrix
 
 | Feature | User Value | Implementation Cost | Priority |
 |---------|------------|---------------------|----------|
-| Inbound webhook endpoint | HIGH | LOW | P1 |
-| Lead storage | HIGH | LOW | P1 |
-| Lead update (PATCH) | HIGH | LOW | P1 |
-| Broker profiles CRUD | HIGH | LOW | P1 |
-| Order management + criteria | HIGH | MEDIUM | P1 |
-| Criteria matching | HIGH | MEDIUM | P1 |
-| Weighted round-robin | HIGH | MEDIUM | P1 |
-| Atomic assignment (advisory locks) | HIGH | MEDIUM | P1 |
-| Outbound webhook delivery | HIGH | MEDIUM | P1 |
-| Unassigned queue | HIGH | LOW | P1 |
-| Activity log | HIGH | MEDIUM | P1 |
-| Simple auth | MEDIUM | LOW | P1 |
-| Admin dashboard (KPIs) | HIGH | MEDIUM | P1 |
-| Leads table + search/filter | HIGH | MEDIUM | P1 |
-| Brokers table + history | MEDIUM | LOW | P1 |
-| Orders table + actions | HIGH | MEDIUM | P1 |
-| Unassigned queue view | MEDIUM | LOW | P1 |
-| Webhook retry (pg_cron) | HIGH | MEDIUM | P2 |
-| Real-time updates | MEDIUM | MEDIUM | P2 |
-| Auto order completion | MEDIUM | LOW | P2 |
-| Bonus mode toggle | MEDIUM | LOW | P2 |
-| Match failure reasons | MEDIUM | LOW | P2 |
-| Manual assignment | MEDIUM | LOW | P2 |
-| Dark/light theme | LOW | LOW | P2 |
-| Webhook delivery status UI | MEDIUM | LOW | P2 |
-| Geo-based matching | MEDIUM | MEDIUM | P3 |
-| Broker portal | LOW | HIGH | P3 |
-| Billing integration | LOW | HIGH | P3 |
-| Multi-user auth | LOW | MEDIUM | P3 |
-| Lead quality analytics | LOW | MEDIUM | P3 |
+| Delivery stats KPI row (today's numbers) | HIGH | LOW | P1 |
+| Real-time stats refresh | HIGH | LOW (already wired) | P1 |
+| Failure alert SMS | HIGH | LOW | P1 |
+| Unassigned lead alert SMS | HIGH | LOW | P1 |
+| Daily digest email + SMS | HIGH | MEDIUM | P1 |
+| Admin GHL contact ID config | HIGH (blocker) | LOW | P1 |
+| Channel health indicators (color) | MEDIUM | LOW | P1 |
+| Alert throttling/dedup | MEDIUM | MEDIUM | P2 |
+| Delivery success rate % | MEDIUM | LOW | P2 |
+| Failed deliveries detail list | MEDIUM | MEDIUM | P2 |
+| Digest comparison deltas | LOW | LOW | P2 |
+| Digest actionable items | MEDIUM | MEDIUM | P2 |
+| Suggested action in alerts | LOW | LOW | P2 |
+| Deep links in SMS | LOW | LOW | P2 |
+| Delivery latency metrics | LOW | MEDIUM | P3 |
+| Hourly sparkline chart | LOW | MEDIUM | P3 |
+| Historical analytics | LOW | HIGH | P3 |
+| Configurable alert channels | LOW | HIGH | P3 |
 
 **Priority key:**
-- P1: Must have for launch. The system doesn't function without these.
-- P2: Should have, add in fast-follow iterations. Improve reliability and UX.
-- P3: Nice to have. Future consideration based on operational needs.
+- P1: Must have for v1.1 launch. The milestone isn't complete without these.
+- P2: Should have, add in fast-follow. Improves usability once base features are validated.
+- P3: Nice to have. Defer until operational patterns emerge.
 
-## Competitor Feature Analysis
+## Implementation Complexity Summary
 
-| Feature | Boberdoo | LeadsPedia | CAKE | Lead Prosper | PPL Approach |
-|---------|----------|------------|------|--------------|--------------|
-| **Lead ingestion** | Web forms, API, ping/post | Web forms, ping/post, direct post | Multi-channel capture | Direct post, ping/post, email, SMS | Webhook only (from GHL). Simpler scope. |
-| **Routing logic** | Priority, weighted, ping/post bidding, EPL, waterfall | Smart routing with algorithms, criteria-based | Round-robin, weighted price, buyer rank | Highest bidder, filters, campaign triggers | Weighted round-robin by leads_remaining. No bidding. |
-| **Buyer/broker management** | Unlimited admin/vendor logins, filter sets per buyer | Buyer profiles with caps and budgets | Buyer profiles with scheduling and bids | Unlimited suppliers and buyers, buyer portal | Broker profiles with GHL URL. Admin-managed. |
-| **Delivery caps** | Per filter set targets | Hourly, daily, weekly, monthly caps | Pre-defined buyer volumes | Per campaign limits | Per order: leads_purchased as total cap. |
-| **Quality checking** | LeadQC scoring, source-level checks | Field validations, third-party integrations | Real-time validation and enrichment | TrustedForm, LeadID, Anura integrations | Credit score from GHL. No separate engine. |
-| **Webhook delivery** | Custom SMTP, CRM integrations | Real-time delivery, CRM integrations | Automated delivery with scheduling | Direct post, webhooks, email, SMS | POST to broker GHL webhook URL. Single method. |
-| **Retry/failover** | Waterfall distribution, re-billing | Delivery scheduling | Backup routing | Campaign triggers for secondary sources | pg_cron retry, 3 attempts, dead letter on failure. |
-| **Unassigned handling** | Hold for manual review | Not explicitly documented | Not explicitly documented | Lead returns via CSV | Visible queue with match failure reasons. |
-| **Reporting** | Premium dashboards, line-by-line tracking | Real-time analytics, ROI tracking | Closed-loop performance measurement | Real-time analytics, ROI tracking | Admin dashboard with KPIs, activity log, per-entity views. |
-| **Audit trail** | Complete vendor/partner activity monitoring | Dynamic tracking | Buyer lead status updates | Complete lead lifecycle visibility | Full activity log of every event. |
-| **Pricing model** | Enterprise SaaS | Enterprise SaaS | Enterprise SaaS | Per-lead pricing | Internal tool. No licensing cost. |
-| **Multi-tenancy** | Yes (marketplace model) | Yes (network model) | Yes (advertiser/publisher model) | Yes (supplier/buyer model) | No. Single operator. Massive simplification. |
+| Feature | New Code | New Infrastructure | Touches Existing Code | Estimated Effort |
+|---------|----------|--------------------|-----------------------|-----------------|
+| Delivery Stats Dashboard | Dashboard query + UI components | None | Extends `dashboard.ts` queries, adds section to dashboard page | Small (1 day) |
+| Failure Alerts | Alert sender function | None (uses existing GHL client) | Hooks into delivery pipeline or listens to activity_log | Small (half day) |
+| Unassigned Lead Alerts | Alert sender function | None (uses existing GHL client) | Hooks into assignment flow or listens to activity_log | Small (half day) |
+| Daily Digest | Edge Function + HTML template + stats queries | New Edge Function, new pg_cron job | None (reads existing tables) | Medium (1-2 days) |
+| Alert Throttling | Debounce utility, state tracking | Optional: `alert_log` table for dedup | Wraps alert sender functions | Small-Medium (half day) |
+
+**Total estimated effort:** 3-4 days for all P1 features.
+
+## Trigger Mechanism Analysis
+
+For Failure Alerts and Unassigned Alerts, there are two implementation approaches:
+
+**Option A: Database Trigger (pg trigger on activity_log INSERT)**
+- Pros: Fires reliably regardless of how the event was created (SQL function, API, manual). Uses pg_net to call an edge function or the Next.js API.
+- Cons: Adds another DB trigger. pg_net calls from triggers have no easy way to throttle. Harder to test.
+
+**Option B: Application-level hook (in the incoming lead API route and retry pipeline)**
+- Pros: Full control over throttling, formatting, error handling. Easy to test. Can batch alerts.
+- Cons: Only fires when the specific code path runs. If `assign_lead()` is called from a different context, alert won't fire.
+
+**Recommendation: Option B (application-level).** The assignment flow already goes through `src/app/api/leads/incoming/route.ts`, and permanent failures go through `process_webhook_retries()`. These are the only two code paths. Application-level hooks are simpler to reason about, test, and throttle. If a new code path is added later, add the alert hook there too.
+
+For the Daily Digest, there's only one option: pg_cron triggers a Supabase Edge Function (or calls pg_net to invoke the Next.js API). Edge Function is cleaner because it has access to the GHL API token without exposing it in a public endpoint.
 
 ## Sources
 
-- [Boberdoo Lead Distribution System](https://www.boberdoo.com/lead-distribution-system) - Feature set, quality checking, delivery, admin capabilities
-- [Boberdoo Lead Distribution Logic](https://www.boberdoo.com/lead-distribution-logic) - Routing algorithms: priority, weighted, EPL, waterfall, ping/post
-- [LeadsPedia Lead Distribution](https://www.leadspedia.com/lead-distribution.html) - Smart routing, geo-targeting, caps, delivery scheduling
-- [CAKE Lead Distribution Software](https://getcake.com/lead-distribution-software/) - Routing, validation, buyer management, performance tracking
-- [Lead Prosper](https://www.leadprosper.io/) - Real-time delivery, filters, dupe check, buyer portal, unlimited webhooks
-- [LeanData Round Robin Best Practices](https://www.leandata.com/blog/round-robin-lead-distribution-best-practices/) - Weighted distribution, capacity management, availability routing
-- [LeadAngel Best Lead Distribution Software 2026](https://www.leadangel.com/blog/operations/best-lead-distribution-software/) - Feature comparison across platforms
-- [LeadAngel Speed to Lead Statistics](https://www.leadangel.com/blog/operations/speed-to-lead-statistics/) - Sub-10-second assignment benchmarks, 391% conversion increase at 1 minute
-- [Svix Webhook Retry Best Practices](https://www.svix.com/resources/webhook-best-practices/retries/) - Exponential backoff, dead letter queues
-- [Hookdeck Webhook Retry Guide](https://hookdeck.com/webhooks/guides/webhook-retry-best-practices) - 3-7 retries, jitter, failure handling
-- [GoHighLevel Webhook Documentation](https://help.gohighlevel.com/support/solutions/articles/155000003305-workflow-action-custom-webhook) - Custom webhook actions, auth, payload configuration
-- [Hatrio CRM Audit Trails](https://sales.hatrio.com/blog/what-are-crm-audit-trails/) - Digital logs for every action, change, and interaction
+- [HubSpot Daily Digest](https://yourhubspotexpert.com/boost-productivity-with-hubspots-sales-workspace-daily-digest-email/) - Morning summary format, actionable items, team performance snapshot
+- [LeadCenter Daily Digest](https://help.leadcenter.ai/whats-new/daily-digest-emails-your-day-at-a-glance) - 6 AM delivery, appointments/tasks/events sections, opt-out toggle
+- [Hookdeck Webhook Monitoring](https://hookdeck.com/webhooks/guides/monitoring) - Success/failure rates, response times, payload inspection, failure grouping
+- [Latenode Webhook Failure Alerts](https://latenode.com/blog/integration-api-management/webhook-setup-configuration/webhook-failure-alerts-setup-guide) - Alert on 3 consecutive failures, Dead Letter Queue triggers, multi-channel notification
+- [Supabase Cron Docs](https://supabase.com/docs/guides/cron) - pg_cron scheduling, Edge Function invocation via pg_net, job run history
+- [Supabase Schedule Edge Functions](https://supabase.com/docs/guides/functions/schedule-functions) - pg_cron + pg_net pattern for triggering Edge Functions on schedule
+- [LeadSimple Automated Lead Distribution](https://training.leadsimple.com/en/articles/2876828-automated-lead-distribution-notifications-routing) - Push notifications for unassigned leads, agent notification patterns
+- [Agile CRM Real-time Alerts](https://www.agilecrm.com/realtime-alerts) - Instant alerts for lead events, contact activity triggers
+- [Twilio Real-time Lead Alerts](https://www.twilio.com/en-us/use-cases/lead-alerts) - SMS alert patterns for lead events, speed-to-lead emphasis
+- [monday.com Lead Analytics Dashboard](https://monday.com/blog/crm-and-sales/lead-analytics-dashboard/) - 7 essential metrics for lead dashboards, real-time refresh patterns
+- [monday.com CRM Dashboards 2026](https://monday.com/blog/crm-and-sales/crm-dashboards/) - KPI cards, visual indicators, actionable dashboard design
 
 ---
-*Feature research for: Lead Distribution & Round-Robin Management*
-*Researched: 2026-03-12*
+*Feature research for: Monitoring, Alerting & Daily Digest (v1.1 Milestone)*
+*Researched: 2026-03-13*

@@ -54,10 +54,10 @@ Plans:
   1. When a delivery status changes to failed_permanent, admin receives an SMS with lead name, broker name, channel, and error details
   2. When a lead enters the unassigned queue, admin receives an SMS with lead details and the match failure reason
   3. Multiple correlated failures (same broker endpoint down) produce throttled alerts, not a flood of SMS messages
-**Plans**: TBD
+**Plans:** 1 plan
 
 Plans:
-- [ ] 07-01: DB triggers on deliveries and unassigned_queue that fire pg_net calls to send-alert edge function
+- [ ] 07-01-PLAN.md — Both alert trigger functions and trigger definitions in a single migration (delivery failures + unassigned leads)
 
 ### Phase 8: Delivery Stats Dashboard
 **Goal**: Admin can see today's delivery health at a glance on the existing dashboard, with real-time counts and color-coded channel status, without navigating to individual lead or broker pages

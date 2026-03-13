@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 Phase: 12 of 12 (Admin Visibility)
 Plan: 2 of 2 (Complete)
 Status: Phase 12 complete
-Last activity: 2026-03-13 — Completed 12-02 queue activity logging
+Last activity: 2026-03-13 — Completed 12-01 admin visibility KPI and broker detail
 
 Progress: [█████████████████████████] 100% v1.0+v1.1 | [██████████] 100% v1.2
 
@@ -38,7 +38,7 @@ Progress: [███████████████████████
 | 09-daily-digest | 1 | 2min | 2min |
 | 10-hours-aware-delivery | 1 | 3min | 3min |
 | 11-queue-processing | 1 | 1min | 1min |
-| 12-admin-visibility | 2 | 2min | 1min |
+| 12-admin-visibility | 2 | 5min | 3min |
 
 ## Accumulated Context
 
@@ -59,6 +59,9 @@ All decisions logged in PROJECT.md Key Decisions table.
 **Phase 12:**
 - delivery_queued logged once per assign_lead() call (not per channel) since status is shared
 - delivery_released logged per individual delivery release to capture per-channel queued duration
+- Queued KPI card placed after Unassigned in 6-column grid (problem indicators grouped)
+- Contact Hours card between Profile and Orders on broker detail
+- Queued deliveries table only rendered when count > 0
 
 ### Pending Todos
 
@@ -80,5 +83,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: Completed 12-02-PLAN.md (queue activity logging)
+Stopped at: Completed 12-01-PLAN.md (admin visibility KPI and broker detail)
 Resume file: None

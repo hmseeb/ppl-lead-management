@@ -38,7 +38,11 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 
 ### Active
 
-(None — planning next milestone)
+- [ ] Delivery respects broker contact hours (business_hours 9-5, custom range, anytime)
+- [ ] Delivery paused on weekends when broker has weekend_pause enabled
+- [ ] Per-broker timezone support (default US Pacific)
+- [ ] Out-of-hours deliveries queued and released when broker's window opens
+- [ ] Admin visibility into queued/delayed deliveries
 
 ### Out of Scope
 
@@ -92,4 +96,16 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 | 500ms debounce + 2s max wait for Realtime | Balances responsiveness vs efficiency for batch events | ✓ Good |
 
 ---
-*Last updated: 2026-03-13 after v1.1 milestone*
+## Current Milestone: v1.2 Broker Hours Enforcement
+
+**Goal:** Respect broker contact hours during lead delivery. Leads assigned instantly but delivery queued until broker is within their contact window.
+
+**Target features:**
+- Contact hours check before delivery (business_hours, custom, anytime)
+- Weekend pause enforcement
+- Per-broker timezone (new column, default America/Los_Angeles)
+- Queued delivery processing via pg_cron
+- Admin dashboard visibility into delayed deliveries
+
+---
+*Last updated: 2026-03-13 after v1.2 milestone start*

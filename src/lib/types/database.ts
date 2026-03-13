@@ -66,6 +66,66 @@ export type Database = {
           },
         ]
       }
+      admin_settings: {
+        Row: {
+          alert_ghl_contact_id: string
+          alert_sms_enabled: boolean
+          created_at: string
+          dedup_window_minutes: number
+          failure_alert_enabled: boolean
+          id: string
+          unassigned_alert_enabled: boolean
+          updated_at: string
+        }
+        Insert: {
+          alert_ghl_contact_id: string
+          alert_sms_enabled?: boolean
+          created_at?: string
+          dedup_window_minutes?: number
+          failure_alert_enabled?: boolean
+          id?: string
+          unassigned_alert_enabled?: boolean
+          updated_at?: string
+        }
+        Update: {
+          alert_ghl_contact_id?: string
+          alert_sms_enabled?: boolean
+          created_at?: string
+          dedup_window_minutes?: number
+          failure_alert_enabled?: boolean
+          id?: string
+          unassigned_alert_enabled?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      alert_state: {
+        Row: {
+          alert_type: string
+          context_id: string
+          id: string
+          last_payload: Json | null
+          last_sent_at: string
+          suppressed_count: number
+        }
+        Insert: {
+          alert_type: string
+          context_id: string
+          id?: string
+          last_payload?: Json | null
+          last_sent_at?: string
+          suppressed_count?: number
+        }
+        Update: {
+          alert_type?: string
+          context_id?: string
+          id?: string
+          last_payload?: Json | null
+          last_sent_at?: string
+          suppressed_count?: number
+        }
+        Relationships: []
+      }
       brokers: {
         Row: {
           assignment_status: string
@@ -156,6 +216,121 @@ export type Database = {
           step_data?: Json | null
           token?: string
           weekend_pause?: boolean | null
+        }
+        Relationships: []
+      }
+      deliveries: {
+        Row: {
+          broker_id: string
+          channel: string
+          created_at: string
+          error_message: string | null
+          ghl_contact_id: string | null
+          ghl_message_id: string | null
+          id: string
+          last_retry_at: string | null
+          lead_id: string
+          order_id: string
+          payload: Json
+          pg_net_request_id: number | null
+          retry_count: number
+          sent_at: string | null
+          status: string
+          target_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          broker_id: string
+          channel?: string
+          created_at?: string
+          error_message?: string | null
+          ghl_contact_id?: string | null
+          ghl_message_id?: string | null
+          id?: string
+          last_retry_at?: string | null
+          lead_id: string
+          order_id: string
+          payload: Json
+          pg_net_request_id?: number | null
+          retry_count?: number
+          sent_at?: string | null
+          status?: string
+          target_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          broker_id?: string
+          channel?: string
+          created_at?: string
+          error_message?: string | null
+          ghl_contact_id?: string | null
+          ghl_message_id?: string | null
+          id?: string
+          last_retry_at?: string | null
+          lead_id?: string
+          order_id?: string
+          payload?: Json
+          pg_net_request_id?: number | null
+          retry_count?: number
+          sent_at?: string | null
+          status?: string
+          target_url?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deliveries_broker_id_fkey"
+            columns: ["broker_id"]
+            isOneToOne: false
+            referencedRelation: "brokers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deliveries_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deliveries_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      digest_runs: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          period_end: string
+          period_start: string
+          run_at: string
+          stats: Json | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          period_end: string
+          period_start: string
+          run_at?: string
+          stats?: Json | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          period_end?: string
+          period_start?: string
+          run_at?: string
+          stats?: Json | null
+          status?: string
         }
         Relationships: []
       }
@@ -337,88 +512,6 @@ export type Database = {
           },
         ]
       }
-      deliveries: {
-        Row: {
-          id: string
-          lead_id: string
-          broker_id: string
-          order_id: string
-          channel: string
-          target_url: string | null
-          ghl_contact_id: string | null
-          ghl_message_id: string | null
-          payload: Json
-          status: string
-          pg_net_request_id: number | null
-          retry_count: number
-          error_message: string | null
-          sent_at: string | null
-          last_retry_at: string | null
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          lead_id: string
-          broker_id: string
-          order_id: string
-          channel?: string
-          target_url?: string | null
-          ghl_contact_id?: string | null
-          ghl_message_id?: string | null
-          payload: Json
-          status?: string
-          pg_net_request_id?: number | null
-          retry_count?: number
-          error_message?: string | null
-          sent_at?: string | null
-          last_retry_at?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          lead_id?: string
-          broker_id?: string
-          order_id?: string
-          channel?: string
-          target_url?: string | null
-          ghl_contact_id?: string | null
-          ghl_message_id?: string | null
-          payload?: Json
-          status?: string
-          pg_net_request_id?: number | null
-          retry_count?: number
-          error_message?: string | null
-          sent_at?: string | null
-          last_retry_at?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "deliveries_lead_id_fkey"
-            columns: ["lead_id"]
-            isOneToOne: false
-            referencedRelation: "leads"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "deliveries_broker_id_fkey"
-            columns: ["broker_id"]
-            isOneToOne: false
-            referencedRelation: "brokers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "deliveries_order_id_fkey"
-            columns: ["order_id"]
-            isOneToOne: false
-            referencedRelation: "orders"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
     }
     Views: {
       [_ in never]: never
@@ -429,7 +522,11 @@ export type Database = {
         Args: { p_lead: Database["public"]["Tables"]["leads"]["Row"] }
         Returns: string
       }
-      fire_outbound_webhook: { Args: Record<string, never>; Returns: unknown }
+      check_delivery_responses: { Args: never; Returns: undefined }
+      process_webhook_retries: {
+        Args: { p_batch_size?: number }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

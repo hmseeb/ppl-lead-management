@@ -92,8 +92,8 @@ Plans:
   5. A lead with funding_amount outside an order's loan_min/loan_max range is excluded from that order (hard filter)
 **Plans:** 2 plans
 Plans:
-- [ ] 15-01-PLAN.md -- TDD scoring engine: pure TypeScript scoring function with unit tests for all 12 requirements
-- [ ] 15-02-PLAN.md -- Wire scoring into assignment flow: refactor SQL + TypeScript to use scoring engine
+- [x] 15-01-PLAN.md -- TDD scoring engine: pure TypeScript scoring function with unit tests for all 12 requirements
+- [x] 15-02-PLAN.md -- Wire scoring into assignment flow: refactor SQL + TypeScript to use scoring engine
 
 ### Phase 16: Routing Audit Trail
 **Goal**: Every routing decision is fully auditable with per-order score breakdowns visible to the admin
@@ -137,6 +137,6 @@ Phases execute in numeric order: 13 -> 14 -> 15 -> 16 -> 17
 | 12. Admin Visibility | v1.2 | 2/2 | Complete | 2026-03-13 |
 | 13. Order Model Expansion | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 14. Pre-flight Validation | v2.0 | 2/2 | Complete | 2026-03-13 |
-| 15. Scoring Engine + Tier Gating | v2.0 | 0/2 | Not started | - |
+| 15. Scoring Engine + Tier Gating | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 16. Routing Audit Trail | v2.0 | 0/? | Not started | - |
 | 17. Monthly Recurring Orders | v2.0 | 0/? | Not started | - |

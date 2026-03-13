@@ -560,7 +560,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      assign_lead: { Args: { p_lead_id: string }; Returns: Json }
+      assign_lead:
+        | { Args: { p_lead_id: string }; Returns: Json }
+        | { Args: { p_lead_id: string; p_order_id?: string }; Returns: Json }
       build_match_failure_reason: {
         Args: { p_lead: Database["public"]["Tables"]["leads"]["Row"] }
         Returns: string

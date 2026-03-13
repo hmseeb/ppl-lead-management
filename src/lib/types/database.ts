@@ -381,6 +381,7 @@ export type Database = {
           last_name: string | null
           phone: string | null
           raw_payload: Json | null
+          rejection_reason: string | null
           state: string | null
           status: string
           updated_at: string
@@ -404,6 +405,7 @@ export type Database = {
           last_name?: string | null
           phone?: string | null
           raw_payload?: Json | null
+          rejection_reason?: string | null
           state?: string | null
           status?: string
           updated_at?: string
@@ -427,6 +429,7 @@ export type Database = {
           last_name?: string | null
           phone?: string | null
           raw_payload?: Json | null
+          rejection_reason?: string | null
           state?: string | null
           status?: string
           updated_at?: string

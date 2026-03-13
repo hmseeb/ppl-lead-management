@@ -16,6 +16,7 @@ export type LeadRow = {
   credit_score: number | null
   funding_amount: number | null
   status: string
+  rejection_reason: string | null
   ai_call_status: string | null
   created_at: string
   assigned_at: string | null
@@ -28,6 +29,7 @@ const statusColors: Record<string, string> = {
   assigned: 'bg-green-100 text-green-800',
   unassigned: 'bg-amber-100 text-amber-800',
   new: 'bg-blue-100 text-blue-800',
+  rejected: 'bg-red-100 text-red-800',
 }
 
 export const leadsColumns: ColumnDef<LeadRow>[] = [
@@ -88,10 +90,21 @@ export const leadsColumns: ColumnDef<LeadRow>[] = [
   {
     accessorKey: 'status',
     header: 'Status',
-    cell: ({ row }) => (
-      <Badge variant="outline" className={`text-xs capitalize border-0 ${statusColors[row.original.status] ?? ''}`}>
-        {row.original.status}
-      </Badge>
-    ),
+    cell: ({ row }) => {
+      const status = row.original.status
+      const reason = row.original.rejection_reason
+      return (
+        <div className="flex flex-col gap-0.5">
+          <Badge variant="outline" className={`text-xs capitalize border-0 ${statusColors[status] ?? ''}`}>
+            {status}
+          </Badge>
+          {reason && (
+            <span className="text-[10px] text-muted-foreground">
+              {reason.replace(/_/g, ' ')}
+            </span>
+          )}
+        </div>
+      )
+    },
   },
 ]

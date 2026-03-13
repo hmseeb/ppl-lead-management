@@ -64,6 +64,7 @@ export function LeadsFilters({ brokers }: LeadsFiltersProps) {
         <option value="">All Status</option>
         <option value="assigned">Assigned</option>
         <option value="unassigned">Unassigned</option>
+        <option value="rejected">Rejected</option>
       </select>
 
       <select

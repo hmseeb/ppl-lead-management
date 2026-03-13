@@ -58,10 +58,10 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| VALID-01 | Phase 14 | Pending |
-| VALID-02 | Phase 14 | Pending |
-| VALID-03 | Phase 14 | Pending |
-| VALID-04 | Phase 14 | Pending |
+| VALID-01 | Phase 14 | Done |
+| VALID-02 | Phase 14 | Done |
+| VALID-03 | Phase 14 | Done |
+| VALID-04 | Phase 14 | Done |
 | SCORE-01 | Phase 15 | Pending |
 | SCORE-02 | Phase 15 | Pending |
 | SCORE-03 | Phase 15 | Pending |

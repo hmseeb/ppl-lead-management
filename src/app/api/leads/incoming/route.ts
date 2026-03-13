@@ -40,6 +40,23 @@ export async function POST(request: Request) {
     )
   }
 
+  // 3a. Email + phone dedup (VALID-04)
+  if (data.email && data.phone) {
+    const { data: emailPhoneDup } = await supabase
+      .from('leads')
+      .select('id')
+      .ilike('email', data.email)
+      .eq('phone', data.phone)
+      .maybeSingle()
+
+    if (emailPhoneDup) {
+      return NextResponse.json(
+        { lead_id: emailPhoneDup.id, status: 'duplicate', message: 'duplicate email+phone combination' },
+        { status: 200 }
+      )
+    }
+  }
+
   // 4. Insert lead with validated fields + raw payload
   const { data: lead, error: insertError } = await supabase
     .from('leads')
@@ -70,7 +87,59 @@ export async function POST(request: Request) {
     )
   }
 
-  // 5. Trigger assignment engine
+  // 5. Pre-flight validation
+  let rejectionReason: string | null = null
+
+  // VALID-01: Credit score minimum 600
+  if (data.credit_score !== undefined && data.credit_score < 600) {
+    rejectionReason = 'credit_too_low'
+  }
+
+  // VALID-02: Missing or invalid loan amount
+  if (!rejectionReason) {
+    if (data.funding_amount === undefined || data.funding_amount === null || data.funding_amount <= 0) {
+      rejectionReason = 'invalid_loan_amount'
+    }
+  }
+
+  // VALID-03: No active orders
+  if (!rejectionReason) {
+    const { count } = await supabase
+      .from('orders')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'active')
+
+    if (!count || count === 0) {
+      rejectionReason = 'no_active_orders'
+    }
+  }
+
+  // If any pre-flight check failed, reject the lead
+  if (rejectionReason) {
+    await supabase
+      .from('leads')
+      .update({ status: 'rejected', rejection_reason: rejectionReason })
+      .eq('id', lead.id)
+
+    await supabase
+      .from('activity_log')
+      .insert({
+        event_type: 'lead_rejected',
+        lead_id: lead.id,
+        details: {
+          reason: rejectionReason,
+          credit_score: data.credit_score ?? null,
+          funding_amount: data.funding_amount ?? null,
+        },
+      })
+
+    return NextResponse.json(
+      { lead_id: lead.id, status: 'rejected', reason: rejectionReason },
+      { status: 200 }
+    )
+  }
+
+  // 6. Trigger assignment engine
   let assignment
   try {
     assignment = await assignLead(lead.id)

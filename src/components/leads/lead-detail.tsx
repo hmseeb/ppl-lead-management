@@ -24,6 +24,16 @@ export function LeadDetail({ lead, deliveries, activityLog }: {
 
   return (
     <div className="space-y-6">
+      {/* Rejection Reason */}
+      {lead.rejection_reason && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+          <h3 className="text-sm font-medium text-red-800">Rejected</h3>
+          <p className="mt-1 text-sm text-red-700">
+            Reason: {lead.rejection_reason.replace(/_/g, ' ')}
+          </p>
+        </div>
+      )}
+
       {/* Lead Info */}
       <Card>
         <CardHeader>

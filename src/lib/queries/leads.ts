@@ -23,7 +23,7 @@ export async function fetchLeads(params: LeadFilters) {
     .from('leads')
     .select(`
       id, first_name, last_name, phone, email, vertical, credit_score,
-      funding_amount, status, ai_call_status, created_at, assigned_at,
+      funding_amount, status, rejection_reason, ai_call_status, created_at, assigned_at,
       assigned_broker_id, assigned_order_id,
       brokers!leads_assigned_broker_id_fkey ( first_name, last_name )
     `, { count: 'exact' })

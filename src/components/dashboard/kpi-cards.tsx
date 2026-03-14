@@ -11,6 +11,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui/tooltip'
 import { Users, TrendingUp, AlertCircle, AlertTriangle, Activity, Package, Loader2, XCircle } from 'lucide-react'
 import { format } from 'date-fns'
 import type { KpiPreviewType } from '@/lib/actions/dashboard'
@@ -449,6 +454,32 @@ function PreviewTable({ type, data }: { type: KpiPreviewType; data: any[] }) {
         </Table>
       )
 
+    case 'rejected':
+      return (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-xs">Name</TableHead>
+              <TableHead className="text-xs">Vertical</TableHead>
+              <TableHead className="text-xs">Credit Score</TableHead>
+              <TableHead className="text-xs">Reason</TableHead>
+              <TableHead className="text-xs">Received At</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.map((row: any) => (
+              <TableRow key={row.id}>
+                <TableCell className="text-xs">{row.first_name} {row.last_name}</TableCell>
+                <TableCell className="text-xs">{row.vertical ?? '-'}</TableCell>
+                <TableCell className="text-xs">{row.credit_score ?? '-'}</TableCell>
+                <TableCell className="text-xs">{row.rejection_reason ?? '-'}</TableCell>
+                <TableCell className="text-xs">{formatDate(row.created_at)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )
+
     case 'failed_deliveries':
       return (
         <Table>
@@ -475,8 +506,19 @@ function PreviewTable({ type, data }: { type: KpiPreviewType; data: any[] }) {
                     {broker ? `${broker.first_name} ${broker.last_name}` : '-'}
                   </TableCell>
                   <TableCell className="text-xs">{formatChannel(row.channel)}</TableCell>
-                  <TableCell className="text-xs" title={row.error_message ?? ''}>
-                    {truncate(row.error_message, 50)}
+                  <TableCell className="text-xs max-w-[200px]">
+                    {row.error_message && row.error_message.length > 50 ? (
+                      <Tooltip>
+                        <TooltipTrigger className="cursor-default truncate block max-w-[200px] text-left">
+                          {truncate(row.error_message, 50)}
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="max-w-sm break-words text-xs">
+                          {row.error_message}
+                        </TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      truncate(row.error_message, 50)
+                    )}
                   </TableCell>
                   <TableCell className="text-xs capitalize">
                     {row.status === 'failed_permanent' ? 'Permanent' : 'Failed'}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -32,6 +33,7 @@ export default function RootLayout({
         className={`${dmSans.variable} ${jetbrains.variable} antialiased ambient-bg`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <TooltipProvider>
           <div className="relative z-10">
             {children}
           </div>
@@ -42,6 +44,7 @@ export default function RootLayout({
               className: 'toast-glass',
             }}
           />
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>

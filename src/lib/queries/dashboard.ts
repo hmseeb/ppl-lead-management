@@ -8,7 +8,7 @@ export async function fetchKpis() {
   const weekStart = startOfWeek(now, { weekStartsOn: 1 }).toISOString()
   const monthStart = startOfMonth(now).toISOString()
 
-  const [leadsToday, leadsWeek, leadsMonth, assigned, unassigned, activeBrokers, activeOrders, queued] =
+  const [leadsToday, leadsWeek, leadsMonth, assigned, unassigned, activeBrokers, activeOrders, queued, rejectedToday, failedDeliveries, failedPermanentDeliveries] =
     await Promise.all([
       supabase.from('leads').select('id', { count: 'exact', head: true }).gte('created_at', todayStart),
       supabase.from('leads').select('id', { count: 'exact', head: true }).gte('created_at', weekStart),
@@ -18,10 +18,17 @@ export async function fetchKpis() {
       supabase.from('brokers').select('id', { count: 'exact', head: true }).eq('assignment_status', 'active'),
       supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'active'),
       supabase.from('deliveries').select('id', { count: 'exact', head: true }).eq('status', 'queued'),
+      supabase.from('leads').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('status', 'rejected'),
+      supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('status', 'failed'),
+      supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('status', 'failed_permanent'),
     ])
 
+  const totalToday = leadsToday.count ?? 0
+  const rejectedCount = rejectedToday.count ?? 0
+  const rejectedRate = totalToday > 0 ? Math.round((rejectedCount / totalToday) * 100) : 0
+
   return {
-    leadsToday: leadsToday.count ?? 0,
+    leadsToday: totalToday,
     leadsThisWeek: leadsWeek.count ?? 0,
     leadsThisMonth: leadsMonth.count ?? 0,
     assignedCount: assigned.count ?? 0,
@@ -29,6 +36,11 @@ export async function fetchKpis() {
     activeBrokers: activeBrokers.count ?? 0,
     activeOrders: activeOrders.count ?? 0,
     queuedCount: queued.count ?? 0,
+    rejectedCount,
+    rejectedRate,
+    failedDeliveries: (failedDeliveries.count ?? 0) + (failedPermanentDeliveries.count ?? 0),
+    failedRetryable: failedDeliveries.count ?? 0,
+    failedPermanent: failedPermanentDeliveries.count ?? 0,
   }
 }
 

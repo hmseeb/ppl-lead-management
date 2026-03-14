@@ -10,6 +10,8 @@ export type KpiPreviewType =
   | 'active_brokers'
   | 'active_orders'
   | 'queued'
+  | 'failed_deliveries'
+  | 'rejected'
 
 export async function fetchLeadsTodayPreview() {
   try {
@@ -120,6 +122,44 @@ export async function fetchQueuedPreview() {
       .eq('status', 'queued')
       .order('created_at', { ascending: true })
       .limit(8)
+
+    return data ?? []
+  } catch {
+    return []
+  }
+}
+
+export async function fetchRejectedPreview() {
+  try {
+    const supabase = createAdminClient()
+
+    const { data } = await supabase
+      .from('leads')
+      .select('id, first_name, last_name, vertical, credit_score, rejection_reason, created_at')
+      .eq('status', 'rejected')
+      .order('created_at', { ascending: false })
+      .limit(8)
+
+    return data ?? []
+  } catch {
+    return []
+  }
+}
+
+export async function fetchFailedDeliveriesPreview() {
+  try {
+    const supabase = createAdminClient()
+
+    const { data } = await supabase
+      .from('deliveries')
+      .select(`
+        id, channel, status, error_message, created_at, broker_id, lead_id,
+        brokers ( first_name, last_name ),
+        leads ( first_name, last_name )
+      `)
+      .in('status', ['failed', 'failed_permanent'])
+      .order('created_at', { ascending: false })
+      .limit(10)
 
     return data ?? []
   } catch {

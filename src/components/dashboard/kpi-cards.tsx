@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Users, TrendingUp, AlertCircle, Activity, Package, Clock, Loader2 } from 'lucide-react'
+import { Users, TrendingUp, AlertCircle, AlertTriangle, Activity, Package, Clock, Loader2, XCircle } from 'lucide-react'
 import { format } from 'date-fns'
 import type { KpiPreviewType } from '@/lib/actions/dashboard'
 import {
@@ -21,6 +21,8 @@ import {
   fetchActiveBrokersPreview,
   fetchActiveOrdersPreview,
   fetchQueuedPreview,
+  fetchRejectedPreview,
+  fetchFailedDeliveriesPreview,
 } from '@/lib/actions/dashboard'
 
 interface KpiData {
@@ -32,11 +34,17 @@ interface KpiData {
   activeBrokers: number
   activeOrders: number
   queuedCount: number
+  rejectedCount: number
+  rejectedRate: number
+  failedDeliveries: number
+  failedRetryable: number
+  failedPermanent: number
 }
 
 type CardConfig = {
   title: string
   value: number
+  displayValue?: string
   subtitle: string
   icon: typeof TrendingUp
   iconColor: string
@@ -46,6 +54,20 @@ type CardConfig = {
   borderColor: string
   viewAllHref: string
   fetchAction: () => Promise<any[]>
+}
+
+function formatChannel(channel: string) {
+  switch (channel) {
+    case 'crm_webhook': return 'Webhook'
+    case 'email': return 'Email'
+    case 'sms': return 'SMS'
+    default: return channel
+  }
+}
+
+function truncate(str: string | null, max: number) {
+  if (!str) return '-'
+  return str.length > max ? `${str.slice(0, max)}...` : str
 }
 
 export function KpiCards({ data }: { data: KpiData }) {
@@ -105,6 +127,33 @@ export function KpiCards({ data }: { data: KpiData }) {
       fetchAction: fetchQueuedPreview,
     },
     {
+      title: 'Failed Deliveries',
+      value: data.failedDeliveries,
+      subtitle: `${data.failedRetryable} failed, ${data.failedPermanent} permanent`,
+      icon: AlertTriangle,
+      iconColor: data.failedDeliveries > 0 ? 'text-red-400' : 'text-muted-foreground',
+      glowColor: data.failedDeliveries > 0 ? 'shadow-[0_0_20px_rgba(239,68,68,0.08)]' : '',
+      highlight: data.failedDeliveries > 0,
+      previewType: 'failed_deliveries',
+      borderColor: 'border-red-400',
+      viewAllHref: '/activity?event_type=delivery_failed',
+      fetchAction: fetchFailedDeliveriesPreview,
+    },
+    {
+      title: 'Rejected Rate',
+      value: data.rejectedRate,
+      displayValue: `${data.rejectedRate}%`,
+      subtitle: `${data.rejectedCount} rejected out of ${data.leadsToday} today`,
+      icon: XCircle,
+      iconColor: data.rejectedRate > 20 ? 'text-rose-400' : 'text-muted-foreground',
+      glowColor: data.rejectedRate > 20 ? 'shadow-[0_0_20px_rgba(244,63,94,0.08)]' : '',
+      highlight: data.rejectedRate > 20,
+      previewType: 'rejected',
+      borderColor: 'border-rose-400',
+      viewAllHref: '/leads?status=rejected',
+      fetchAction: fetchRejectedPreview,
+    },
+    {
       title: 'Active Brokers',
       value: data.activeBrokers,
       subtitle: 'Receiving leads',
@@ -158,7 +207,7 @@ export function KpiCards({ data }: { data: KpiData }) {
 
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
         {cards.map((card) => (
           <div
             key={card.title}
@@ -182,7 +231,7 @@ export function KpiCards({ data }: { data: KpiData }) {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold font-mono tracking-tight text-foreground">
-                  {card.value}
+                  {card.displayValue ?? card.value}
                 </div>
                 <p className="text-[10px] text-muted-foreground mt-1.5">{card.subtitle}</p>
               </CardContent>
@@ -406,6 +455,46 @@ function PreviewTable({ type, data }: { type: KpiPreviewType; data: any[] }) {
                     {broker ? `${broker.first_name} ${broker.last_name}` : '-'}
                   </TableCell>
                   <TableCell className="text-xs uppercase">{row.channel}</TableCell>
+                  <TableCell className="text-xs">{formatDate(row.created_at)}</TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      )
+
+    case 'failed_deliveries':
+      return (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-xs">Lead</TableHead>
+              <TableHead className="text-xs">Broker</TableHead>
+              <TableHead className="text-xs">Channel</TableHead>
+              <TableHead className="text-xs">Error</TableHead>
+              <TableHead className="text-xs">Status</TableHead>
+              <TableHead className="text-xs">Time</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.map((row: any) => {
+              const broker = row.brokers as { first_name: string; last_name: string } | null
+              const lead = row.leads as { first_name: string | null; last_name: string | null } | null
+              return (
+                <TableRow key={row.id}>
+                  <TableCell className="text-xs">
+                    {lead ? `${lead.first_name} ${lead.last_name}` : '-'}
+                  </TableCell>
+                  <TableCell className="text-xs">
+                    {broker ? `${broker.first_name} ${broker.last_name}` : '-'}
+                  </TableCell>
+                  <TableCell className="text-xs">{formatChannel(row.channel)}</TableCell>
+                  <TableCell className="text-xs" title={row.error_message ?? ''}>
+                    {truncate(row.error_message, 50)}
+                  </TableCell>
+                  <TableCell className="text-xs capitalize">
+                    {row.status === 'failed_permanent' ? 'Permanent' : 'Failed'}
+                  </TableCell>
                   <TableCell className="text-xs">{formatDate(row.created_at)}</TableCell>
                 </TableRow>
               )

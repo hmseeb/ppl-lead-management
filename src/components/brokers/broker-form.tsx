@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { brokerSchema, type BrokerFormData } from '@/lib/schemas/broker'
+import { brokerSchema, verticalOptions, type BrokerFormData } from '@/lib/schemas/broker'
 import { createBroker, updateBroker } from '@/lib/actions/brokers'
 import Link from 'next/link'
 import { Button, buttonVariants } from '@/components/ui/button'
@@ -26,11 +26,17 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
   } = useForm<BrokerFormData>({
     resolver: zodResolver(brokerSchema),
     defaultValues: {
-      name: '',
-      company: '',
+      ghl_contact_id: '',
+      first_name: '',
+      last_name: '',
       email: '',
       phone: '',
-      crm_webhook_url: '',
+      company_name: '',
+      state: '',
+      primary_vertical: '',
+      secondary_vertical: '',
+      batch_size: undefined as unknown as number,
+      deal_amount: undefined as unknown as number,
       ...defaultValues,
     },
   })
@@ -59,23 +65,33 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-md">
       <div className="space-y-1.5">
-        <Label htmlFor="name">Name</Label>
-        <Input id="name" placeholder="John Doe" {...register('name')} />
-        {errors.name && (
-          <p className="text-sm text-destructive">{errors.name.message}</p>
+        <Label htmlFor="ghl_contact_id">GHL Contact ID</Label>
+        <Input id="ghl_contact_id" placeholder="abc123xyz" {...register('ghl_contact_id')} />
+        {errors.ghl_contact_id && (
+          <p className="text-sm text-destructive">{errors.ghl_contact_id.message}</p>
         )}
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="company">Company (optional)</Label>
-        <Input id="company" placeholder="Acme Corp" {...register('company')} />
-        {errors.company && (
-          <p className="text-sm text-destructive">{errors.company.message}</p>
-        )}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-1.5">
+          <Label htmlFor="first_name">First Name</Label>
+          <Input id="first_name" placeholder="John" {...register('first_name')} />
+          {errors.first_name && (
+            <p className="text-sm text-destructive">{errors.first_name.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="last_name">Last Name</Label>
+          <Input id="last_name" placeholder="Smith" {...register('last_name')} />
+          {errors.last_name && (
+            <p className="text-sm text-destructive">{errors.last_name.message}</p>
+          )}
+        </div>
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="email">Email (optional)</Label>
+        <Label htmlFor="email">Email</Label>
         <Input id="email" type="email" placeholder="john@example.com" {...register('email')} />
         {errors.email && (
           <p className="text-sm text-destructive">{errors.email.message}</p>
@@ -84,22 +100,91 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
 
       <div className="space-y-1.5">
         <Label htmlFor="phone">Phone (optional)</Label>
-        <Input id="phone" placeholder="+1 555-1234" {...register('phone')} />
+        <Input id="phone" placeholder="+17025551234" {...register('phone')} />
         {errors.phone && (
           <p className="text-sm text-destructive">{errors.phone.message}</p>
         )}
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="crm_webhook_url">GHL Webhook URL (optional)</Label>
-        <Input
-          id="crm_webhook_url"
-          placeholder="https://services.leadconnectorhq.com/hooks/..."
-          {...register('crm_webhook_url')}
-        />
-        {errors.crm_webhook_url && (
-          <p className="text-sm text-destructive">{errors.crm_webhook_url.message}</p>
+        <Label htmlFor="company_name">Company Name (optional)</Label>
+        <Input id="company_name" placeholder="Smith Funding LLC" {...register('company_name')} />
+        {errors.company_name && (
+          <p className="text-sm text-destructive">{errors.company_name.message}</p>
         )}
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="state">State (optional)</Label>
+        <Input id="state" placeholder="NV" {...register('state')} />
+        {errors.state && (
+          <p className="text-sm text-destructive">{errors.state.message}</p>
+        )}
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-1.5">
+          <Label htmlFor="primary_vertical">Primary Vertical (optional)</Label>
+          <select
+            id="primary_vertical"
+            {...register('primary_vertical')}
+            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          >
+            <option value="">Select...</option>
+            {verticalOptions.map((v) => (
+              <option key={v} value={v}>{v}</option>
+            ))}
+          </select>
+          {errors.primary_vertical && (
+            <p className="text-sm text-destructive">{errors.primary_vertical.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="secondary_vertical">Secondary Vertical (optional)</Label>
+          <select
+            id="secondary_vertical"
+            {...register('secondary_vertical')}
+            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          >
+            <option value="">Select...</option>
+            {verticalOptions.map((v) => (
+              <option key={v} value={v}>{v}</option>
+            ))}
+          </select>
+          {errors.secondary_vertical && (
+            <p className="text-sm text-destructive">{errors.secondary_vertical.message}</p>
+          )}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-1.5">
+          <Label htmlFor="batch_size">Batch Size</Label>
+          <Input
+            id="batch_size"
+            type="number"
+            placeholder="25"
+            {...register('batch_size')}
+          />
+          {errors.batch_size && (
+            <p className="text-sm text-destructive">{errors.batch_size.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="deal_amount">Deal Amount ($)</Label>
+          <Input
+            id="deal_amount"
+            type="number"
+            step="0.01"
+            placeholder="1500"
+            {...register('deal_amount')}
+          />
+          {errors.deal_amount && (
+            <p className="text-sm text-destructive">{errors.deal_amount.message}</p>
+          )}
+        </div>
       </div>
 
       <div className="flex items-center gap-3">

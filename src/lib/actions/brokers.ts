@@ -13,29 +13,37 @@ export async function createBroker(data: unknown) {
   }
 
   const supabase = createAdminClient()
-  const { name, company, email, phone, crm_webhook_url } = result.data
-
-  // Split name into first/last for the existing brokers table schema
-  const parts = name.trim().split(/\s+/)
-  const first_name = parts[0]
-  const last_name = parts.slice(1).join(' ') || ''
+  const {
+    ghl_contact_id,
+    first_name,
+    last_name,
+    email,
+    phone,
+    company_name,
+    state,
+    primary_vertical,
+    secondary_vertical,
+    batch_size,
+    deal_amount,
+  } = result.data
 
   const { data: broker, error } = await supabase
     .from('brokers')
     .insert({
+      ghl_contact_id,
       first_name,
       last_name,
-      company,
-      email,
-      phone,
-      crm_webhook_url,
-      assignment_status: 'active',
-      // Required fields from existing schema with sensible defaults
-      ghl_contact_id: `manual-${Date.now()}`,
+      email: email.toLowerCase(),
+      phone: phone || null,
+      company_name: company_name || null,
+      state: state || null,
+      primary_vertical: primary_vertical || null,
+      secondary_vertical: secondary_vertical || null,
+      batch_size,
+      deal_amount,
       token: `tok-${crypto.randomUUID()}`,
-      batch_size: 1,
-      deal_amount: 0,
-      status: 'completed', // onboarding status (from ppl-onboarding)
+      assignment_status: 'active',
+      status: 'completed',
     })
     .select()
     .single()
@@ -48,7 +56,7 @@ export async function createBroker(data: unknown) {
   await supabase.from('activity_log').insert({
     event_type: 'broker_created',
     broker_id: broker.id,
-    details: { name, email },
+    details: { first_name, last_name, email },
   })
 
   revalidatePath('/brokers')
@@ -62,21 +70,34 @@ export async function updateBroker(id: string, data: unknown) {
   }
 
   const supabase = createAdminClient()
-  const { name, company, email, phone, crm_webhook_url } = result.data
-
-  const parts = name.trim().split(/\s+/)
-  const first_name = parts[0]
-  const last_name = parts.slice(1).join(' ') || ''
+  const {
+    ghl_contact_id,
+    first_name,
+    last_name,
+    email,
+    phone,
+    company_name,
+    state,
+    primary_vertical,
+    secondary_vertical,
+    batch_size,
+    deal_amount,
+  } = result.data
 
   const { error } = await supabase
     .from('brokers')
     .update({
+      ghl_contact_id,
       first_name,
       last_name,
-      company,
-      email,
-      phone,
-      crm_webhook_url,
+      email: email.toLowerCase(),
+      phone: phone || null,
+      company_name: company_name || null,
+      state: state || null,
+      primary_vertical: primary_vertical || null,
+      secondary_vertical: secondary_vertical || null,
+      batch_size,
+      deal_amount,
     })
     .eq('id', id)
 

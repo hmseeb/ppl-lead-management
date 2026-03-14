@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { brokerSchema, type BrokerFormData } from '@/lib/schemas/broker'
 import { createBroker, updateBroker } from '@/lib/actions/brokers'
-import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
@@ -101,9 +102,14 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
         )}
       </div>
 
-      <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? 'Saving...' : mode === 'edit' ? 'Update Broker' : 'Create Broker'}
-      </Button>
+      <div className="flex items-center gap-3">
+        <Link href="/brokers" className={buttonVariants({ variant: 'outline' })}>
+          Back
+        </Link>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Saving...' : mode === 'edit' ? 'Update Broker' : 'Create Broker'}
+        </Button>
+      </div>
     </form>
   )
 }

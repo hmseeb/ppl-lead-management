@@ -90,27 +90,28 @@ export async function POST(request: Request) {
   // 5. Pre-flight validation
   let rejectionReason: string | null = null
 
-  // VALID-01: Credit score minimum 600
-  if (data.credit_score !== undefined && data.credit_score < 600) {
-    rejectionReason = 'credit_too_low'
-  }
-
   // VALID-02: Missing or invalid loan amount
-  if (!rejectionReason) {
-    if (data.funding_amount === undefined || data.funding_amount === null || data.funding_amount <= 0) {
-      rejectionReason = 'invalid_loan_amount'
-    }
+  if (data.funding_amount === undefined || data.funding_amount === null || data.funding_amount <= 0) {
+    rejectionReason = 'invalid_loan_amount'
   }
 
-  // VALID-03: No active orders
+  // VALID-03: No active orders + VALID-01: Credit floor from lowest order minimum
   if (!rejectionReason) {
-    const { count } = await supabase
+    const { data: lowestOrder } = await supabase
       .from('orders')
-      .select('id', { count: 'exact', head: true })
+      .select('credit_score_min')
       .eq('status', 'active')
+      .order('credit_score_min', { ascending: true, nullsFirst: true })
+      .limit(1)
+      .single()
 
-    if (!count || count === 0) {
+    if (!lowestOrder) {
       rejectionReason = 'no_active_orders'
+    } else {
+      const floor = lowestOrder.credit_score_min ?? 0
+      if (data.credit_score !== undefined && floor > 0 && data.credit_score < floor) {
+        rejectionReason = 'credit_too_low'
+      }
     }
   }
 

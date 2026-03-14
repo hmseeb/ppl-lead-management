@@ -7,7 +7,8 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { orderSchema, type OrderFormData, VERTICALS, PRIORITIES, ORDER_TYPES } from '@/lib/schemas/order'
 import { createOrder } from '@/lib/actions/orders'
-import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -244,9 +245,14 @@ export function OrderForm({ brokers }: OrderFormProps) {
         </select>
       </div>
 
-      <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? 'Creating...' : 'Create Order'}
-      </Button>
+      <div className="flex items-center gap-3">
+        <Link href="/orders" className={buttonVariants({ variant: 'outline' })}>
+          Back
+        </Link>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Creating...' : 'Create Order'}
+        </Button>
+      </div>
     </form>
   )
 }

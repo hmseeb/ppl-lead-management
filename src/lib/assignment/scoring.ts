@@ -80,10 +80,10 @@ function passesHardFilters(
 
   // ORDER-05: Loan range hard filter
   if (lead.funding_amount !== null && lead.funding_amount !== undefined) {
-    if (order.loan_min !== null && lead.funding_amount < order.loan_min) {
+    if (order.loan_min !== null && order.loan_min > 0 && lead.funding_amount < order.loan_min) {
       return { eligible: false, reason: 'loan_below_minimum' }
     }
-    if (order.loan_max !== null && lead.funding_amount > order.loan_max) {
+    if (order.loan_max !== null && order.loan_max > 0 && lead.funding_amount > order.loan_max) {
       return { eligible: false, reason: 'loan_above_maximum' }
     }
   }
@@ -129,11 +129,11 @@ function tierMatchScore(lead: LeadForScoring, order: OrderForScoring): number {
 
 /** SCORE-05: Loan Fit (max 10pts) */
 function loanFitScore(lead: LeadForScoring, order: OrderForScoring): number {
-  if (order.loan_min === null && order.loan_max === null) return 10
+  if ((order.loan_min === null || order.loan_min === 0) && (order.loan_max === null || order.loan_max === 0)) return 10
   if (lead.funding_amount === null) return 0
 
-  const aboveMin = order.loan_min === null || lead.funding_amount >= order.loan_min
-  const belowMax = order.loan_max === null || lead.funding_amount <= order.loan_max
+  const aboveMin = order.loan_min === null || order.loan_min === 0 || lead.funding_amount >= order.loan_min
+  const belowMax = order.loan_max === null || order.loan_max === 0 || lead.funding_amount <= order.loan_max
   return aboveMin && belowMax ? 10 : 0
 }
 

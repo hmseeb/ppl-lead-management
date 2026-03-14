@@ -2,7 +2,8 @@
 
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { Pause, Play, Plus } from 'lucide-react'
+import { useState } from 'react'
+import { Loader2, Pause, Pencil, Play, Plus, Webhook } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { pauseAllBrokerOrders, resumeAllBrokerOrders } from '@/lib/actions/brokers'
@@ -11,10 +12,12 @@ interface BrokerQuickActionsProps {
   brokerId: string
   activeOrdersCount: number
   pausedOrdersCount: number
+  hasWebhook?: boolean
 }
 
-export function BrokerQuickActions({ brokerId, activeOrdersCount, pausedOrdersCount }: BrokerQuickActionsProps) {
+export function BrokerQuickActions({ brokerId, activeOrdersCount, pausedOrdersCount, hasWebhook }: BrokerQuickActionsProps) {
   const router = useRouter()
+  const [sendingWebhook, setSendingWebhook] = useState(false)
 
   async function handlePauseAll() {
     const result = await pauseAllBrokerOrders(brokerId)
@@ -36,8 +39,49 @@ export function BrokerQuickActions({ brokerId, activeOrdersCount, pausedOrdersCo
     router.refresh()
   }
 
+  async function handleTestWebhook() {
+    setSendingWebhook(true)
+    try {
+      const res = await fetch(`/api/brokers/${brokerId}/test-webhook`, {
+        method: 'POST',
+      })
+      const data = await res.json()
+
+      if (!res.ok) {
+        toast.error(data.error || 'Webhook test failed')
+        return
+      }
+
+      toast.success(`Webhook responded with ${data.status}`)
+    } catch {
+      toast.error('Failed to send test webhook')
+    } finally {
+      setSendingWebhook(false)
+    }
+  }
+
   return (
     <div className="flex gap-2">
+      {hasWebhook && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleTestWebhook}
+          disabled={sendingWebhook}
+        >
+          {sendingWebhook ? (
+            <Loader2 className="size-4 mr-1 animate-spin" />
+          ) : (
+            <Webhook className="size-4 mr-1" />
+          )}
+          Test Webhook
+        </Button>
+      )}
+      <Link href={`/brokers/${brokerId}/edit`}>
+        <Button variant="outline" size="sm">
+          <Pencil className="size-4 mr-1" /> Edit
+        </Button>
+      </Link>
       <Button
         variant="outline"
         size="sm"

@@ -14,6 +14,7 @@ type BrokerWithStats = {
   email: string
   phone: string | null
   assignment_status: string
+  crm_webhook_url: string | null
   active_orders_count: number
   total_leads_delivered: number
   last_delivery_date: string | null
@@ -59,7 +60,7 @@ export function BrokersTable({ brokers }: { brokers: BrokerWithStats[] }) {
               <BrokerStatusBadge status={broker.assignment_status} />
             </TableCell>
             <TableCell>
-              <BrokerActions brokerId={broker.id} currentStatus={broker.assignment_status} />
+              <BrokerActions brokerId={broker.id} currentStatus={broker.assignment_status} hasWebhook={!!broker.crm_webhook_url} />
             </TableCell>
           </TableRow>
         ))}

@@ -34,7 +34,7 @@ export default async function BrokerDetailPage({
           <Link href="/brokers"><Button variant="ghost" size="sm"><ChevronLeft className="size-4 mr-1" /> Brokers</Button></Link>
           <h1 className="text-2xl font-semibold">{result.broker.first_name} {result.broker.last_name}</h1>
         </div>
-        <BrokerQuickActions brokerId={id} activeOrdersCount={activeCount} pausedOrdersCount={pausedCount} />
+        <BrokerQuickActions brokerId={id} activeOrdersCount={activeCount} pausedOrdersCount={pausedCount} hasWebhook={!!result.broker.crm_webhook_url} />
       </div>
       <BrokerDetail broker={result.broker} orders={result.orders} leads={result.leads} queuedDeliveries={result.queuedDeliveries} />
     </div>

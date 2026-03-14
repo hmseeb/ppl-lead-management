@@ -75,7 +75,7 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">Email (optional)</Label>
         <Input id="email" type="email" placeholder="john@example.com" {...register('email')} />
         {errors.email && (
           <p className="text-sm text-destructive">{errors.email.message}</p>
@@ -83,7 +83,7 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="phone">Phone</Label>
+        <Label htmlFor="phone">Phone (optional)</Label>
         <Input id="phone" placeholder="+1 555-1234" {...register('phone')} />
         {errors.phone && (
           <p className="text-sm text-destructive">{errors.phone.message}</p>
@@ -91,7 +91,7 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="crm_webhook_url">GHL Webhook URL</Label>
+        <Label htmlFor="crm_webhook_url">GHL Webhook URL (optional)</Label>
         <Input
           id="crm_webhook_url"
           placeholder="https://services.leadconnectorhq.com/hooks/..."

@@ -39,7 +39,7 @@ All decisions logged in PROJECT.md Key Decisions table.
 
 ### Pending Todos
 
-None.
+1. **Auto-reassign unassigned leads on order changes** (feature, api) — `2026-03-14-auto-reassign-unassigned-leads-on-order-changes.md`
 
 ### Blockers/Concerns
 

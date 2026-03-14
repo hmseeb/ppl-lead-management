@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Users, TrendingUp, AlertCircle, AlertTriangle, Activity, Package, Clock, Loader2, XCircle } from 'lucide-react'
+import { Users, TrendingUp, AlertCircle, AlertTriangle, Activity, Package, Loader2, XCircle } from 'lucide-react'
 import { format } from 'date-fns'
 import type { KpiPreviewType } from '@/lib/actions/dashboard'
 import {
@@ -20,7 +20,6 @@ import {
   fetchUnassignedPreview,
   fetchActiveBrokersPreview,
   fetchActiveOrdersPreview,
-  fetchQueuedPreview,
   fetchRejectedPreview,
   fetchFailedDeliveriesPreview,
 } from '@/lib/actions/dashboard'
@@ -114,19 +113,6 @@ export function KpiCards({ data }: { data: KpiData }) {
       fetchAction: fetchUnassignedPreview,
     },
     {
-      title: 'Queued',
-      value: data.queuedCount,
-      subtitle: 'Waiting for broker hours',
-      icon: Clock,
-      iconColor: data.queuedCount > 0 ? 'text-orange-400' : 'text-muted-foreground',
-      glowColor: data.queuedCount > 0 ? 'shadow-[0_0_20px_rgba(249,115,22,0.08)]' : '',
-      highlight: data.queuedCount > 0,
-      previewType: 'queued',
-      borderColor: 'border-orange-400',
-      viewAllHref: '/activity?event_type=delivery_queued',
-      fetchAction: fetchQueuedPreview,
-    },
-    {
       title: 'Failed Deliveries',
       value: data.failedDeliveries,
       subtitle: `${data.failedRetryable} failed, ${data.failedPermanent} permanent`,
@@ -207,7 +193,7 @@ export function KpiCards({ data }: { data: KpiData }) {
 
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
         {cards.map((card) => (
           <div
             key={card.title}
@@ -215,7 +201,7 @@ export function KpiCards({ data }: { data: KpiData }) {
             className="cursor-pointer"
           >
             <Card
-              className={`transition-all duration-200 ${card.glowColor} ${
+              className={`h-full transition-all duration-200 ${card.glowColor} ${
                 card.highlight ? '!border-amber-500/20' : ''
               } ${
                 expandedCard === card.previewType

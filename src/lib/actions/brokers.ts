@@ -25,6 +25,14 @@ export async function createBroker(data: unknown) {
     secondary_vertical,
     batch_size,
     deal_amount,
+    delivery_methods,
+    crm_webhook_url,
+    timezone,
+    contact_hours,
+    custom_hours_start,
+    custom_hours_end,
+    weekend_pause,
+    assignment_status,
   } = result.data
 
   const { data: broker, error } = await supabase
@@ -42,8 +50,15 @@ export async function createBroker(data: unknown) {
       batch_size,
       deal_amount,
       token: `tok-${crypto.randomUUID()}`,
-      assignment_status: 'active',
+      assignment_status: assignment_status || 'active',
       status: 'completed',
+      delivery_methods: delivery_methods?.length ? delivery_methods : ['crm_webhook'],
+      crm_webhook_url: crm_webhook_url || null,
+      timezone: timezone || null,
+      contact_hours: contact_hours || 'anytime',
+      custom_hours_start: custom_hours_start || null,
+      custom_hours_end: custom_hours_end || null,
+      weekend_pause: weekend_pause ?? false,
     })
     .select()
     .single()

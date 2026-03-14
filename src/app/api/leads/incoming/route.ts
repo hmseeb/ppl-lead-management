@@ -145,11 +145,35 @@ export async function POST(request: Request) {
   try {
     assignment = await assignLead(lead.id)
   } catch (err) {
-    // Assignment failure should not block the 200 response.
-    // Lead is stored. Assignment can be retried.
+    const reason = err instanceof Error ? err.message : 'unknown error'
+    console.error(`assignLead failed for ${lead.id}:`, reason)
+
+    // Assignment threw, but the lead exists. Mark it unassigned so it
+    // doesn't rot in pending. The unassigned_queue lets ops retry later.
+    await supabase
+      .from('leads')
+      .update({ status: 'unassigned', updated_at: new Date().toISOString() })
+      .eq('id', lead.id)
+
+    await supabase
+      .from('unassigned_queue')
+      .insert({
+        lead_id: lead.id,
+        reason: 'assignment_error',
+        details: reason,
+      })
+
+    await supabase
+      .from('activity_log')
+      .insert({
+        event_type: 'lead_unassigned',
+        lead_id: lead.id,
+        details: { reason: 'assignment_error', error: reason },
+      })
+
     assignment = {
-      status: 'error' as const,
-      reason: err instanceof Error ? err.message : 'unknown error',
+      status: 'unassigned' as const,
+      reason,
     }
   }
 

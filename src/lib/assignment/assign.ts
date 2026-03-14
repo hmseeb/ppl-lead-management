@@ -89,9 +89,10 @@ export async function assignLead(leadId: string): Promise<AssignmentResult> {
     return data as unknown as AssignmentResult
   }
 
-  // No eligible orders — let SQL handle unassigned path
+  // No eligible orders — pass null explicitly to avoid overload ambiguity
   const { data, error } = await supabase.rpc('assign_lead', {
     p_lead_id: leadId,
+    p_order_id: null,
   })
   if (error) throw new Error(`Assignment failed: ${error.message}`)
   return data as unknown as AssignmentResult

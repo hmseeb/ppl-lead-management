@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
@@ -64,6 +65,26 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
 
   const deliveryMethods = watch('delivery_methods') ?? []
   const contactHours = watch('contact_hours')
+  const webhookUrl = watch('crm_webhook_url')
+  const [sendingTest, setSendingTest] = useState(false)
+
+  async function handleTestWebhook() {
+    if (!brokerId) return
+    setSendingTest(true)
+    try {
+      const res = await fetch(`/api/brokers/${brokerId}/test-webhook`, { method: 'POST' })
+      const data = await res.json()
+      if (res.ok) {
+        toast.success(`Webhook responded with ${data.status_code}`)
+      } else {
+        toast.error(data.error || 'Test failed')
+      }
+    } catch {
+      toast.error('Network error')
+    } finally {
+      setSendingTest(false)
+    }
+  }
 
   async function onSubmit(data: BrokerFormData) {
     const result =
@@ -201,6 +222,10 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
       <fieldset className="space-y-4 border-t pt-6">
         <legend className="text-base font-medium text-foreground">Operational Settings</legend>
 
+        <div className="rounded-md border border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/30 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
+          Contact hours and weekend delivery pause are currently disabled system-wide. All leads are delivered immediately regardless of these settings.
+        </div>
+
         {/* Delivery Methods */}
         <div className="space-y-2">
           <Label>Delivery Methods</Label>
@@ -250,6 +275,18 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
             />
             {errors.crm_webhook_url && (
               <p className="text-sm text-destructive">{errors.crm_webhook_url.message}</p>
+            )}
+            {mode === 'edit' && brokerId && webhookUrl && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={sendingTest}
+                onClick={handleTestWebhook}
+                className="mt-1"
+              >
+                {sendingTest ? 'Sending...' : 'Send Test Payload'}
+              </Button>
             )}
           </div>
         )}

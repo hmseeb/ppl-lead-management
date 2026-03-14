@@ -11,12 +11,14 @@ const searchSync = { shallow: false, throttleMs: 300 } as const
 export function BrokersFilters() {
   const [search, setSearch] = useQueryState('search', parseAsString.withDefault('').withOptions(searchSync))
   const [assignmentStatus, setAssignmentStatus] = useQueryState('assignment_status', parseAsString.withDefault('').withOptions(serverSync))
+  const [onboardingStatus, setOnboardingStatus] = useQueryState('onboarding_status', parseAsString.withDefault('').withOptions(serverSync))
 
-  const hasFilters = search || assignmentStatus
+  const hasFilters = search || assignmentStatus || onboardingStatus
 
   function clearAll() {
     setSearch('')
     setAssignmentStatus('')
+    setOnboardingStatus('')
   }
 
   return (
@@ -38,6 +40,17 @@ export function BrokersFilters() {
         <option value="active">Active</option>
         <option value="inactive">Inactive</option>
         <option value="suspended">Suspended</option>
+      </select>
+
+      <select
+        className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+        value={onboardingStatus}
+        onChange={(e) => setOnboardingStatus(e.target.value || '')}
+      >
+        <option value="">All Onboarding</option>
+        <option value="completed">Completed</option>
+        <option value="in_progress">In Progress</option>
+        <option value="not_started">Not Started</option>
       </select>
 
       {hasFilters && (

@@ -4,6 +4,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
 import { BrokerStatusBadge } from './broker-status-badge'
+import { OnboardingStatusBadge } from './onboarding-status-badge'
 import { BrokerActions } from './broker-actions'
 
 type BrokerWithStats = {
@@ -14,6 +15,7 @@ type BrokerWithStats = {
   email: string
   phone: string | null
   assignment_status: string
+  status: string
   crm_webhook_url: string | null
   active_orders_count: number
   total_leads_delivered: number
@@ -31,6 +33,7 @@ export function BrokersTable({ brokers }: { brokers: BrokerWithStats[] }) {
         <TableRow>
           <TableHead>Name</TableHead>
           <TableHead>Company</TableHead>
+          <TableHead>Onboarding</TableHead>
           <TableHead>Email</TableHead>
           <TableHead className="text-right">Active Orders</TableHead>
           <TableHead className="text-right">Leads Delivered</TableHead>
@@ -48,6 +51,9 @@ export function BrokersTable({ brokers }: { brokers: BrokerWithStats[] }) {
               </Link>
             </TableCell>
             <TableCell>{broker.company || '-'}</TableCell>
+            <TableCell>
+              <OnboardingStatusBadge status={broker.status} />
+            </TableCell>
             <TableCell>{broker.email}</TableCell>
             <TableCell className="text-right">{broker.active_orders_count}</TableCell>
             <TableCell className="text-right">{broker.total_leads_delivered}</TableCell>

@@ -20,6 +20,7 @@ export default async function BrokersPage({
   const { data: brokers, count } = await fetchBrokersWithStats({
     search: params.search || undefined,
     assignment_status: params.assignment_status || undefined,
+    onboarding_status: params.onboarding_status || undefined,
     page,
     per_page: perPage,
   })

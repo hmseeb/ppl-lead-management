@@ -3,6 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 interface BrokerFilters {
   search?: string
   assignment_status?: string
+  onboarding_status?: string
   page?: number
   per_page?: number
 }
@@ -16,7 +17,7 @@ export async function fetchBrokersWithStats(params: BrokerFilters = {}) {
   let query = supabase
     .from('brokers')
     .select(`
-      id, first_name, last_name, company, email, phone, assignment_status, created_at,
+      id, first_name, last_name, company, email, phone, assignment_status, status, created_at,
       crm_webhook_url,
       orders ( id, status, leads_delivered, last_assigned_at )
     `, { count: 'exact' })
@@ -25,6 +26,7 @@ export async function fetchBrokersWithStats(params: BrokerFilters = {}) {
     query = query.or(`first_name.ilike.%${params.search}%,last_name.ilike.%${params.search}%,company.ilike.%${params.search}%`)
   }
   if (params.assignment_status) query = query.eq('assignment_status', params.assignment_status)
+  if (params.onboarding_status) query = query.eq('status', params.onboarding_status)
 
   const { data: brokers, count, error } = await query
     .order('created_at', { ascending: false })

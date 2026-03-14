@@ -97,6 +97,14 @@ export async function updateBroker(id: string, data: unknown) {
     secondary_vertical,
     batch_size,
     deal_amount,
+    delivery_methods,
+    crm_webhook_url,
+    timezone,
+    contact_hours,
+    custom_hours_start,
+    custom_hours_end,
+    weekend_pause,
+    assignment_status,
   } = result.data
 
   const { error } = await supabase
@@ -113,6 +121,14 @@ export async function updateBroker(id: string, data: unknown) {
       secondary_vertical: secondary_vertical || null,
       batch_size,
       deal_amount,
+      delivery_methods: delivery_methods?.length ? delivery_methods : ['crm_webhook'],
+      crm_webhook_url: crm_webhook_url || null,
+      timezone: timezone || null,
+      contact_hours: contact_hours || 'anytime',
+      custom_hours_start: contact_hours === 'custom' ? (custom_hours_start || null) : null,
+      custom_hours_end: contact_hours === 'custom' ? (custom_hours_end || null) : null,
+      weekend_pause: weekend_pause ?? false,
+      assignment_status: assignment_status || 'active',
     })
     .eq('id', id)
 

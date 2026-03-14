@@ -27,7 +27,7 @@ export default async function EditBrokerPage({
   const { broker } = result
 
   return (
-    <div className="max-w-lg space-y-6">
+    <div className="max-w-xl space-y-6">
       <div className="flex items-center gap-4">
         <Link href={`/brokers/${id}`}>
           <Button variant="ghost" size="sm"><ChevronLeft className="size-4 mr-1" /> Back</Button>
@@ -49,6 +49,14 @@ export default async function EditBrokerPage({
           secondary_vertical: (broker.secondary_vertical ?? '') as BrokerFormData['secondary_vertical'],
           batch_size: broker.batch_size,
           deal_amount: broker.deal_amount,
+          delivery_methods: (broker.delivery_methods ?? ['crm_webhook']) as BrokerFormData['delivery_methods'],
+          crm_webhook_url: broker.crm_webhook_url ?? '',
+          timezone: (broker.timezone ?? '') as BrokerFormData['timezone'],
+          contact_hours: (broker.contact_hours ?? 'anytime') as BrokerFormData['contact_hours'],
+          custom_hours_start: broker.custom_hours_start ?? '',
+          custom_hours_end: broker.custom_hours_end ?? '',
+          weekend_pause: broker.weekend_pause ?? false,
+          assignment_status: (broker.assignment_status ?? 'active') as BrokerFormData['assignment_status'],
         }}
       />
     </div>

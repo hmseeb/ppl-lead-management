@@ -79,7 +79,7 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
       })
       const data = await res.json()
       if (res.ok) {
-        toast.success(`Webhook responded with ${data.status_code}`)
+        toast.success(`Webhook responded with ${data.status}`)
       } else {
         toast.error(data.error || 'Test failed')
       }

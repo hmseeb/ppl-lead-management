@@ -2,12 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 export async function POST(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
 
   try {
+    const body = await req.json().catch(() => ({}))
+
     const supabase = createAdminClient()
 
     const { data: broker, error } = await supabase
@@ -23,9 +25,11 @@ export async function POST(
       )
     }
 
-    if (!broker.crm_webhook_url) {
+    const targetUrl = body.webhook_url || broker.crm_webhook_url
+
+    if (!targetUrl) {
       return NextResponse.json(
-        { error: 'Broker has no webhook URL configured' },
+        { error: 'No webhook URL provided' },
         { status: 400 }
       )
     }
@@ -55,7 +59,7 @@ export async function POST(
 
     let response: Response
     try {
-      response = await fetch(broker.crm_webhook_url, {
+      response = await fetch(targetUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

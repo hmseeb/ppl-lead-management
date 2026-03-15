@@ -72,7 +72,11 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
     if (!brokerId) return
     setSendingTest(true)
     try {
-      const res = await fetch(`/api/brokers/${brokerId}/test-webhook`, { method: 'POST' })
+      const res = await fetch(`/api/brokers/${brokerId}/test-webhook`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ webhook_url: webhookUrl }),
+      })
       const data = await res.json()
       if (res.ok) {
         toast.success(`Webhook responded with ${data.status_code}`)

@@ -22,6 +22,7 @@ type OrderWithBroker = {
   bonus_mode: boolean
   created_at: string
   brokers: { first_name: string; last_name: string }
+  leads: [{ count: number }]
 }
 
 export function OrdersTable({ orders }: { orders: OrderWithBroker[] }) {
@@ -36,6 +37,7 @@ export function OrdersTable({ orders }: { orders: OrderWithBroker[] }) {
           <TableHead>Order ID</TableHead>
           <TableHead>Broker</TableHead>
           <TableHead className="text-right">Total</TableHead>
+          <TableHead className="text-right">Assigned</TableHead>
           <TableHead className="text-right">Delivered</TableHead>
           <TableHead className="text-right">Remaining</TableHead>
           <TableHead>Verticals</TableHead>
@@ -62,6 +64,7 @@ export function OrdersTable({ orders }: { orders: OrderWithBroker[] }) {
                 </Link>
               </TableCell>
               <TableCell className="text-right">{order.total_leads}</TableCell>
+              <TableCell className="text-right">{order.leads?.[0]?.count ?? 0}</TableCell>
               <TableCell className="text-right">{order.leads_delivered}</TableCell>
               <TableCell className="text-right">{order.leads_remaining}</TableCell>
               <TableCell>

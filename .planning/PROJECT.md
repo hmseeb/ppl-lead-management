@@ -51,7 +51,13 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 
 ### Active
 
-(None — planning next milestone)
+- [ ] Dashboard date range filters with presets (today, 7d, 30d, 90d, custom)
+- [ ] Dashboard broker filter scoping all KPIs to a single broker
+- [ ] Dashboard vertical filter scoping KPIs by lead vertical
+- [ ] Comparison mode showing delta badges vs previous period
+- [ ] URL-persisted dashboard filters using nuqs
+- [ ] Lead volume chart adapts range to selected date filter
+- [ ] Auto-reassign unassigned leads when matching orders become available
 
 ### Out of Scope
 
@@ -107,4 +113,17 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 | Hard credit tier filters before scoring | Prevents invalid assignments regardless of score | ✓ Good |
 
 ---
-*Last updated: 2026-03-17 after v2.0 milestone completion*
+## Current Milestone: v2.1 Dashboard Analytics
+
+**Goal:** Add date range, broker, and vertical filters to the KPI dashboard with comparison mode, and auto-reassign unassigned leads on order changes.
+
+**Target features:**
+- Date range filter with presets (today, 7d, 30d, 90d, custom)
+- Broker filter on KPI dashboard
+- Vertical filter on KPI dashboard
+- Comparison mode (current vs previous period with delta badges)
+- URL-persisted filters using nuqs
+- Auto-reassign unassigned leads when orders activate/change
+
+---
+*Last updated: 2026-03-17 after v2.1 milestone start*

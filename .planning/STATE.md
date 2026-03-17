@@ -2,40 +2,31 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-13)
+See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** v2.0 Smart Scoring Engine — COMPLETE
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: 17 of 17 (Monthly Recurring Orders) — COMPLETE
-Plan: 1 of 1 in current phase
-Status: All phases complete. v2.0 milestone done.
-Last activity: 2026-03-13 — Phase 17 executed (monthly reset function + pg_cron)
+Phase: All complete (v1.0 through v2.0 shipped)
+Status: Between milestones. v2.0 archived 2026-03-17.
+Last activity: 2026-03-17 — v2.0 milestone completed and archived
 
-Progress: [██████████████████████████████] 100% (all 17 phases complete)
+Progress: [██████████████████████████████] 100% (17 phases, 30 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 26 (v1.0: 13, v1.1: 6, v1.2: 4, v2.0: 3)
-- Average duration: 5min
-- Total execution time: ~1.5 hours
+- Total plans completed: 30 (v1.0: 13, v1.1: 6, v1.2: 4, v2.0: 9)
+- Total execution time: ~2 hours
+- Codebase: 12,179 LOC TypeScript
 
 ## Accumulated Context
 
 ### Decisions
 
 All decisions logged in PROJECT.md Key Decisions table.
-
-**v2.0 Context:**
-- Dan confirmed order-based architecture stays. Spec adapted: orders are the routing unit, not brokers.
-- Credit tiers: 600+ for MCA/Term loans, 680+ for term loans and 0% credit stacking
-- LEAD_ROUTING_SPEC.md is broker-centric reference. Our implementation uses orders (leads_remaining/leads_delivered on orders, not brokers).
-- Current assign_lead() uses advisory locks + ORDER BY weighted rotation. Scoring replaces the ORDER BY clause.
-- fill_rate = leads_delivered / total_leads (on orders table)
-- Existing fields: leads_remaining, leads_delivered, total_leads, credit_score_min, bonus_mode on orders
 
 ### Pending Todos
 
@@ -45,7 +36,6 @@ All decisions logged in PROJECT.md Key Decisions table.
 
 - GHL webhook payload schema not formally documented. Raw jsonb stored alongside parsed fields.
 - GHL rate limit behavior under real load (100 req/10s) not empirically tested.
-- Scoring function complexity: the new assign_lead will be significantly larger. Consider breaking scoring into a helper function.
 
 ### Quick Tasks Completed
 
@@ -57,6 +47,6 @@ All decisions logged in PROJECT.md Key Decisions table.
 
 ## Session Continuity
 
-Last session: 2026-03-13
-Stopped at: v2.0 milestone complete, all 17 phases done
+Last session: 2026-03-17
+Stopped at: v2.0 milestone completed, all milestones archived
 Resume file: None

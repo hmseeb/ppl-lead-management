@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Internal admin tool for BadAAAS that receives incoming funding leads via webhook from GHL, matches them to brokers based on order criteria (vertical + credit score), distributes them using smart weighted rotation, and fires them off to each broker's GHL sub-account automatically. Includes real-time delivery monitoring, failure alerts, and daily digest summaries.
+Internal admin tool for BadAAAS that receives incoming funding leads via webhook from GHL, scores them against all eligible orders using a 0-100 point algorithm, assigns them to the best-fit broker, and delivers them to each broker's GHL sub-account automatically. Includes pre-flight validation, credit tier gating, full routing audit trail, real-time delivery monitoring, failure alerts, and daily digest summaries.
 
 ## Core Value
 
@@ -35,23 +35,23 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 - ✓ Real-time SMS alerts for delivery failures and unassigned leads — v1.1
 - ✓ Alert deduplication (15-min window per broker/lead) — v1.1
 - ✓ Daily digest at 8 AM Pacific via pg_cron with HTML email + SMS — v1.1
-
 - ✓ Delivery respects broker contact hours (business_hours 9-5, custom range, anytime) — v1.2
 - ✓ Delivery paused on weekends when broker has weekend_pause enabled — v1.2
 - ✓ Per-broker timezone support (default America/Los_Angeles) — v1.2
 - ✓ Out-of-hours deliveries queued and released when broker's window opens — v1.2
 - ✓ Admin visibility into queued/delayed deliveries — v1.2
+- ✓ Pre-flight lead rejection (credit < 600, invalid loan amount, no active orders) — v2.0
+- ✓ Scoring-based assignment engine (0-100 pts: credit fit, capacity, tier match, loan fit, bonuses) — v2.0
+- ✓ Credit tier gating (680-tier orders never receive leads below 680) — v2.0
+- ✓ Loan amount range filtering on orders (loan_min, loan_max) — v2.0
+- ✓ Routing logs table with per-order scoring audit trail — v2.0
+- ✓ Broker priority support (high/normal with scoring bonus) — v2.0
+- ✓ Lead deduplication on email + phone (in addition to ghl_contact_id) — v2.0
+- ✓ Monthly cap reset option on orders — v2.0
 
 ### Active
 
-- [ ] Pre-flight lead rejection (credit < 600, invalid loan amount, no active orders)
-- [ ] Scoring-based assignment engine (0-100 pts: credit fit, capacity, tier match, loan fit, bonuses)
-- [ ] Credit tier gating (680-tier orders never receive leads below 680)
-- [ ] Loan amount range filtering on orders (loan_min, loan_max)
-- [ ] Routing logs table with per-order scoring audit trail
-- [ ] Broker priority support (high/normal with scoring bonus)
-- [ ] Lead deduplication on email + phone (in addition to ghl_contact_id)
-- [ ] Monthly cap reset option on orders
+(None — planning next milestone)
 
 ### Out of Scope
 
@@ -62,19 +62,17 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 | Multi-user admin accounts | Single shared password for now |
 | Broker self-service portal | Admin-only for current scope |
 | Payment/billing integration | Orders tracked manually |
-| Historical delivery analytics with date range | Dashboard is for today's health |
-| Per-broker delivery stats on main dashboard | Visible on broker detail pages |
 | Configurable alert channels (Slack, email, push) | One admin, one channel (GHL SMS) |
 | Alert severity levels / acknowledgement / escalation | One-person operation |
 | Weekly/monthly roll-up digests | Defer until operational patterns emerge |
 
 ## Context
 
-- **Current state:** v1.0 + v1.1 shipped. 9 phases, 19 plans, ~8,000 LOC TypeScript.
+- **Current state:** v2.0 shipped. 17 phases, 30 plans, ~12,200 LOC TypeScript.
 - **Tech stack:** Next.js 16, React 19, Supabase (Postgres, Realtime, Edge Functions, Vault, pg_cron, pg_net), Vercel, ShadCN, GHL Conversations API.
 - **Ecosystem:** Second app in PPL suite. PPL Onboarding handles broker onboarding with 7-step wizard and GHL sync.
-- **Lead flow:** Meta/Google ads → landing page → opt-in + soft credit pull → GHL main account → webhook to THIS app → match + assign → delivery to broker's GHL sub-account → broker automations.
-- **Infrastructure:** 4 Supabase edge functions (deliver-ghl, send-alert, send-digest, plus webhook handler), 4 pg_cron jobs (retry webhooks, retry channels, cleanup alert state, daily digest).
+- **Lead flow:** Meta/Google ads → landing page → opt-in + soft credit pull → GHL main account → webhook to THIS app → pre-flight validation → score against eligible orders → assign to best-fit → delivery to broker's GHL sub-account → broker automations.
+- **Infrastructure:** 4 Supabase edge functions (deliver-ghl, send-alert, send-digest, plus webhook handler), 5 pg_cron jobs (retry webhooks, retry channels, cleanup alert state, daily digest, monthly order reset).
 
 ## Constraints
 
@@ -95,7 +93,7 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 | Supabase Realtime for dashboard | Live updates without polling, native to DB | ✓ Good |
 | pg_cron for webhook retries | Non-blocking async retries, keeps inbound handler fast | ✓ Good |
 | PATCH + ghl_contact_id for lead updates | Clean API, matches on GHL's unique identifier | ✓ Good |
-| Weighted rotation by leads_remaining | Fair distribution proportional to order size | ✓ Good |
+| Weighted rotation by leads_remaining | Fair distribution proportional to order size | ✓ Good (superseded by scoring in v2.0) |
 | DB triggers + pg_net for alerts | No application-level hooks needed, fires from DB events directly | ✓ Good |
 | Alert dedup via alert_state table | 15-min window prevents SMS storms from batch failures | ✓ Good |
 | Single send-alert with type discriminator | One edge function serves both alert types, extensible | ✓ Good |
@@ -103,21 +101,10 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 | Edge function self-queries for digest stats | Simpler than pre-computing in SQL, 12 parallel counts | ✓ Good |
 | SECURITY DEFINER for alert triggers | Bypasses RLS on alert_state without write policies for anon | ✓ Good |
 | 500ms debounce + 2s max wait for Realtime | Balances responsiveness vs efficiency for batch events | ✓ Good |
+| Pure TypeScript scoring (not SQL) | Testable with unit tests, easier to debug than PL/pgSQL | ✓ Good |
+| Order-based routing (not broker-centric) | Dan confirmed order architecture stays, spec adapted | ✓ Good |
+| TDD for scoring engine | 30 tests covering all 12 scoring requirements, caught edge cases | ✓ Good |
+| Hard credit tier filters before scoring | Prevents invalid assignments regardless of score | ✓ Good |
 
 ---
-## Current Milestone: v2.0 Smart Scoring Engine
-
-**Goal:** Replace weighted rotation with a scoring-based assignment engine adapted from the lead routing spec. Orders remain the routing unit, but each lead is now scored against all eligible orders using credit fit, capacity, tier match, loan fit, and priority bonuses.
-
-**Target features:**
-- Pre-flight lead rejection (credit < 600, invalid loan amount)
-- 0-100 scoring algorithm (credit fit 40pts, capacity 30pts, tier match 20pts, loan fit 10pts, bonuses)
-- Credit tier gating (680-min orders never receive sub-680 leads)
-- Loan amount range on orders (loan_min, loan_max)
-- Routing logs with per-order score breakdowns
-- Order priority (high/normal with +8pt bonus)
-- Lead dedup on email + phone
-- Monthly recurring order option with auto-reset
-
----
-*Last updated: 2026-03-13 after v2.0 milestone start*
+*Last updated: 2026-03-17 after v2.0 milestone completion*

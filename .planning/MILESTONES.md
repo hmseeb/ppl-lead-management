@@ -44,3 +44,22 @@
 - Admin visibility: queued deliveries KPI, broker detail contact hours card, queue activity logging
 
 ---
+
+## v2.0 Smart Scoring Engine (Shipped: 2026-03-17)
+
+**Phases completed:** 5 phases (13-17), 9 plans
+**Git range:** `7d2d464..ba77647` (phases 13-17)
+**Timeline:** Mar 13, 2026
+**Codebase:** 12,179 LOC TypeScript across 226 files
+
+**Key accomplishments:**
+- Order model expansion: loan range (min/max), priority (high/normal), and monthly recurring type
+- Pre-flight validation rejecting bad leads before scoring (credit < 600, invalid loan, no active orders)
+- Lead deduplication on email + phone (in addition to existing ghl_contact_id)
+- 0-100 scoring engine replacing weighted rotation (credit fit 40pts, capacity 30pts, tier match 20pts, loan fit 10pts, bonuses)
+- Credit tier gating: 680-min orders hard-filtered from sub-680 leads
+- Full routing audit trail with per-order score breakdowns on lead detail page
+- Monthly recurring orders with auto-reset via pg_cron on the 1st
+
+---
+

@@ -86,11 +86,11 @@
   2. Broker session persists across browser tabs and survives page refresh (iron-session with broker_id)
   3. Unauthenticated requests to any /portal/* route redirect to /portal/login
   4. Admin can trigger a magic link invite email to a broker from the admin brokers page
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 22-01: Magic link auth flow (send, verify, session creation)
-- [ ] 22-02: Portal middleware + admin invite
+- [ ] 22-01-PLAN.md — Magic link infrastructure (token table, broker session, send/verify logic, email edge function)
+- [ ] 22-02-PLAN.md — Portal login UI, route protection, admin invite button
 
 ### Phase 23: Data Isolation
 **Goal**: Every portal query and mutation is scoped to the authenticated broker, enforced at both application and database level

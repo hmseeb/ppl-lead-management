@@ -67,6 +67,8 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
   const contactHours = watch('contact_hours')
   const webhookUrl = watch('crm_webhook_url')
   const [sendingTest, setSendingTest] = useState(false)
+  const [sendingTestEmail, setSendingTestEmail] = useState(false)
+  const [sendingTestSms, setSendingTestSms] = useState(false)
 
   async function handleTestWebhook() {
     if (!brokerId) return
@@ -87,6 +89,29 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
       toast.error('Network error')
     } finally {
       setSendingTest(false)
+    }
+  }
+
+  async function handleTestGhl(channel: 'email' | 'sms') {
+    if (!brokerId) return
+    const setter = channel === 'email' ? setSendingTestEmail : setSendingTestSms
+    setter(true)
+    try {
+      const res = await fetch(`/api/brokers/${brokerId}/test-ghl`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ channel }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        toast.success(`Test ${channel.toUpperCase()} sent`)
+      } else {
+        toast.error(data.error || `Test ${channel} failed`)
+      }
+    } catch {
+      toast.error('Network error')
+    } finally {
+      setter(false)
     }
   }
 
@@ -264,6 +289,34 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
           />
           {errors.delivery_methods && (
             <p className="text-sm text-destructive">{errors.delivery_methods.message}</p>
+          )}
+
+          {/* Test buttons for email/sms in edit mode */}
+          {mode === 'edit' && brokerId && (
+            <div className="flex gap-2 mt-1">
+              {deliveryMethods.includes('email') && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={sendingTestEmail}
+                  onClick={() => handleTestGhl('email')}
+                >
+                  {sendingTestEmail ? 'Sending...' : 'Test Email'}
+                </Button>
+              )}
+              {deliveryMethods.includes('sms') && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={sendingTestSms}
+                  onClick={() => handleTestGhl('sms')}
+                >
+                  {sendingTestSms ? 'Sending...' : 'Test SMS'}
+                </Button>
+              )}
+            </div>
           )}
         </div>
 

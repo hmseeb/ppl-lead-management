@@ -7,10 +7,11 @@ function getApiToken(): string {
   return token
 }
 
-interface GhlMessageResult {
+export interface GhlMessageResult {
   success: boolean
   messageId?: string
   error?: string
+  statusCode?: number
 }
 
 interface LeadPayload {
@@ -31,6 +32,42 @@ interface LeadPayload {
   assigned_at?: string | null
   order_id?: string | null
   broker_id?: string | null
+}
+
+/**
+ * Parse GHL API error response into a human-readable message.
+ *
+ * GHL error format:
+ *   { statusCode: number, message: string, error: string }
+ *
+ * Common codes:
+ *   400 - Bad Request (validation failed, missing fields)
+ *   401 - Unauthorized (invalid/expired token)
+ *   422 - Unprocessable Entity (business logic, e.g. invalid contactId)
+ *   429 - Rate limited
+ */
+function parseGhlError(status: number, body: string): GhlMessageResult {
+  let parsed: { statusCode?: number; message?: string; error?: string } = {}
+  try {
+    parsed = JSON.parse(body)
+  } catch {
+    // not JSON
+  }
+
+  const ghlMessage = parsed.message || parsed.error || body.slice(0, 200)
+
+  const friendlyMessages: Record<number, string> = {
+    400: `Bad request: ${ghlMessage}`,
+    401: 'GHL API token is invalid or expired',
+    422: `GHL rejected the request: ${ghlMessage}`,
+    429: 'GHL rate limit exceeded, try again later',
+  }
+
+  return {
+    success: false,
+    error: friendlyMessages[status] || `GHL error ${status}: ${ghlMessage}`,
+    statusCode: status,
+  }
 }
 
 function buildEmailHtml(lead: LeadPayload): string {
@@ -75,6 +112,10 @@ export async function sendEmail(
   lead: LeadPayload,
   fromEmail: string
 ): Promise<GhlMessageResult> {
+  if (!contactId) {
+    return { success: false, error: 'Missing GHL Contact ID', statusCode: 0 }
+  }
+
   try {
     const response = await fetch(`${GHL_BASE_URL}/conversations/messages`, {
       method: 'POST',
@@ -95,13 +136,16 @@ export async function sendEmail(
 
     if (!response.ok) {
       const body = await response.text().catch(() => '')
-      return { success: false, error: `HTTP ${response.status}: ${body}` }
+      return parseGhlError(response.status, body)
     }
 
     const data = await response.json().catch(() => ({}))
     return { success: true, messageId: data.messageId ?? data.id }
   } catch (err) {
-    return { success: false, error: err instanceof Error ? err.message : 'unknown_error' }
+    if (err instanceof Error && err.name === 'TimeoutError') {
+      return { success: false, error: 'GHL API request timed out (15s)', statusCode: 0 }
+    }
+    return { success: false, error: err instanceof Error ? err.message : 'unknown_error', statusCode: 0 }
   }
 }
 
@@ -109,6 +153,10 @@ export async function sendSms(
   contactId: string,
   lead: LeadPayload
 ): Promise<GhlMessageResult> {
+  if (!contactId) {
+    return { success: false, error: 'Missing GHL Contact ID', statusCode: 0 }
+  }
+
   try {
     const response = await fetch(`${GHL_BASE_URL}/conversations/messages`, {
       method: 'POST',
@@ -127,12 +175,15 @@ export async function sendSms(
 
     if (!response.ok) {
       const body = await response.text().catch(() => '')
-      return { success: false, error: `HTTP ${response.status}: ${body}` }
+      return parseGhlError(response.status, body)
     }
 
     const data = await response.json().catch(() => ({}))
     return { success: true, messageId: data.messageId ?? data.id }
   } catch (err) {
-    return { success: false, error: err instanceof Error ? err.message : 'unknown_error' }
+    if (err instanceof Error && err.name === 'TimeoutError') {
+      return { success: false, error: 'GHL API request timed out (15s)', statusCode: 0 }
+    }
+    return { success: false, error: err instanceof Error ? err.message : 'unknown_error', statusCode: 0 }
   }
 }

@@ -18,7 +18,7 @@ export async function fetchBrokersWithStats(params: BrokerFilters = {}) {
     .from('brokers')
     .select(`
       id, first_name, last_name, company, email, phone, assignment_status, status, created_at,
-      crm_webhook_url,
+      crm_webhook_url, ghl_contact_id, delivery_methods,
       orders ( id, status, leads_delivered, last_assigned_at )
     `, { count: 'exact' })
 

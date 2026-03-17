@@ -15,10 +15,12 @@ export async function fetchKpis(filters?: DashboardFilters) {
     return q
   }
 
-  // Build delivery query helper with optional broker filter
+  // Build delivery query helper with optional broker/vertical filters
   function deliveryQuery() {
-    let q = supabase.from('deliveries').select('id', { count: 'exact', head: true })
+    const selectStr = filters?.vertical ? 'id, leads!inner(id)' : 'id'
+    let q = supabase.from('deliveries').select(selectStr, { count: 'exact', head: true })
     if (filters?.broker_id) q = q.eq('broker_id', filters.broker_id)
+    if (filters?.vertical) q = q.eq('leads.vertical', filters.vertical)
     return q
   }
 
@@ -161,8 +163,10 @@ export async function fetchDeliveryStats(filters?: DashboardFilters): Promise<De
   const { from, to } = getDateRange(filters ?? {})
 
   function deliveryQuery() {
-    let q = supabase.from('deliveries').select('id', { count: 'exact', head: true })
+    const selectStr = filters?.vertical ? 'id, leads!inner(id)' : 'id'
+    let q = supabase.from('deliveries').select(selectStr, { count: 'exact', head: true })
     if (filters?.broker_id) q = q.eq('broker_id', filters.broker_id)
+    if (filters?.vertical) q = q.eq('leads.vertical', filters.vertical)
     return q
   }
 

@@ -63,3 +63,20 @@
 
 ---
 
+
+## v2.1 Dashboard Analytics (Shipped: 2026-03-17)
+
+**Phases completed:** 4 phases (18-21), 5 plans
+**Git range:** `ea14b7d..cca52e1` (25 files, +2,212 lines)
+**Codebase:** 12,707 LOC TypeScript
+
+**Key accomplishments:**
+- Dashboard filter bar with date presets (today/7d/30d/90d), custom date range, broker and vertical dropdowns
+- URL-persisted filters via nuqs (shareable, bookmarkable dashboard views)
+- Comparison mode with contextual delta badges on all 7 KPI cards (green/red based on metric direction)
+- Lead volume chart adapts range and bucketing to filter (daily for <=30d, weekly for 90d)
+- Auto-reassignment of unassigned leads when orders activate or unpause (fire-and-forget through scoring engine)
+- UAT: 10/10 passed, 1 bug found and fixed (delivery stats vertical filtering)
+
+---
+

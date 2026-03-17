@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Internal admin tool for BadAAAS that receives incoming funding leads via webhook from GHL, scores them against all eligible orders using a 0-100 point algorithm, assigns them to the best-fit broker, and delivers them to each broker's GHL sub-account automatically. Includes pre-flight validation, credit tier gating, full routing audit trail, real-time delivery monitoring, failure alerts, and daily digest summaries.
+Internal admin tool for BadAAAS that receives incoming funding leads via webhook from GHL, scores them against all eligible orders using a 0-100 point algorithm, assigns them to the best-fit broker, and delivers them to each broker's GHL sub-account automatically. Includes pre-flight validation, credit tier gating, full routing audit trail, real-time delivery monitoring, failure alerts, daily digest summaries, and a filterable analytics dashboard with comparison mode.
 
 ## Core Value
 
@@ -48,16 +48,17 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 - ✓ Broker priority support (high/normal with scoring bonus) — v2.0
 - ✓ Lead deduplication on email + phone (in addition to ghl_contact_id) — v2.0
 - ✓ Monthly cap reset option on orders — v2.0
+- ✓ Dashboard date range filters with presets (today, 7d, 30d, 90d, custom) — v2.1
+- ✓ Dashboard broker filter scoping all KPIs to a single broker — v2.1
+- ✓ Dashboard vertical filter scoping KPIs by lead vertical — v2.1
+- ✓ Comparison mode showing delta badges vs previous period — v2.1
+- ✓ URL-persisted dashboard filters using nuqs — v2.1
+- ✓ Lead volume chart adapts range to selected date filter — v2.1
+- ✓ Auto-reassign unassigned leads when matching orders become available — v2.1
 
 ### Active
 
-- [ ] Dashboard date range filters with presets (today, 7d, 30d, 90d, custom)
-- [ ] Dashboard broker filter scoping all KPIs to a single broker
-- [ ] Dashboard vertical filter scoping KPIs by lead vertical
-- [ ] Comparison mode showing delta badges vs previous period
-- [ ] URL-persisted dashboard filters using nuqs
-- [ ] Lead volume chart adapts range to selected date filter
-- [ ] Auto-reassign unassigned leads when matching orders become available
+(None — planning next milestone)
 
 ### Out of Scope
 
@@ -71,11 +72,13 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 | Configurable alert channels (Slack, email, push) | One admin, one channel (GHL SMS) |
 | Alert severity levels / acknowledgement / escalation | One-person operation |
 | Weekly/monthly roll-up digests | Defer until operational patterns emerge |
+| Multi-broker filter on dashboard | Single-select sufficient for broker scorecard |
+| Exportable reports (CSV/PDF) | Defer until reporting needs emerge |
 
 ## Context
 
-- **Current state:** v2.0 shipped. 17 phases, 30 plans, ~12,200 LOC TypeScript.
-- **Tech stack:** Next.js 16, React 19, Supabase (Postgres, Realtime, Edge Functions, Vault, pg_cron, pg_net), Vercel, ShadCN, GHL Conversations API.
+- **Current state:** v2.1 shipped. 21 phases, 37 plans, ~12,700 LOC TypeScript.
+- **Tech stack:** Next.js 16, React 19, Supabase (Postgres, Realtime, Edge Functions, Vault, pg_cron, pg_net), Vercel, ShadCN, GHL Conversations API, nuqs, recharts.
 - **Ecosystem:** Second app in PPL suite. PPL Onboarding handles broker onboarding with 7-step wizard and GHL sync.
 - **Lead flow:** Meta/Google ads → landing page → opt-in + soft credit pull → GHL main account → webhook to THIS app → pre-flight validation → score against eligible orders → assign to best-fit → delivery to broker's GHL sub-account → broker automations.
 - **Infrastructure:** 4 Supabase edge functions (deliver-ghl, send-alert, send-digest, plus webhook handler), 5 pg_cron jobs (retry webhooks, retry channels, cleanup alert state, daily digest, monthly order reset).
@@ -111,19 +114,9 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 | Order-based routing (not broker-centric) | Dan confirmed order architecture stays, spec adapted | ✓ Good |
 | TDD for scoring engine | 30 tests covering all 12 scoring requirements, caught edge cases | ✓ Good |
 | Hard credit tier filters before scoring | Prevents invalid assignments regardless of score | ✓ Good |
+| nuqs for dashboard URL state | Consistent with leads page, server-side refetch on change | ✓ Good |
+| Fire-and-forget auto-reassignment | Never blocks order action response, async processing | ✓ Good |
+| Inner join for delivery vertical filtering | Deliveries lack vertical column, join through leads table | ✓ Good |
 
 ---
-## Current Milestone: v2.1 Dashboard Analytics
-
-**Goal:** Add date range, broker, and vertical filters to the KPI dashboard with comparison mode, and auto-reassign unassigned leads on order changes.
-
-**Target features:**
-- Date range filter with presets (today, 7d, 30d, 90d, custom)
-- Broker filter on KPI dashboard
-- Vertical filter on KPI dashboard
-- Comparison mode (current vs previous period with delta badges)
-- URL-persisted filters using nuqs
-- Auto-reassign unassigned leads when orders activate/change
-
----
-*Last updated: 2026-03-17 after v2.1 milestone start*
+*Last updated: 2026-03-17 after v2.1 milestone completion*

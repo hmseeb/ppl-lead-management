@@ -5,13 +5,13 @@
 See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** v2.1 Dashboard Analytics — COMPLETE
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: 21 of 21 (Auto-Reassignment) — COMPLETE
-Status: All v2.1 phases complete. Milestone done.
-Last activity: 2026-03-17 — Phases 18-21 executed
+Phase: All complete (v1.0 through v2.1 shipped)
+Status: Between milestones. v2.1 archived 2026-03-17.
+Last activity: 2026-03-17 — v2.1 milestone completed and archived
 
 Progress: [██████████████████████████████] 100% (37 plans, 21 phases)
 
@@ -48,5 +48,5 @@ All decisions logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-03-17
-Stopped at: v2.1 milestone complete, all 21 phases done
+Stopped at: v2.1 milestone completed and archived
 Resume file: None

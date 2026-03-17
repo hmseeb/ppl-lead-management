@@ -1,20 +1,9 @@
-import { getBrokerSession } from '@/lib/auth/broker-session'
-import { createAdminClient } from '@/lib/supabase/admin'
-import { redirect } from 'next/navigation'
+import { requireBrokerSession } from '@/lib/portal/guard'
+import { getPortalBroker } from '@/lib/portal/queries'
 
 export default async function PortalHomePage() {
-  const session = await getBrokerSession()
-
-  if (!session.isBroker || !session.brokerId) {
-    redirect('/portal/login')
-  }
-
-  const supabase = createAdminClient()
-  const { data: broker } = await supabase
-    .from('brokers')
-    .select('first_name, last_name, email')
-    .eq('id', session.brokerId)
-    .single()
+  const { brokerId } = await requireBrokerSession()
+  const broker = await getPortalBroker(brokerId)
 
   return (
     <div className="space-y-6 pt-8">

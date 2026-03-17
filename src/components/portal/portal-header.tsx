@@ -54,14 +54,15 @@ export function PortalHeader({ brokerName }: { brokerName: string }) {
                 {label}
               </Link>
             ))}
+            <div className="w-px h-4 bg-border/50 mx-1" />
+            <ThemeToggle />
+            <Button variant="ghost" size="icon" className="size-8" onClick={handleLogout} title="Logout">
+              <LogOut className="size-3.5" />
+            </Button>
           </nav>
         </div>
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-muted-foreground">{brokerName}</span>
-          <ThemeToggle />
-          <Button variant="ghost" size="sm" onClick={handleLogout}>
-            <LogOut className="size-4 mr-1" /> Logout
-          </Button>
+        <div className="flex items-center">
+          <span className="text-xs text-muted-foreground">{brokerName}</span>
         </div>
       </div>
     </header>

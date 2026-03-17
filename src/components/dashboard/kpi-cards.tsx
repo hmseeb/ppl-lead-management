@@ -16,7 +16,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from '@/components/ui/tooltip'
-import { Users, TrendingUp, AlertCircle, AlertTriangle, Activity, Package, Loader2, XCircle } from 'lucide-react'
+import { Users, TrendingUp, TrendingDown, AlertCircle, AlertTriangle, Activity, Package, Loader2, XCircle, Minus } from 'lucide-react'
 import { format } from 'date-fns'
 import type { KpiPreviewType } from '@/lib/actions/dashboard'
 import {
@@ -58,6 +58,65 @@ type CardConfig = {
   borderColor: string
   viewAllHref: string
   fetchAction: () => Promise<any[]>
+  dataKey: keyof KpiData
+}
+
+const METRIC_DIRECTION: Record<string, 'positive' | 'negative'> = {
+  leadsToday: 'positive',
+  assignedCount: 'positive',
+  unassignedCount: 'negative',
+  failedDeliveries: 'negative',
+  rejectedRate: 'negative',
+  activeBrokers: 'positive',
+  activeOrders: 'positive',
+}
+
+function DeltaBadge({ current, previous, direction, isRate }: {
+  current: number
+  previous: number
+  direction: 'positive' | 'negative'
+  isRate?: boolean
+}) {
+  if (current === 0 && previous === 0) return null
+
+  const delta = current - previous
+
+  if (delta === 0) {
+    return (
+      <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-muted-foreground">
+        <Minus className="size-3" /> 0%
+      </span>
+    )
+  }
+
+  if (isRate) {
+    const absDelta = Math.abs(delta)
+    const isGood = direction === 'negative' ? delta < 0 : delta > 0
+    const colorClass = isGood ? 'text-emerald-500' : 'text-red-500'
+    const Icon = delta > 0 ? TrendingUp : TrendingDown
+
+    return (
+      <span className={`inline-flex items-center gap-0.5 text-[10px] font-medium ${colorClass}`}>
+        <Icon className="size-3" />
+        {delta > 0 ? '+' : '-'}{absDelta}pp
+      </span>
+    )
+  }
+
+  const percentage = previous > 0
+    ? Math.round((delta / previous) * 100)
+    : (current > 0 ? 100 : 0)
+
+  const isGood = direction === 'negative' ? delta < 0 : delta > 0
+  const colorClass = isGood ? 'text-emerald-500' : 'text-red-500'
+  const Icon = delta > 0 ? TrendingUp : TrendingDown
+
+  return (
+    <span className={`inline-flex items-center gap-0.5 text-[10px] font-medium ${colorClass}`}>
+      <Icon className="size-3" />
+      {delta > 0 ? '+' : ''}{percentage}%
+    </span>
+  )
 }
 
 function formatChannel(channel: string) {
@@ -74,7 +133,7 @@ function truncate(str: string | null, max: number) {
   return str.length > max ? `${str.slice(0, max)}...` : str
 }
 
-export function KpiCards({ data }: { data: KpiData }) {
+export function KpiCards({ data, previousData }: { data: KpiData; previousData?: KpiData | null }) {
   const [expandedCard, setExpandedCard] = useState<KpiPreviewType | null>(null)
   const [previewData, setPreviewData] = useState<Record<string, any[] | null>>({})
   const [loading, setLoading] = useState(false)
@@ -91,6 +150,7 @@ export function KpiCards({ data }: { data: KpiData }) {
       borderColor: 'border-red-400',
       viewAllHref: `/leads?date_from=${format(new Date(), 'yyyy-MM-dd')}`,
       fetchAction: fetchLeadsTodayPreview,
+      dataKey: 'leadsToday',
     },
     {
       title: 'Assigned',
@@ -103,6 +163,7 @@ export function KpiCards({ data }: { data: KpiData }) {
       borderColor: 'border-emerald-400',
       viewAllHref: '/leads?status=assigned',
       fetchAction: fetchAssignedPreview,
+      dataKey: 'assignedCount',
     },
     {
       title: 'Unassigned',
@@ -116,6 +177,7 @@ export function KpiCards({ data }: { data: KpiData }) {
       borderColor: 'border-amber-400',
       viewAllHref: '/unassigned',
       fetchAction: fetchUnassignedPreview,
+      dataKey: 'unassignedCount',
     },
     {
       title: 'Failed Deliveries',
@@ -129,6 +191,7 @@ export function KpiCards({ data }: { data: KpiData }) {
       borderColor: 'border-red-400',
       viewAllHref: '/activity?event_type=delivery_failed',
       fetchAction: fetchFailedDeliveriesPreview,
+      dataKey: 'failedDeliveries',
     },
     {
       title: 'Rejected Rate',
@@ -143,6 +206,7 @@ export function KpiCards({ data }: { data: KpiData }) {
       borderColor: 'border-rose-400',
       viewAllHref: '/leads?status=rejected',
       fetchAction: fetchRejectedPreview,
+      dataKey: 'rejectedRate',
     },
     {
       title: 'Active Brokers',
@@ -155,6 +219,7 @@ export function KpiCards({ data }: { data: KpiData }) {
       borderColor: 'border-violet-400',
       viewAllHref: '/brokers?status=active',
       fetchAction: fetchActiveBrokersPreview,
+      dataKey: 'activeBrokers',
     },
     {
       title: 'Active Orders',
@@ -167,6 +232,7 @@ export function KpiCards({ data }: { data: KpiData }) {
       borderColor: 'border-blue-400',
       viewAllHref: '/orders?status=active',
       fetchAction: fetchActiveOrdersPreview,
+      dataKey: 'activeOrders',
     },
   ]
 
@@ -224,6 +290,14 @@ export function KpiCards({ data }: { data: KpiData }) {
                 <div className="text-3xl font-bold font-mono tracking-tight text-foreground">
                   {card.displayValue ?? card.value}
                 </div>
+                {previousData && (
+                  <DeltaBadge
+                    current={card.value}
+                    previous={previousData[card.dataKey] as number}
+                    direction={METRIC_DIRECTION[card.dataKey] ?? 'positive'}
+                    isRate={card.dataKey === 'rejectedRate'}
+                  />
+                )}
                 <p className="text-[10px] text-muted-foreground mt-1.5">{card.subtitle}</p>
               </CardContent>
             </Card>

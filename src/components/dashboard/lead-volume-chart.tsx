@@ -10,7 +10,24 @@ interface ChartData {
   count: number
 }
 
-export function LeadVolumeChart({ data }: { data: ChartData[] }) {
+function getChartTitle(totalDays: number, bucketType: 'daily' | 'weekly'): string {
+  if (totalDays <= 1) return 'Lead Volume (Today)'
+  const suffix = bucketType === 'weekly' ? ', Weekly' : ''
+  if (totalDays <= 7) return `Lead Volume (${totalDays} Days${suffix})`
+  if (totalDays <= 30) return `Lead Volume (30 Days${suffix})`
+  if (totalDays <= 90) return `Lead Volume (90 Days${suffix})`
+  return `Lead Volume (${totalDays} Days${suffix})`
+}
+
+export function LeadVolumeChart({
+  data,
+  bucketType = 'daily',
+  totalDays = 7,
+}: {
+  data: ChartData[]
+  bucketType?: 'daily' | 'weekly'
+  totalDays?: number
+}) {
   const { resolvedTheme } = useTheme()
   const isDark = resolvedTheme === 'dark'
 
@@ -18,7 +35,7 @@ export function LeadVolumeChart({ data }: { data: ChartData[] }) {
     <Card>
       <CardHeader>
         <CardTitle className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-          Lead Volume (7 Days)
+          {getChartTitle(totalDays, bucketType)}
         </CardTitle>
       </CardHeader>
       <CardContent>

@@ -61,7 +61,7 @@ export default async function DashboardPage({
         <KpiCards data={kpis} previousData={previousKpis} />
         <DeliveryStatsCards data={deliveryStats} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <LeadVolumeChart data={volume} />
+          <LeadVolumeChart data={volume.data} bucketType={volume.bucketType} totalDays={volume.totalDays} />
           <ActivityFeed activity={activity as Parameters<typeof ActivityFeed>[0]['activity']} />
         </div>
       </div>

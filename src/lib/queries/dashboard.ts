@@ -1,5 +1,5 @@
 import { createAdminClient } from '@/lib/supabase/admin'
-import { startOfDay, subDays, format, differenceInDays } from 'date-fns'
+import { startOfDay, subDays, addDays, format, differenceInDays, min } from 'date-fns'
 import type { DashboardFilters } from '@/lib/types/dashboard-filters'
 import { getDateRange } from '@/lib/types/dashboard-filters'
 
@@ -66,40 +66,77 @@ export async function fetchKpis(filters?: DashboardFilters) {
   }
 }
 
-export async function fetchLeadVolume(filters?: DashboardFilters) {
+export type LeadVolumeResult = {
+  data: { date: string; label: string; count: number }[]
+  bucketType: 'daily' | 'weekly'
+  totalDays: number
+}
+
+export async function fetchLeadVolume(filters?: DashboardFilters): Promise<LeadVolumeResult> {
   const supabase = createAdminClient()
   const { from, to } = getDateRange(filters ?? {})
-  const fromDate = new Date(from)
+  const fromDate = startOfDay(new Date(from))
   const toDate = new Date(to)
   const totalDays = Math.max(1, differenceInDays(toDate, fromDate) + 1)
-  const useShortLabel = totalDays <= 7
+  const bucketType: 'daily' | 'weekly' = totalDays > 30 ? 'weekly' : 'daily'
 
-  const days: { date: string; label: string; count: number }[] = []
+  const buckets: { date: string; label: string; count: number }[] = []
 
-  for (let i = totalDays - 1; i >= 0; i--) {
-    const day = subDays(toDate, i)
-    const dayStart = startOfDay(day).toISOString()
-    const dayEnd = i === 0 ? to : startOfDay(subDays(toDate, i - 1)).toISOString()
+  if (bucketType === 'daily') {
+    const useShortLabel = totalDays <= 7
 
-    let q = supabase
-      .from('leads')
-      .select('id', { count: 'exact', head: true })
-      .gte('created_at', dayStart)
-      .lt('created_at', dayEnd)
+    for (let i = totalDays - 1; i >= 0; i--) {
+      const day = subDays(toDate, i)
+      const dayStart = startOfDay(day).toISOString()
+      const dayEnd = i === 0 ? to : startOfDay(subDays(toDate, i - 1)).toISOString()
 
-    if (filters?.broker_id) q = q.eq('assigned_broker_id', filters.broker_id)
-    if (filters?.vertical) q = q.eq('vertical', filters.vertical)
+      let q = supabase
+        .from('leads')
+        .select('id', { count: 'exact', head: true })
+        .gte('created_at', dayStart)
+        .lt('created_at', dayEnd)
 
-    const { count } = await q
+      if (filters?.broker_id) q = q.eq('assigned_broker_id', filters.broker_id)
+      if (filters?.vertical) q = q.eq('vertical', filters.vertical)
 
-    days.push({
-      date: format(day, 'yyyy-MM-dd'),
-      label: useShortLabel ? format(day, 'EEE') : format(day, 'MMM d'),
-      count: count ?? 0,
-    })
+      const { count } = await q
+
+      buckets.push({
+        date: format(day, 'yyyy-MM-dd'),
+        label: useShortLabel ? format(day, 'EEE') : format(day, 'MMM d'),
+        count: count ?? 0,
+      })
+    }
+  } else {
+    // Weekly buckets for ranges > 30 days
+    const weekCount = Math.ceil(totalDays / 7)
+
+    for (let i = 0; i < weekCount; i++) {
+      const weekStart = addDays(fromDate, i * 7)
+      const weekEnd = min([addDays(weekStart, 7), toDate])
+      const bucketStart = startOfDay(weekStart).toISOString()
+      const bucketEnd = i === weekCount - 1 ? to : startOfDay(weekEnd).toISOString()
+
+      let q = supabase
+        .from('leads')
+        .select('id', { count: 'exact', head: true })
+        .gte('created_at', bucketStart)
+        .lt('created_at', bucketEnd)
+
+      if (filters?.broker_id) q = q.eq('assigned_broker_id', filters.broker_id)
+      if (filters?.vertical) q = q.eq('vertical', filters.vertical)
+
+      const { count } = await q
+
+      buckets.push({
+        date: format(weekStart, 'yyyy-MM-dd'),
+        label: format(weekStart, 'MMM d'),
+        count: count ?? 0,
+      })
+    }
   }
 
-  return days
+  return { data: buckets, bucketType, totalDays }
 }
 
 /** @deprecated Use fetchLeadVolume instead */

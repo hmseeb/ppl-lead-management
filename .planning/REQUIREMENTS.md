@@ -9,12 +9,12 @@ Requirements for Dashboard Analytics milestone. Each maps to roadmap phases.
 
 ### Dashboard Filters
 
-- [ ] **FILT-01**: Admin can select date range preset (today, 7d, 30d, 90d) to scope all KPI cards and delivery stats
-- [ ] **FILT-02**: Admin can set custom date range (date_from, date_to) to scope all KPI cards and delivery stats
-- [ ] **FILT-03**: Admin can filter dashboard KPIs by broker (single-select dropdown)
-- [ ] **FILT-04**: Admin can filter dashboard KPIs by vertical (single-select dropdown)
-- [ ] **FILT-05**: All filter selections persist in URL via nuqs (shareable, bookmarkable)
-- [ ] **FILT-06**: Clear all button resets all filters to defaults (today, no broker, no vertical)
+- [x] **FILT-01**: Admin can select date range preset (today, 7d, 30d, 90d) to scope all KPI cards and delivery stats
+- [x] **FILT-02**: Admin can set custom date range (date_from, date_to) to scope all KPI cards and delivery stats
+- [x] **FILT-03**: Admin can filter dashboard KPIs by broker (single-select dropdown)
+- [x] **FILT-04**: Admin can filter dashboard KPIs by vertical (single-select dropdown)
+- [x] **FILT-05**: All filter selections persist in URL via nuqs (shareable, bookmarkable)
+- [x] **FILT-06**: Clear all button resets all filters to defaults (today, no broker, no vertical)
 
 ### Comparison Mode
 
@@ -47,12 +47,12 @@ Requirements for Dashboard Analytics milestone. Each maps to roadmap phases.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FILT-01 | Phase 18 | Pending |
-| FILT-02 | Phase 18 | Pending |
-| FILT-03 | Phase 18 | Pending |
-| FILT-04 | Phase 18 | Pending |
-| FILT-05 | Phase 18 | Pending |
-| FILT-06 | Phase 18 | Pending |
+| FILT-01 | Phase 18 | Complete |
+| FILT-02 | Phase 18 | Complete |
+| FILT-03 | Phase 18 | Complete |
+| FILT-04 | Phase 18 | Complete |
+| FILT-05 | Phase 18 | Complete |
+| FILT-06 | Phase 18 | Complete |
 | COMP-01 | Phase 19 | Pending |
 | COMP-02 | Phase 19 | Pending |
 | COMP-03 | Phase 19 | Pending |

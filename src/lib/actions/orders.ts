@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { orderSchema } from '@/lib/schemas/order'
+import { reassignUnassignedLeads } from '@/lib/assignment/reassign'
 
 const VALID_STATUSES = ['active', 'paused', 'completed'] as const
 
@@ -46,6 +47,11 @@ export async function createOrder(data: unknown) {
     details: { total_leads, verticals, credit_score_min, loan_min, loan_max, priority, order_type },
   })
 
+  // Auto-reassign unassigned leads that may match this new order
+  reassignUnassignedLeads().catch((err) => {
+    console.error('Auto-reassignment after order creation failed:', err)
+  })
+
   revalidatePath('/orders')
   return { success: true, order }
 }
@@ -83,6 +89,13 @@ export async function updateOrderStatus(orderId: string, newStatus: string) {
       new_status: newStatus,
     },
   })
+
+  // Auto-reassign unassigned leads when an order becomes active (activate or unpause)
+  if (newStatus === 'active') {
+    reassignUnassignedLeads().catch((err) => {
+      console.error('Auto-reassignment after order activation failed:', err)
+    })
+  }
 
   revalidatePath('/orders')
   return { success: true }

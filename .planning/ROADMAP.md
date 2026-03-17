@@ -86,10 +86,10 @@ Plans:
   1. Admin toggles comparison mode on and delta badges appear on each KPI card showing the change vs the previous period
   2. Previous period is calculated automatically (7d filter compares to prior 7d, 30d to prior 30d, etc.)
   3. Delta badges use green for metrics improving (more leads assigned) and red for metrics worsening (more failures), with contextual color logic per metric
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 19-01: TBD
+- [ ] 19-01-PLAN.md — Compare toggle, previous period calculation, and delta badges on KPI cards
 
 ### Phase 20: Chart Adaptation
 **Goal**: Lead volume chart dynamically adjusts its range and bucket granularity to match the active dashboard filter
@@ -130,8 +130,8 @@ Phases execute in numeric order: 18 → 19 → 20 → 21
 | 10-12 | v1.2 Hours | 4/4 | Complete | 2026-03-13 |
 | 13-17 | v2.0 Scoring | 9/9 | Complete | 2026-03-17 |
 | 18. Dashboard Filters | 2/2 | Complete    | 2026-03-17 | - |
-| 19. Comparison Mode | v2.1 Analytics | 0/? | Not started | - |
+| 19. Comparison Mode | v2.1 Analytics | 0/1 | Not started | - |
 | 20. Chart Adaptation | v2.1 Analytics | 0/? | Not started | - |
 | 21. Auto-Reassignment | v2.1 Analytics | 0/? | Not started | - |
 
-**Total: 21 phases, 32+ plans across 5 milestones**
+**Total: 21 phases, 33+ plans across 5 milestones**

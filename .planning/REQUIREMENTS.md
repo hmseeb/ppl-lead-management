@@ -1,0 +1,72 @@
+# Requirements: PPL Lead Management
+
+**Defined:** 2026-03-17
+**Core Value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail of why each assignment was made.
+
+## v2.1 Requirements
+
+Requirements for Dashboard Analytics milestone. Each maps to roadmap phases.
+
+### Dashboard Filters
+
+- [ ] **FILT-01**: Admin can select date range preset (today, 7d, 30d, 90d) to scope all KPI cards and delivery stats
+- [ ] **FILT-02**: Admin can set custom date range (date_from, date_to) to scope all KPI cards and delivery stats
+- [ ] **FILT-03**: Admin can filter dashboard KPIs by broker (single-select dropdown)
+- [ ] **FILT-04**: Admin can filter dashboard KPIs by vertical (single-select dropdown)
+- [ ] **FILT-05**: All filter selections persist in URL via nuqs (shareable, bookmarkable)
+- [ ] **FILT-06**: Clear all button resets all filters to defaults (today, no broker, no vertical)
+
+### Comparison Mode
+
+- [ ] **COMP-01**: Admin can toggle comparison mode to show delta badges on each KPI card
+- [ ] **COMP-02**: Delta calculates current period vs equivalent previous period automatically (e.g. 7d vs prior 7d)
+- [ ] **COMP-03**: Delta badges are color-coded contextually (green for good metrics improving, red for bad metrics worsening)
+
+### Chart Adaptation
+
+- [ ] **CHART-01**: Lead volume chart adapts its date range to match the selected dashboard filter
+- [ ] **CHART-02**: Lead volume chart uses weekly buckets for 90d range instead of daily bars
+
+### Auto-Reassignment
+
+- [ ] **REASS-01**: When an order is activated or unpaused, system checks unassigned queue for matching leads
+- [ ] **REASS-02**: Matching unassigned leads are automatically routed through the scoring engine
+- [ ] **REASS-03**: Auto-reassignment is logged in activity_log with event type and details
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Multi-broker filter (select multiple brokers) | Single-select is sufficient for broker scorecard use case |
+| Exportable reports (CSV/PDF) | Defer until reporting needs emerge |
+| Saved filter presets / bookmarks | URL persistence covers this via browser bookmarks |
+| Dashboard customization (rearrange cards) | Over-engineering for single admin user |
+| Real-time filter updates via Supabase Realtime | Server-side refetch on filter change is fast enough |
+
+## Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| FILT-01 | - | Pending |
+| FILT-02 | - | Pending |
+| FILT-03 | - | Pending |
+| FILT-04 | - | Pending |
+| FILT-05 | - | Pending |
+| FILT-06 | - | Pending |
+| COMP-01 | - | Pending |
+| COMP-02 | - | Pending |
+| COMP-03 | - | Pending |
+| CHART-01 | - | Pending |
+| CHART-02 | - | Pending |
+| REASS-01 | - | Pending |
+| REASS-02 | - | Pending |
+| REASS-03 | - | Pending |
+
+**Coverage:**
+- v2.1 requirements: 14 total
+- Mapped to phases: 0
+- Unmapped: 14 (roadmap pending)
+
+---
+*Requirements defined: 2026-03-17*
+*Last updated: 2026-03-17 after initial definition*

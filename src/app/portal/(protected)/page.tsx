@@ -1,9 +1,29 @@
 import { requireBrokerSession } from '@/lib/portal/guard'
-import { getPortalBroker } from '@/lib/portal/queries'
+import {
+  getPortalBroker,
+  fetchBrokerActiveOrders,
+  fetchBrokerRecentLeads,
+  fetchBrokerSpendSummary,
+  fetchBrokerDeliveryHealth,
+} from '@/lib/portal/queries'
+import {
+  ActiveOrdersCard,
+  RecentLeadsCard,
+  SpendSummaryCard,
+  DeliveryHealthCard,
+} from '@/components/portal/dashboard-cards'
 
 export default async function PortalHomePage() {
   const { brokerId } = await requireBrokerSession()
-  const broker = await getPortalBroker(brokerId)
+
+  const [broker, activeOrders, recentLeads, spend, deliveryHealth] =
+    await Promise.all([
+      getPortalBroker(brokerId),
+      fetchBrokerActiveOrders(brokerId),
+      fetchBrokerRecentLeads(brokerId, 20),
+      fetchBrokerSpendSummary(brokerId),
+      fetchBrokerDeliveryHealth(brokerId),
+    ])
 
   return (
     <div className="space-y-6 pt-8">
@@ -12,23 +32,21 @@ export default async function PortalHomePage() {
           Welcome, {broker?.first_name ?? 'Broker'}
         </h1>
         <p className="text-muted-foreground mt-1">
-          Your broker dashboard is coming soon.
+          Here is your dashboard overview.
         </p>
       </div>
 
-      <div className="glass-card rounded-xl p-6 space-y-2">
-        <p className="text-sm text-muted-foreground">Account Info</p>
-        <div className="grid gap-2">
-          <div className="flex gap-2 text-sm">
-            <span className="font-medium w-16">Name</span>
-            <span>{broker?.first_name} {broker?.last_name}</span>
-          </div>
-          <div className="flex gap-2 text-sm">
-            <span className="font-medium w-16">Email</span>
-            <span>{broker?.email}</span>
-          </div>
-        </div>
+      {/* Active Orders - full width */}
+      <ActiveOrdersCard orders={activeOrders} />
+
+      {/* Spend + Delivery Health - side by side */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <SpendSummaryCard spend={spend} />
+        <DeliveryHealthCard health={deliveryHealth} />
       </div>
+
+      {/* Recent Leads - full width */}
+      <RecentLeadsCard leads={recentLeads} />
     </div>
   )
 }

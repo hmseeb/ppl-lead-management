@@ -1,36 +1,58 @@
 import { createAdminClient } from '@/lib/supabase/admin'
-import { startOfDay, startOfWeek, startOfMonth, subDays, format } from 'date-fns'
+import { startOfDay, subDays, format, differenceInDays } from 'date-fns'
+import type { DashboardFilters } from '@/lib/types/dashboard-filters'
+import { getDateRange } from '@/lib/types/dashboard-filters'
 
-export async function fetchKpis() {
+export async function fetchKpis(filters?: DashboardFilters) {
   const supabase = createAdminClient()
-  const now = new Date()
-  const todayStart = startOfDay(now).toISOString()
-  const weekStart = startOfWeek(now, { weekStartsOn: 1 }).toISOString()
-  const monthStart = startOfMonth(now).toISOString()
+  const { from, to } = getDateRange(filters ?? {})
 
-  const [leadsToday, leadsWeek, leadsMonth, assigned, unassigned, activeBrokers, activeOrders, queued, rejectedToday, failedDeliveries, failedPermanentDeliveries] =
+  // Build lead query helper with optional broker/vertical filters
+  function leadQuery() {
+    let q = supabase.from('leads').select('id', { count: 'exact', head: true })
+    if (filters?.broker_id) q = q.eq('assigned_broker_id', filters.broker_id)
+    if (filters?.vertical) q = q.eq('vertical', filters.vertical)
+    return q
+  }
+
+  // Build delivery query helper with optional broker filter
+  function deliveryQuery() {
+    let q = supabase.from('deliveries').select('id', { count: 'exact', head: true })
+    if (filters?.broker_id) q = q.eq('broker_id', filters.broker_id)
+    return q
+  }
+
+  const [leadsInRange, assigned, unassigned, activeBrokers, activeOrders, queued, rejectedInRange, failedDeliveries, failedPermanentDeliveries] =
     await Promise.all([
-      supabase.from('leads').select('id', { count: 'exact', head: true }).gte('created_at', todayStart),
-      supabase.from('leads').select('id', { count: 'exact', head: true }).gte('created_at', weekStart),
-      supabase.from('leads').select('id', { count: 'exact', head: true }).gte('created_at', monthStart),
-      supabase.from('leads').select('id', { count: 'exact', head: true }).eq('status', 'assigned'),
-      supabase.from('leads').select('id', { count: 'exact', head: true }).eq('status', 'unassigned'),
-      supabase.from('brokers').select('id', { count: 'exact', head: true }).eq('assignment_status', 'active'),
-      supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'active'),
-      supabase.from('deliveries').select('id', { count: 'exact', head: true }).eq('status', 'queued'),
-      supabase.from('leads').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('status', 'rejected'),
-      supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('status', 'failed'),
-      supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('status', 'failed_permanent'),
+      leadQuery().gte('created_at', from).lte('created_at', to),
+      leadQuery().eq('status', 'assigned').gte('created_at', from).lte('created_at', to),
+      leadQuery().eq('status', 'unassigned'),
+      (() => {
+        let q = supabase.from('brokers').select('id', { count: 'exact', head: true }).eq('assignment_status', 'active')
+        if (filters?.broker_id) q = q.eq('id', filters.broker_id)
+        if (filters?.vertical) q = q.eq('primary_vertical', filters.vertical)
+        return q
+      })(),
+      (() => {
+        let q = supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'active')
+        if (filters?.broker_id) q = q.eq('broker_id', filters.broker_id)
+        if (filters?.vertical) q = q.contains('verticals', [filters.vertical])
+        return q
+      })(),
+      deliveryQuery().eq('status', 'queued'),
+      leadQuery().gte('created_at', from).lte('created_at', to).eq('status', 'rejected'),
+      deliveryQuery().gte('created_at', from).lte('created_at', to).eq('status', 'failed'),
+      deliveryQuery().gte('created_at', from).lte('created_at', to).eq('status', 'failed_permanent'),
     ])
 
-  const totalToday = leadsToday.count ?? 0
-  const rejectedCount = rejectedToday.count ?? 0
-  const rejectedRate = totalToday > 0 ? Math.round((rejectedCount / totalToday) * 100) : 0
+  const totalInRange = leadsInRange.count ?? 0
+  const rejectedCount = rejectedInRange.count ?? 0
+  const rejectedRate = totalInRange > 0 ? Math.round((rejectedCount / totalInRange) * 100) : 0
 
   return {
-    leadsToday: totalToday,
-    leadsThisWeek: leadsWeek.count ?? 0,
-    leadsThisMonth: leadsMonth.count ?? 0,
+    leadsToday: totalInRange,
+    leadsThisWeek: 0,
+    leadsThisMonth: 0,
     assignedCount: assigned.count ?? 0,
     unassignedCount: unassigned.count ?? 0,
     activeBrokers: activeBrokers.count ?? 0,
@@ -44,29 +66,45 @@ export async function fetchKpis() {
   }
 }
 
-export async function fetchLeadVolume7Days() {
+export async function fetchLeadVolume(filters?: DashboardFilters) {
   const supabase = createAdminClient()
+  const { from, to } = getDateRange(filters ?? {})
+  const fromDate = new Date(from)
+  const toDate = new Date(to)
+  const totalDays = Math.max(1, differenceInDays(toDate, fromDate) + 1)
+  const useShortLabel = totalDays <= 7
+
   const days: { date: string; label: string; count: number }[] = []
 
-  for (let i = 6; i >= 0; i--) {
-    const day = subDays(new Date(), i)
+  for (let i = totalDays - 1; i >= 0; i--) {
+    const day = subDays(toDate, i)
     const dayStart = startOfDay(day).toISOString()
-    const dayEnd = startOfDay(subDays(new Date(), i - 1)).toISOString()
+    const dayEnd = i === 0 ? to : startOfDay(subDays(toDate, i - 1)).toISOString()
 
-    const { count } = await supabase
+    let q = supabase
       .from('leads')
       .select('id', { count: 'exact', head: true })
       .gte('created_at', dayStart)
-      .lt('created_at', i === 0 ? new Date().toISOString() : dayEnd)
+      .lt('created_at', dayEnd)
+
+    if (filters?.broker_id) q = q.eq('assigned_broker_id', filters.broker_id)
+    if (filters?.vertical) q = q.eq('vertical', filters.vertical)
+
+    const { count } = await q
 
     days.push({
       date: format(day, 'yyyy-MM-dd'),
-      label: format(day, 'EEE'),
+      label: useShortLabel ? format(day, 'EEE') : format(day, 'MMM d'),
       count: count ?? 0,
     })
   }
 
   return days
+}
+
+/** @deprecated Use fetchLeadVolume instead */
+export async function fetchLeadVolume7Days() {
+  return fetchLeadVolume()
 }
 
 export type DeliveryStats = {
@@ -81,9 +119,22 @@ export type DeliveryStats = {
   }
 }
 
-export async function fetchDeliveryStats(): Promise<DeliveryStats> {
+export async function fetchDeliveryStats(filters?: DashboardFilters): Promise<DeliveryStats> {
   const supabase = createAdminClient()
-  const todayStart = startOfDay(new Date()).toISOString()
+  const { from, to } = getDateRange(filters ?? {})
+
+  function deliveryQuery() {
+    let q = supabase.from('deliveries').select('id', { count: 'exact', head: true })
+    if (filters?.broker_id) q = q.eq('broker_id', filters.broker_id)
+    return q
+  }
+
+  function leadQuery() {
+    let q = supabase.from('leads').select('id', { count: 'exact', head: true })
+    if (filters?.broker_id) q = q.eq('assigned_broker_id', filters.broker_id)
+    if (filters?.vertical) q = q.eq('vertical', filters.vertical)
+    return q
+  }
 
   const [
     totalDeliveries,
@@ -99,18 +150,18 @@ export async function fetchDeliveryStats(): Promise<DeliveryStats> {
     leadsAssigned,
     leadsUnassigned,
   ] = await Promise.all([
-    supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart),
-    supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('status', 'sent'),
-    supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).in('status', ['failed', 'failed_permanent']),
-    supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('channel', 'crm_webhook'),
-    supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('channel', 'email'),
-    supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('channel', 'sms'),
-    supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('channel', 'crm_webhook').in('status', ['failed', 'failed_permanent']),
-    supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('channel', 'email').in('status', ['failed', 'failed_permanent']),
-    supabase.from('deliveries').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('channel', 'sms').in('status', ['failed', 'failed_permanent']),
-    supabase.from('leads').select('id', { count: 'exact', head: true }).gte('created_at', todayStart),
-    supabase.from('leads').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('status', 'assigned'),
-    supabase.from('leads').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).eq('status', 'unassigned'),
+    deliveryQuery().gte('created_at', from).lte('created_at', to),
+    deliveryQuery().gte('created_at', from).lte('created_at', to).eq('status', 'sent'),
+    deliveryQuery().gte('created_at', from).lte('created_at', to).in('status', ['failed', 'failed_permanent']),
+    deliveryQuery().gte('created_at', from).lte('created_at', to).eq('channel', 'crm_webhook'),
+    deliveryQuery().gte('created_at', from).lte('created_at', to).eq('channel', 'email'),
+    deliveryQuery().gte('created_at', from).lte('created_at', to).eq('channel', 'sms'),
+    deliveryQuery().gte('created_at', from).lte('created_at', to).eq('channel', 'crm_webhook').in('status', ['failed', 'failed_permanent']),
+    deliveryQuery().gte('created_at', from).lte('created_at', to).eq('channel', 'email').in('status', ['failed', 'failed_permanent']),
+    deliveryQuery().gte('created_at', from).lte('created_at', to).eq('channel', 'sms').in('status', ['failed', 'failed_permanent']),
+    leadQuery().gte('created_at', from).lte('created_at', to),
+    leadQuery().gte('created_at', from).lte('created_at', to).eq('status', 'assigned'),
+    leadQuery().gte('created_at', from).lte('created_at', to).eq('status', 'unassigned'),
   ])
 
   return {
@@ -130,10 +181,10 @@ export async function fetchDeliveryStats(): Promise<DeliveryStats> {
   }
 }
 
-export async function fetchRecentActivity(limit = 20) {
+export async function fetchRecentActivity(filters?: DashboardFilters, limit = 20) {
   const supabase = createAdminClient()
 
-  const { data, error } = await supabase
+  let q = supabase
     .from('activity_log')
     .select(`
       id,
@@ -149,6 +200,13 @@ export async function fetchRecentActivity(limit = 20) {
     `)
     .order('created_at', { ascending: false })
     .limit(limit)
+
+  if (filters?.broker_id) q = q.eq('broker_id', filters.broker_id)
+
+  const { from, to } = getDateRange(filters ?? {})
+  q = q.gte('created_at', from).lte('created_at', to)
+
+  const { data, error } = await q
 
   if (error) return []
   return data ?? []

@@ -18,9 +18,9 @@ Requirements for Dashboard Analytics milestone. Each maps to roadmap phases.
 
 ### Comparison Mode
 
-- [ ] **COMP-01**: Admin can toggle comparison mode to show delta badges on each KPI card
-- [ ] **COMP-02**: Delta calculates current period vs equivalent previous period automatically (e.g. 7d vs prior 7d)
-- [ ] **COMP-03**: Delta badges are color-coded contextually (green for good metrics improving, red for bad metrics worsening)
+- [x] **COMP-01**: Admin can toggle comparison mode to show delta badges on each KPI card
+- [x] **COMP-02**: Delta calculates current period vs equivalent previous period automatically (e.g. 7d vs prior 7d)
+- [x] **COMP-03**: Delta badges are color-coded contextually (green for good metrics improving, red for bad metrics worsening)
 
 ### Chart Adaptation
 
@@ -53,9 +53,9 @@ Requirements for Dashboard Analytics milestone. Each maps to roadmap phases.
 | FILT-04 | Phase 18 | Complete |
 | FILT-05 | Phase 18 | Complete |
 | FILT-06 | Phase 18 | Complete |
-| COMP-01 | Phase 19 | Pending |
-| COMP-02 | Phase 19 | Pending |
-| COMP-03 | Phase 19 | Pending |
+| COMP-01 | Phase 19 | Complete |
+| COMP-02 | Phase 19 | Complete |
+| COMP-03 | Phase 19 | Complete |
 | CHART-01 | Phase 20 | Pending |
 | CHART-02 | Phase 20 | Pending |
 | REASS-01 | Phase 21 | Pending |

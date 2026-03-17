@@ -7,7 +7,7 @@
 - ✅ **v1.2 Broker Hours Enforcement** — Phases 10-12 (shipped 2026-03-13)
 - ✅ **v2.0 Smart Scoring Engine** — Phases 13-17 (shipped 2026-03-17)
 - ✅ **v2.1 Dashboard Analytics** — Phases 18-21 (shipped 2026-03-17)
-- 🚧 **v3.0 Broker Portal** — Phases 22-29 (in progress)
+- ✅ **v3.0 Broker Portal** — Phases 22-29 (shipped 2026-03-17)
 
 ## Phases
 
@@ -62,18 +62,18 @@
 
 </details>
 
-### 🚧 v3.0 Broker Portal (In Progress)
+### ✅ v3.0 Broker Portal (Complete)
 
 **Milestone Goal:** Broker-facing portal where brokers create and manage orders, pay via Stripe, and monitor delivery health. Same app, /portal/* routes.
 
-- [x] **Phase 22: Broker Auth** - Magic link login, broker sessions, portal middleware, admin invite flow (completed 2026-03-17)
-- [ ] **Phase 23: Data Isolation** - RLS policies, server-side broker_id filtering, mutation guards
-- [ ] **Phase 24: Pricing Engine** - Admin pricing table, per-broker overrides, order cost calculation
-- [ ] **Phase 25: Order Creation + Payment** - Broker order form, Stripe Checkout, webhook fulfillment
-- [ ] **Phase 26: Portal Dashboard** - Broker home with active orders, recent leads, spend, delivery health
-- [ ] **Phase 27: Broker Self-Service** - Pause/resume orders, update delivery prefs, contact hours
-- [ ] **Phase 28: Lead Visibility** - Broker's paginated lead list with delivery status
-- [ ] **Phase 29: Billing + Revenue** - Broker spend history, Stripe receipts, admin revenue view
+- [x] **Phase 22: Broker Auth** - Magic link login, broker sessions, portal middleware, admin invite flow
+- [x] **Phase 23: Data Isolation** - RLS policies, server-side broker_id filtering, mutation guards
+- [x] **Phase 24: Pricing Engine** - Admin pricing table, per-broker overrides, order cost calculation
+- [x] **Phase 25: Order Creation + Payment** - Broker order form, Stripe Checkout, webhook fulfillment
+- [x] **Phase 26: Portal Dashboard** - Broker home with active orders, recent leads, spend, delivery health
+- [x] **Phase 27: Broker Self-Service** - Pause/resume orders, update delivery prefs, contact hours
+- [x] **Phase 28: Lead Visibility** - Broker's paginated lead list with delivery status
+- [x] **Phase 29: Billing + Revenue** - Broker spend history, Stripe receipts, admin revenue view
 
 ## Phase Details
 

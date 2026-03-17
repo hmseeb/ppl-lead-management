@@ -66,7 +66,7 @@
 
 **Milestone Goal:** Broker-facing portal where brokers create and manage orders, pay via Stripe, and monitor delivery health. Same app, /portal/* routes.
 
-- [ ] **Phase 22: Broker Auth** - Magic link login, broker sessions, portal middleware, admin invite flow
+- [x] **Phase 22: Broker Auth** - Magic link login, broker sessions, portal middleware, admin invite flow (completed 2026-03-17)
 - [ ] **Phase 23: Data Isolation** - RLS policies, server-side broker_id filtering, mutation guards
 - [ ] **Phase 24: Pricing Engine** - Admin pricing table, per-broker overrides, order cost calculation
 - [ ] **Phase 25: Order Creation + Payment** - Broker order form, Stripe Checkout, webhook fulfillment
@@ -204,7 +204,7 @@ Phases execute in numeric order: 22 -> 23 -> 24 -> 25 -> 26 -> 27 -> 28 -> 29
 | 10-12 | v1.2 Hours | 4/4 | Complete | 2026-03-13 |
 | 13-17 | v2.0 Scoring | 9/9 | Complete | 2026-03-17 |
 | 18-21 | v2.1 Analytics | 5/5 | Complete | 2026-03-17 |
-| 22. Broker Auth | v3.0 Portal | 0/2 | Not started | - |
+| 22. Broker Auth | v3.0 Portal | Complete    | 2026-03-17 | - |
 | 23. Data Isolation | v3.0 Portal | 0/1 | Not started | - |
 | 24. Pricing Engine | v3.0 Portal | 0/2 | Not started | - |
 | 25. Order Creation + Payment | v3.0 Portal | 0/2 | Not started | - |

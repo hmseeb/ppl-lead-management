@@ -9,10 +9,10 @@ Requirements for Broker Portal milestone. Each maps to roadmap phases.
 
 ### Broker Auth
 
-- [ ] **AUTH-01**: Broker enters email on /portal/login, receives magic link, clicks to authenticate
-- [ ] **AUTH-02**: Magic link creates a session scoped to the broker's ID (iron-session with broker_id)
-- [ ] **AUTH-03**: Portal middleware protects all /portal/* routes, redirects unauthenticated to /portal/login
-- [ ] **AUTH-04**: Admin can invite a broker by triggering a magic link email from the admin dashboard
+- [x] **AUTH-01**: Broker enters email on /portal/login, receives magic link, clicks to authenticate
+- [x] **AUTH-02**: Magic link creates a session scoped to the broker's ID (iron-session with broker_id)
+- [x] **AUTH-03**: Portal middleware protects all /portal/* routes, redirects unauthenticated to /portal/login
+- [x] **AUTH-04**: Admin can invite a broker by triggering a magic link email from the admin dashboard
 
 ### Broker Dashboard
 
@@ -76,10 +76,10 @@ Requirements for Broker Portal milestone. Each maps to roadmap phases.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 22 | Pending |
-| AUTH-02 | Phase 22 | Pending |
-| AUTH-03 | Phase 22 | Pending |
-| AUTH-04 | Phase 22 | Pending |
+| AUTH-01 | Phase 22 | Complete |
+| AUTH-02 | Phase 22 | Complete |
+| AUTH-03 | Phase 22 | Complete |
+| AUTH-04 | Phase 22 | Complete |
 | DASH-01 | Phase 26 | Pending |
 | DASH-02 | Phase 26 | Pending |
 | DASH-03 | Phase 26 | Pending |

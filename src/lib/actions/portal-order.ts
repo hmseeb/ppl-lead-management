@@ -1,6 +1,5 @@
 'use server'
 
-import { redirect } from 'next/navigation'
 import { requireBrokerSession } from '@/lib/portal/guard'
 import { portalOrderSchema } from '@/lib/schemas/portal-order'
 import { getLeadPrice } from '@/lib/pricing/lookup'
@@ -75,5 +74,5 @@ export async function createCheckoutSession(data: unknown) {
     return { error: { _form: ['Failed to create checkout session. Try again.'] } }
   }
 
-  redirect(session.url)
+  return { url: session.url }
 }

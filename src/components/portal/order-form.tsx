@@ -51,7 +51,11 @@ export function OrderForm() {
         lead_count: count,
       })
 
-      // If we get here, the redirect didn't happen (error case)
+      if (result?.url) {
+        window.location.href = result.url
+        return
+      }
+
       if (result?.error) {
         const formError = '_form' in result.error
           ? (result.error as Record<string, string[]>)._form?.[0]

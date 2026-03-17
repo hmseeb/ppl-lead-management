@@ -34,7 +34,8 @@ export async function sendMagicLink(email: string) {
   }
 
   // Build magic link URL
-  const magicLinkUrl = `${process.env.NEXT_PUBLIC_APP_URL}/portal/auth/verify?token=${token}`
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+  const magicLinkUrl = `${baseUrl}/portal/auth/verify?token=${token}`
 
   // Send email via edge function (uses GHL for email delivery)
   const { error: fnError } = await supabase.functions.invoke('send-magic-link', {

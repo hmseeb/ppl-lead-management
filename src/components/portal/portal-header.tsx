@@ -3,14 +3,12 @@
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { LogOut, LayoutDashboard, Package, Users, Settings, Receipt } from 'lucide-react'
+import { LogOut, LayoutDashboard, Package, Settings } from 'lucide-react'
 import { brokerLogout } from '@/lib/actions/portal'
 
 const NAV_ITEMS = [
   { href: '/portal', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/portal/leads', label: 'Leads', icon: Users },
   { href: '/portal/orders', label: 'Orders', icon: Package },
-  { href: '/portal/billing', label: 'Billing', icon: Receipt },
   { href: '/portal/settings', label: 'Settings', icon: Settings },
 ] as const
 

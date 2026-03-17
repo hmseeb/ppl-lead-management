@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 export const PRICING_VERTICALS = [
+  'All',
   'MCA',
   'SBA',
   'Equipment Finance',

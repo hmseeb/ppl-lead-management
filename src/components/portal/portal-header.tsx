@@ -4,6 +4,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { LogOut, LayoutDashboard, Package, Users, Receipt, Settings } from 'lucide-react'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { brokerLogout } from '@/lib/actions/portal'
 
 const NAV_ITEMS = [
@@ -57,6 +58,7 @@ export function PortalHeader({ brokerName }: { brokerName: string }) {
         </div>
         <div className="flex items-center gap-4">
           <span className="text-sm text-muted-foreground">{brokerName}</span>
+          <ThemeToggle />
           <Button variant="ghost" size="sm" onClick={handleLogout}>
             <LogOut className="size-4 mr-1" /> Logout
           </Button>

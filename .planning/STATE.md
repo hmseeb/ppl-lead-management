@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** v2.1 Dashboard Analytics
+**Current focus:** v2.1 Dashboard Analytics — Phase 18 (Dashboard Filters)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-03-17 — Milestone v2.1 started
+Phase: 18 of 21 (Dashboard Filters)
+Plan: — (phase not yet planned)
+Status: Ready to plan
+Last activity: 2026-03-17 — v2.1 roadmap created
 
-Progress: [░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0%
+Progress: [██████████████████████████████░░░░░░░░░░] 75% (30/~40 plans, 17/21 phases)
 
 ## Performance Metrics
 
@@ -31,7 +31,7 @@ All decisions logged in PROJECT.md Key Decisions table.
 
 ### Pending Todos
 
-1. **Auto-reassign unassigned leads on order changes** (feature, api) — `2026-03-14-auto-reassign-unassigned-leads-on-order-changes.md`
+1. **Auto-reassign unassigned leads on order changes** (feature, api) — now tracked as REASS-01/02/03 in Phase 21
 
 ### Blockers/Concerns
 
@@ -49,5 +49,5 @@ All decisions logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-03-17
-Stopped at: v2.0 milestone completed, all milestones archived
+Stopped at: v2.1 roadmap created, ready to plan Phase 18
 Resume file: None

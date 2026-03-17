@@ -47,26 +47,26 @@ Requirements for Dashboard Analytics milestone. Each maps to roadmap phases.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FILT-01 | - | Pending |
-| FILT-02 | - | Pending |
-| FILT-03 | - | Pending |
-| FILT-04 | - | Pending |
-| FILT-05 | - | Pending |
-| FILT-06 | - | Pending |
-| COMP-01 | - | Pending |
-| COMP-02 | - | Pending |
-| COMP-03 | - | Pending |
-| CHART-01 | - | Pending |
-| CHART-02 | - | Pending |
-| REASS-01 | - | Pending |
-| REASS-02 | - | Pending |
-| REASS-03 | - | Pending |
+| FILT-01 | Phase 18 | Pending |
+| FILT-02 | Phase 18 | Pending |
+| FILT-03 | Phase 18 | Pending |
+| FILT-04 | Phase 18 | Pending |
+| FILT-05 | Phase 18 | Pending |
+| FILT-06 | Phase 18 | Pending |
+| COMP-01 | Phase 19 | Pending |
+| COMP-02 | Phase 19 | Pending |
+| COMP-03 | Phase 19 | Pending |
+| CHART-01 | Phase 20 | Pending |
+| CHART-02 | Phase 20 | Pending |
+| REASS-01 | Phase 21 | Pending |
+| REASS-02 | Phase 21 | Pending |
+| REASS-03 | Phase 21 | Pending |
 
 **Coverage:**
 - v2.1 requirements: 14 total
-- Mapped to phases: 0
-- Unmapped: 14 (roadmap pending)
+- Mapped to phases: 14
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-17*
-*Last updated: 2026-03-17 after initial definition*
+*Last updated: 2026-03-17 after roadmap creation*

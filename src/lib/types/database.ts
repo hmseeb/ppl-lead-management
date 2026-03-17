@@ -362,6 +362,44 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_prices: {
+        Row: {
+          id: string
+          vertical: string
+          credit_tier_min: number
+          price_cents: number
+          broker_id: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          vertical: string
+          credit_tier_min: number
+          price_cents: number
+          broker_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          vertical?: string
+          credit_tier_min?: number
+          price_cents?: number
+          broker_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_prices_broker_id_fkey"
+            columns: ["broker_id"]
+            isOneToOne: false
+            referencedRelation: "brokers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           ai_call_notes: string | null

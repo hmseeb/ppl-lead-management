@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { fetchKpis, fetchRecentActivity, fetchLeadVolume, fetchDeliveryStats } from '@/lib/queries/dashboard'
 import { fetchBrokersForFilter } from '@/lib/queries/leads'
+import { getPreviousDateRange } from '@/lib/types/dashboard-filters'
 import { KpiCards } from '@/components/dashboard/kpi-cards'
 import { DeliveryStatsCards } from '@/components/dashboard/delivery-stats-cards'
 import { LeadVolumeChart } from '@/components/dashboard/lead-volume-chart'
@@ -23,7 +24,10 @@ export default async function DashboardPage({
     date_to: params.date_to || undefined,
     broker_id: params.broker_id || undefined,
     vertical: params.vertical || undefined,
+    compare: params.compare || undefined,
   }
+
+  const isCompare = !!filters.compare
 
   const [kpis, activity, volume, deliveryStats, brokers] = await Promise.all([
     fetchKpis(filters),
@@ -33,6 +37,19 @@ export default async function DashboardPage({
     fetchBrokersForFilter(),
   ])
 
+  let previousKpis = null
+  if (isCompare) {
+    const prevRange = getPreviousDateRange(filters)
+    const previousFilters: DashboardFiltersType = {
+      ...filters,
+      date_from: prevRange.from.split('T')[0],
+      date_to: prevRange.to.split('T')[0],
+      date_preset: undefined,
+      compare: undefined,
+    }
+    previousKpis = await fetchKpis(previousFilters)
+  }
+
   return (
     <NuqsAdapter>
       <div className="space-y-6">
@@ -41,7 +58,7 @@ export default async function DashboardPage({
           <div className="h-px flex-1 bg-gradient-to-r from-red-500/10 to-transparent" />
         </div>
         <DashboardFilters brokers={brokers} />
-        <KpiCards data={kpis} />
+        <KpiCards data={kpis} previousData={previousKpis} />
         <DeliveryStatsCards data={deliveryStats} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <LeadVolumeChart data={volume} />

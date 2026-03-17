@@ -1,4 +1,4 @@
-import { startOfDay, subDays } from 'date-fns'
+import { startOfDay, subDays, differenceInMilliseconds } from 'date-fns'
 
 export interface DashboardFilters {
   date_preset?: string
@@ -6,6 +6,7 @@ export interface DashboardFilters {
   date_to?: string
   broker_id?: string
   vertical?: string
+  compare?: string
 }
 
 export const DATE_PRESETS = [
@@ -52,5 +53,20 @@ export function getDateRange(filters: DashboardFilters): { from: string; to: str
     case 'today':
     default:
       return { from: startOfDay(now).toISOString(), to: now.toISOString() }
+  }
+}
+
+export function getPreviousDateRange(filters: DashboardFilters): { from: string; to: string } {
+  const current = getDateRange(filters)
+  const currentFrom = new Date(current.from)
+  const currentTo = new Date(current.to)
+  const durationMs = differenceInMilliseconds(currentTo, currentFrom)
+
+  const previousTo = new Date(currentFrom.getTime() - 1)
+  const previousFrom = new Date(previousTo.getTime() - durationMs)
+
+  return {
+    from: previousFrom.toISOString(),
+    to: previousTo.toISOString(),
   }
 }

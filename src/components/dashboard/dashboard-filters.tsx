@@ -3,7 +3,7 @@
 import { useQueryState, parseAsString } from 'nuqs'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { X } from 'lucide-react'
+import { X, ArrowUpDown } from 'lucide-react'
 import { DATE_PRESETS, VERTICALS } from '@/lib/types/dashboard-filters'
 
 const serverSync = { shallow: false } as const
@@ -18,10 +18,11 @@ export function DashboardFilters({ brokers }: DashboardFiltersProps) {
   const [dateTo, setDateTo] = useQueryState('date_to', parseAsString.withDefault('').withOptions(serverSync))
   const [brokerId, setBrokerId] = useQueryState('broker_id', parseAsString.withDefault('').withOptions(serverSync))
   const [vertical, setVertical] = useQueryState('vertical', parseAsString.withDefault('').withOptions(serverSync))
+  const [compare, setCompare] = useQueryState('compare', parseAsString.withDefault('').withOptions(serverSync))
 
   const activePreset = datePreset || (!dateFrom && !dateTo ? 'today' : '')
 
-  const hasFilters = datePreset || dateFrom || dateTo || brokerId || vertical
+  const hasFilters = datePreset || dateFrom || dateTo || brokerId || vertical || compare
 
   function selectPreset(value: string) {
     setDatePreset(value === 'today' ? '' : value)
@@ -45,6 +46,7 @@ export function DashboardFilters({ brokers }: DashboardFiltersProps) {
     setDateTo('')
     setBrokerId('')
     setVertical('')
+    setCompare('')
   }
 
   return (
@@ -102,6 +104,15 @@ export function DashboardFilters({ brokers }: DashboardFiltersProps) {
           <option key={v} value={v}>{v}</option>
         ))}
       </select>
+
+      <Button
+        variant={compare ? 'default' : 'outline'}
+        size="sm"
+        onClick={() => setCompare(compare ? '' : 'true')}
+        className={compare ? '' : 'text-muted-foreground'}
+      >
+        <ArrowUpDown className="size-4 mr-1" /> Compare
+      </Button>
 
       {hasFilters && (
         <Button variant="ghost" size="sm" onClick={clearAll}>

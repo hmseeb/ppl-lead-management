@@ -58,7 +58,14 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 
 ### Active
 
-(None — planning next milestone)
+- [ ] Broker portal at /portal/* with magic link auth (passwordless)
+- [ ] Broker dashboard: active orders, recent leads, spend summary, delivery health
+- [ ] Broker order creation with Stripe Checkout payment
+- [ ] Admin pricing table management (vertical x credit tier = price per lead)
+- [ ] Broker self-service: pause/resume orders, update webhook/delivery prefs, contact hours
+- [ ] Broker lead visibility: their assigned leads with delivery status
+- [ ] Broker spend history with Stripe receipts
+- [ ] Strict data isolation (broker sees only their own data)
 
 ### Out of Scope
 
@@ -119,4 +126,19 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 | Inner join for delivery vertical filtering | Deliveries lack vertical column, join through leads table | ✓ Good |
 
 ---
-*Last updated: 2026-03-17 after v2.1 milestone completion*
+## Current Milestone: v3.0 Broker Portal
+
+**Goal:** Build a broker-facing portal where brokers can create and manage their own orders, pay for leads via Stripe, and monitor their delivery health. Same app, /portal/* routes.
+
+**Target features:**
+- Magic link auth for brokers (email-based, passwordless)
+- Broker dashboard with active orders, recent leads, spend, delivery health
+- Order creation with Stripe Checkout (tiered pricing by vertical x credit tier)
+- Admin pricing table in Settings
+- Broker self-service: pause/resume orders, update delivery preferences
+- Broker lead list with delivery status
+- Spend history with Stripe receipts
+- Strict broker data isolation
+
+---
+*Last updated: 2026-03-17 after v3.0 milestone start*

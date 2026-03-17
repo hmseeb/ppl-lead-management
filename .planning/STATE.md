@@ -5,13 +5,13 @@
 See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** Planning next milestone
+**Current focus:** v3.0 Broker Portal
 
 ## Current Position
 
-Phase: All complete (v1.0 through v2.1 shipped)
-Status: Between milestones. v2.1 archived 2026-03-17.
-Last activity: 2026-03-17 — v2.1 milestone completed and archived
+Phase: Not started (defining requirements)
+Status: Defining requirements
+Last activity: 2026-03-17 — Milestone v3.0 started
 
 Progress: [██████████████████████████████] 100% (37 plans, 21 phases)
 

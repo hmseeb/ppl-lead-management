@@ -101,6 +101,123 @@ export async function updateOrderStatus(orderId: string, newStatus: string) {
   return { success: true }
 }
 
+export async function updateOrder(orderId: string, data: unknown) {
+  const result = orderSchema.safeParse(data)
+  if (!result.success) {
+    return { error: result.error.flatten().fieldErrors }
+  }
+
+  const supabase = createAdminClient()
+  const { broker_id, total_leads, verticals, credit_score_min, loan_min, loan_max, priority, order_type } = result.data
+
+  // Ensure total_leads isn't less than already delivered
+  const { data: current } = await supabase
+    .from('orders')
+    .select('leads_delivered, broker_id')
+    .eq('id', orderId)
+    .single()
+
+  if (!current) {
+    return { error: { _form: ['Order not found'] } }
+  }
+
+  if (total_leads < current.leads_delivered) {
+    return { error: { _form: [`Total leads cannot be less than already delivered (${current.leads_delivered})`] } }
+  }
+
+  const leads_remaining = total_leads - current.leads_delivered
+
+  const { error } = await supabase
+    .from('orders')
+    .update({
+      broker_id,
+      total_leads,
+      leads_remaining,
+      verticals: verticals as string[],
+      credit_score_min,
+      loan_min,
+      loan_max,
+      priority,
+      order_type,
+    })
+    .eq('id', orderId)
+
+  if (error) {
+    return { error: { _form: [error.message] } }
+  }
+
+  await supabase.from('activity_log').insert({
+    event_type: 'order_updated',
+    broker_id,
+    order_id: orderId,
+    details: { total_leads, verticals, credit_score_min, loan_min, loan_max, priority, order_type },
+  })
+
+  revalidatePath('/orders')
+  revalidatePath(`/orders/${orderId}`)
+  return { success: true }
+}
+
+export async function reorderOrder(orderId: string) {
+  const supabase = createAdminClient()
+
+  const { data: original } = await supabase
+    .from('orders')
+    .select('broker_id, total_leads, verticals, credit_score_min, loan_min, loan_max, priority, order_type')
+    .eq('id', orderId)
+    .single()
+
+  if (!original) {
+    return { error: 'Original order not found' }
+  }
+
+  const { data: order, error } = await supabase
+    .from('orders')
+    .insert({
+      broker_id: original.broker_id,
+      total_leads: original.total_leads,
+      leads_remaining: original.total_leads,
+      leads_delivered: 0,
+      verticals: original.verticals,
+      credit_score_min: original.credit_score_min,
+      loan_min: original.loan_min,
+      loan_max: original.loan_max,
+      priority: original.priority,
+      order_type: original.order_type,
+      status: 'active',
+      bonus_mode: false,
+    })
+    .select()
+    .single()
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  await supabase.from('activity_log').insert({
+    event_type: 'order_created',
+    broker_id: original.broker_id,
+    order_id: order.id,
+    details: {
+      total_leads: original.total_leads,
+      verticals: original.verticals,
+      credit_score_min: original.credit_score_min,
+      loan_min: original.loan_min,
+      loan_max: original.loan_max,
+      priority: original.priority,
+      order_type: original.order_type,
+      reordered_from: orderId,
+    },
+  })
+
+  reassignUnassignedLeads().catch((err) => {
+    console.error('Auto-reassignment after reorder failed:', err)
+  })
+
+  revalidatePath('/orders')
+  return { success: true, order }
+}
+
 export async function toggleBonusMode(orderId: string) {
   const supabase = createAdminClient()
 

@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { MoreHorizontal, Pause, Play, CheckCircle, Sparkles } from 'lucide-react'
+import { MoreHorizontal, Pause, Play, CheckCircle, Sparkles, Pencil, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { updateOrderStatus, toggleBonusMode } from '@/lib/actions/orders'
+import { updateOrderStatus, toggleBonusMode, reorderOrder } from '@/lib/actions/orders'
 
 interface OrderActionsProps {
   orderId: string
@@ -42,6 +42,16 @@ export function OrderActions({ orderId, currentStatus, bonusMode }: OrderActions
     router.refresh()
   }
 
+  async function handleReorder() {
+    const result = await reorderOrder(orderId)
+    if ('error' in result && result.error) {
+      toast.error(typeof result.error === 'string' ? result.error : 'Failed to reorder')
+      return
+    }
+    toast.success('New order created from reorder')
+    router.refresh()
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger render={<Button variant="ghost" size="icon" />}>
@@ -50,6 +60,13 @@ export function OrderActions({ orderId, currentStatus, bonusMode }: OrderActions
       <DropdownMenuContent align="end">
         <div className="px-1.5 py-1 text-xs font-medium text-muted-foreground">Actions</div>
         <DropdownMenuSeparator />
+
+        {currentStatus !== 'completed' && (
+          <DropdownMenuItem onClick={() => router.push(`/orders/${orderId}/edit`)} className="cursor-pointer">
+            <Pencil className="size-4 mr-2" />
+            Edit Order
+          </DropdownMenuItem>
+        )}
 
         {currentStatus === 'active' && (
           <>
@@ -75,6 +92,13 @@ export function OrderActions({ orderId, currentStatus, bonusMode }: OrderActions
               Complete
             </DropdownMenuItem>
           </>
+        )}
+
+        {currentStatus === 'completed' && (
+          <DropdownMenuItem onClick={handleReorder} className="cursor-pointer">
+            <RefreshCw className="size-4 mr-2" />
+            Reorder
+          </DropdownMenuItem>
         )}
 
         {currentStatus !== 'completed' && (

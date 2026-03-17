@@ -3,6 +3,9 @@
 import { useQueryState, parseAsString } from 'nuqs'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import {
+  Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
+} from '@/components/ui/select'
 import { X } from 'lucide-react'
 
 const VERTICALS = ['MCA', 'SBA', 'Equipment Finance', 'Working Capital', 'Lines of Credit']
@@ -33,26 +36,28 @@ export function OrdersFilters() {
         />
       </div>
 
-      <select
-        className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-        value={status}
-        onChange={(e) => setStatus(e.target.value || '')}
-      >
-        <option value="">All Status</option>
-        <option value="active">Active</option>
-        <option value="paused">Paused</option>
-        <option value="completed">Completed</option>
-        <option value="cancelled">Cancelled</option>
-      </select>
+      <Select value={status || '_all'} onValueChange={(v) => setStatus(v === '_all' ? '' : (v ?? ''))}>
+        <SelectTrigger>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="_all">All Status</SelectItem>
+          <SelectItem value="active">Active</SelectItem>
+          <SelectItem value="paused">Paused</SelectItem>
+          <SelectItem value="completed">Completed</SelectItem>
+          <SelectItem value="cancelled">Cancelled</SelectItem>
+        </SelectContent>
+      </Select>
 
-      <select
-        className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-        value={vertical}
-        onChange={(e) => setVertical(e.target.value || '')}
-      >
-        <option value="">All Verticals</option>
-        {VERTICALS.map((v) => <option key={v} value={v}>{v}</option>)}
-      </select>
+      <Select value={vertical || '_all'} onValueChange={(v) => setVertical(v === '_all' ? '' : (v ?? ''))}>
+        <SelectTrigger>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="_all">All Verticals</SelectItem>
+          {VERTICALS.map((v) => <SelectItem key={v} value={v}>{v}</SelectItem>)}
+        </SelectContent>
+      </Select>
 
       {hasFilters && (
         <Button variant="ghost" size="sm" onClick={clearAll}>

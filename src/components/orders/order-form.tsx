@@ -6,12 +6,15 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { orderSchema, type OrderFormData, VERTICALS, PRIORITIES, ORDER_TYPES } from '@/lib/schemas/order'
-import { createOrder } from '@/lib/actions/orders'
+import { createOrder, updateOrder } from '@/lib/actions/orders'
 import Link from 'next/link'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
+import {
+  Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
+} from '@/components/ui/select'
 
 interface Broker {
   id: string
@@ -24,10 +27,13 @@ interface Broker {
 
 interface OrderFormProps {
   brokers: Broker[]
+  orderId?: string
+  initialData?: OrderFormData
 }
 
-export function OrderForm({ brokers }: OrderFormProps) {
+export function OrderForm({ brokers, orderId, initialData }: OrderFormProps) {
   const router = useRouter()
+  const isEdit = !!orderId
   const {
     register,
     control,
@@ -37,7 +43,7 @@ export function OrderForm({ brokers }: OrderFormProps) {
     formState: { errors, isSubmitting },
   } = useForm<OrderFormData>({
     resolver: zodResolver(orderSchema),
-    defaultValues: {
+    defaultValues: initialData ?? {
       broker_id: '',
       total_leads: 1,
       verticals: [],
@@ -52,10 +58,10 @@ export function OrderForm({ brokers }: OrderFormProps) {
   const selectedVerticals = watch('verticals') || []
   const selectedBrokerId = watch('broker_id')
 
-  // Auto-populate verticals from broker profile when broker changes
-  const prevBrokerRef = React.useRef('')
+  // Auto-populate verticals from broker profile when broker changes (only for new orders)
+  const prevBrokerRef = React.useRef(initialData?.broker_id ?? '')
   React.useEffect(() => {
-    if (selectedBrokerId && selectedBrokerId !== prevBrokerRef.current) {
+    if (!isEdit && selectedBrokerId && selectedBrokerId !== prevBrokerRef.current) {
       prevBrokerRef.current = selectedBrokerId
       const broker = brokers.find((b) => b.id === selectedBrokerId)
       if (broker) {
@@ -66,13 +72,12 @@ export function OrderForm({ brokers }: OrderFormProps) {
         }
       }
     }
-  }, [selectedBrokerId, brokers, setValue])
+  }, [selectedBrokerId, brokers, setValue, isEdit])
 
   function handleVerticalToggle(vertical: (typeof VERTICALS)[number]) {
     const current = selectedVerticals as string[]
 
     if (vertical === 'All') {
-      // If "All" is selected, it becomes the only value
       if (current.includes('All')) {
         setValue('verticals', [])
       } else {
@@ -81,7 +86,6 @@ export function OrderForm({ brokers }: OrderFormProps) {
       return
     }
 
-    // If selecting a non-All vertical, remove "All" if present
     const withoutAll = current.filter((v) => v !== 'All')
 
     if (current.includes(vertical)) {
@@ -95,7 +99,9 @@ export function OrderForm({ brokers }: OrderFormProps) {
   }
 
   async function onSubmit(data: OrderFormData) {
-    const result = await createOrder(data)
+    const result = isEdit
+      ? await updateOrder(orderId!, data)
+      : await createOrder(data)
 
     if ('error' in result && result.error) {
       const errorObj = result.error as Record<string, string[]>
@@ -107,7 +113,7 @@ export function OrderForm({ brokers }: OrderFormProps) {
       return
     }
 
-    toast.success('Order created')
+    toast.success(isEdit ? 'Order updated' : 'Order created')
     router.push('/orders')
     router.refresh()
   }
@@ -116,19 +122,26 @@ export function OrderForm({ brokers }: OrderFormProps) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-md">
       <div className="space-y-1.5">
         <Label htmlFor="broker_id">Broker</Label>
-        <select
-          id="broker_id"
-          className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-          {...register('broker_id')}
-        >
-          <option value="">Select a broker...</option>
-          {brokers.map((b) => (
-            <option key={b.id} value={b.id}>
-              {b.first_name} {b.last_name}
-              {b.company ? ` (${b.company})` : ''}
-            </option>
-          ))}
-        </select>
+        <Controller
+          control={control}
+          name="broker_id"
+          render={({ field }) => (
+            <Select value={field.value || '_none'} onValueChange={(v) => field.onChange(v === '_none' ? '' : v)}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a broker..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="_none">Select a broker...</SelectItem>
+                {brokers.map((b) => (
+                  <SelectItem key={b.id} value={b.id}>
+                    {b.first_name} {b.last_name}
+                    {b.company ? ` (${b.company})` : ''}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
         {errors.broker_id && (
           <p className="text-sm text-destructive">{errors.broker_id.message}</p>
         )}
@@ -221,28 +234,42 @@ export function OrderForm({ brokers }: OrderFormProps) {
 
       <div className="space-y-1.5">
         <Label htmlFor="priority">Priority</Label>
-        <select
-          id="priority"
-          className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-          {...register('priority')}
-        >
-          {PRIORITIES.map((p) => (
-            <option key={p} value={p}>{p === 'normal' ? 'Normal' : 'High'}</option>
-          ))}
-        </select>
+        <Controller
+          control={control}
+          name="priority"
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={(v) => v && field.onChange(v)}>
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {PRIORITIES.map((p) => (
+                  <SelectItem key={p} value={p}>{p === 'normal' ? 'Normal' : 'High'}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
       </div>
 
       <div className="space-y-1.5">
         <Label htmlFor="order_type">Order Type</Label>
-        <select
-          id="order_type"
-          className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-          {...register('order_type')}
-        >
-          {ORDER_TYPES.map((t) => (
-            <option key={t} value={t}>{t === 'one_time' ? 'One-time' : 'Monthly'}</option>
-          ))}
-        </select>
+        <Controller
+          control={control}
+          name="order_type"
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={(v) => v && field.onChange(v)}>
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {ORDER_TYPES.map((t) => (
+                  <SelectItem key={t} value={t}>{t === 'one_time' ? 'One-time' : 'Monthly'}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
       </div>
 
       <div className="flex items-center gap-3">
@@ -250,7 +277,7 @@ export function OrderForm({ brokers }: OrderFormProps) {
           Back
         </Link>
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Creating...' : 'Create Order'}
+          {isSubmitting ? (isEdit ? 'Saving...' : 'Creating...') : (isEdit ? 'Save Changes' : 'Create Order')}
         </Button>
       </div>
     </form>

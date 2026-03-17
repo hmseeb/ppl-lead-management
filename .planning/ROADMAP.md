@@ -51,7 +51,7 @@
 
 </details>
 
-### 🚧 v2.1 Dashboard Analytics (In Progress)
+### v2.1 Dashboard Analytics (In Progress)
 
 **Milestone Goal:** Add date range, broker, and vertical filters to the KPI dashboard with comparison mode, adaptive charts, and auto-reassignment of unassigned leads on order changes.
 
@@ -72,11 +72,11 @@
   3. Admin selects a broker from the dropdown and all KPIs show only that broker's numbers
   4. Admin selects a vertical from the dropdown and all KPIs show only leads of that vertical
   5. Admin copies the URL, opens it in a new tab, and sees the same filtered dashboard state. Clear all resets to defaults
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 18-01: TBD
-- [ ] 18-02: TBD
+- [ ] 18-01-PLAN.md — DashboardFilters type, component, and query function refactoring
+- [ ] 18-02-PLAN.md — Wire page.tsx with searchParams, filters, and KPI card updates
 
 ### Phase 19: Comparison Mode
 **Goal**: Admin can see at a glance whether metrics are improving or declining compared to the previous equivalent period
@@ -129,9 +129,9 @@ Phases execute in numeric order: 18 → 19 → 20 → 21
 | 6-9 | v1.1 Monitoring | 6/6 | Complete | 2026-03-13 |
 | 10-12 | v1.2 Hours | 4/4 | Complete | 2026-03-13 |
 | 13-17 | v2.0 Scoring | 9/9 | Complete | 2026-03-17 |
-| 18. Dashboard Filters | v2.1 Analytics | 0/? | Not started | - |
+| 18. Dashboard Filters | v2.1 Analytics | 0/2 | Planned | - |
 | 19. Comparison Mode | v2.1 Analytics | 0/? | Not started | - |
 | 20. Chart Adaptation | v2.1 Analytics | 0/? | Not started | - |
 | 21. Auto-Reassignment | v2.1 Analytics | 0/? | Not started | - |
 
-**Total: 21 phases, 30+ plans across 5 milestones**
+**Total: 21 phases, 32+ plans across 5 milestones**

@@ -81,9 +81,9 @@ export function KpiCards({ data }: { data: KpiData }) {
 
   const cards: CardConfig[] = [
     {
-      title: 'Leads Today',
+      title: 'Leads',
       value: data.leadsToday,
-      subtitle: `${data.leadsThisWeek} this week / ${data.leadsThisMonth} this month`,
+      subtitle: 'In selected period',
       icon: TrendingUp,
       iconColor: 'text-red-400',
       glowColor: 'shadow-[0_0_20px_rgba(220,38,38,0.08)]',
@@ -95,7 +95,7 @@ export function KpiCards({ data }: { data: KpiData }) {
     {
       title: 'Assigned',
       value: data.assignedCount,
-      subtitle: 'Total assigned leads',
+      subtitle: 'In selected period',
       icon: Activity,
       iconColor: 'text-emerald-400',
       glowColor: 'shadow-[0_0_20px_rgba(34,197,94,0.06)]',
@@ -134,7 +134,7 @@ export function KpiCards({ data }: { data: KpiData }) {
       title: 'Rejected Rate',
       value: data.rejectedRate,
       displayValue: `${data.rejectedRate}%`,
-      subtitle: `${data.rejectedCount} rejected out of ${data.leadsToday} today`,
+      subtitle: `${data.rejectedCount} rejected out of ${data.leadsToday} leads`,
       icon: XCircle,
       iconColor: data.rejectedRate > 20 ? 'text-rose-400' : 'text-muted-foreground',
       glowColor: data.rejectedRate > 20 ? 'shadow-[0_0_20px_rgba(244,63,94,0.08)]' : '',

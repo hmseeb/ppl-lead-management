@@ -24,14 +24,14 @@ Requirements for Dashboard Analytics milestone. Each maps to roadmap phases.
 
 ### Chart Adaptation
 
-- [ ] **CHART-01**: Lead volume chart adapts its date range to match the selected dashboard filter
-- [ ] **CHART-02**: Lead volume chart uses weekly buckets for 90d range instead of daily bars
+- [x] **CHART-01**: Lead volume chart adapts its date range to match the selected dashboard filter
+- [x] **CHART-02**: Lead volume chart uses weekly buckets for 90d range instead of daily bars
 
 ### Auto-Reassignment
 
-- [ ] **REASS-01**: When an order is activated or unpaused, system checks unassigned queue for matching leads
-- [ ] **REASS-02**: Matching unassigned leads are automatically routed through the scoring engine
-- [ ] **REASS-03**: Auto-reassignment is logged in activity_log with event type and details
+- [x] **REASS-01**: When an order is activated or unpaused, system checks unassigned queue for matching leads
+- [x] **REASS-02**: Matching unassigned leads are automatically routed through the scoring engine
+- [x] **REASS-03**: Auto-reassignment is logged in activity_log with event type and details
 
 ## Out of Scope
 
@@ -56,11 +56,11 @@ Requirements for Dashboard Analytics milestone. Each maps to roadmap phases.
 | COMP-01 | Phase 19 | Complete |
 | COMP-02 | Phase 19 | Complete |
 | COMP-03 | Phase 19 | Complete |
-| CHART-01 | Phase 20 | Pending |
-| CHART-02 | Phase 20 | Pending |
-| REASS-01 | Phase 21 | Pending |
-| REASS-02 | Phase 21 | Pending |
-| REASS-03 | Phase 21 | Pending |
+| CHART-01 | Phase 20 | Complete |
+| CHART-02 | Phase 20 | Complete |
+| REASS-01 | Phase 21 | Complete |
+| REASS-02 | Phase 21 | Complete |
+| REASS-03 | Phase 21 | Complete |
 
 **Coverage:**
 - v2.1 requirements: 14 total

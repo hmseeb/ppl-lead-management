@@ -1,5 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import Link from 'next/link'
+import { Card, CardContent, CardHeader, CardTitle, CardAction } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   Package,
   Users,
@@ -8,6 +10,7 @@ import {
   CheckCircle,
   XCircle,
   Clock,
+  Plus,
 } from 'lucide-react'
 import { format } from 'date-fns'
 import type {
@@ -30,6 +33,13 @@ export function ActiveOrdersCard({ orders }: { orders: ActiveOrder[] }) {
         <Badge variant="secondary" className="ml-auto text-xs">
           {orders.length}
         </Badge>
+        <CardAction>
+          <Link href="/portal/orders/new">
+            <Button size="sm" variant="outline" className="text-xs h-7">
+              <Plus className="size-3 mr-1" /> New Order
+            </Button>
+          </Link>
+        </CardAction>
       </CardHeader>
       <CardContent>
         {orders.length === 0 ? (

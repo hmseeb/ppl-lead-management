@@ -538,9 +538,13 @@ export type Database = {
           loan_max: number | null
           loan_min: number | null
           order_type: string
+          price_per_lead_cents: number | null
           priority: string
           status: string
+          stripe_checkout_session_id: string | null
+          stripe_payment_intent_id: string | null
           total_leads: number
+          total_price_cents: number | null
           updated_at: string
           verticals: string[]
         }
@@ -556,9 +560,13 @@ export type Database = {
           loan_max?: number | null
           loan_min?: number | null
           order_type?: string
+          price_per_lead_cents?: number | null
           priority?: string
           status?: string
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
           total_leads: number
+          total_price_cents?: number | null
           updated_at?: string
           verticals: string[]
         }
@@ -574,9 +582,13 @@ export type Database = {
           loan_max?: number | null
           loan_min?: number | null
           order_type?: string
+          price_per_lead_cents?: number | null
           priority?: string
           status?: string
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
           total_leads?: number
+          total_price_cents?: number | null
           updated_at?: string
           verticals?: string[]
         }

@@ -20,6 +20,7 @@ function makeOrder(overrides: Partial<OrderForScoring> = {}): OrderForScoring {
     loan_max: null,
     priority: 'normal',
     broker_assignment_status: 'active',
+    last_assigned_at: null,
     ...overrides,
   }
 }
@@ -208,26 +209,39 @@ describe('Priority Bonus (SCORE-06)', () => {
   })
 })
 
-describe('Urgency Bonus (SCORE-07)', () => {
-  it('awards +5pts when fill_rate > 80%', () => {
+describe('Urgency Bonus (SCORE-07) — disabled, replaced by round-robin', () => {
+  it('always returns 0', () => {
     const lead = makeLead()
     const order = makeOrder({ leads_delivered: 85, total_leads: 100 })
     const results = scoreLead(lead, [order])
-    expect(results[0].score.urgency_bonus).toBe(5)
-  })
-
-  it('penalizes -5pts when fill_rate < 10%', () => {
-    const lead = makeLead()
-    const order = makeOrder({ leads_delivered: 5, total_leads: 100 })
-    const results = scoreLead(lead, [order])
-    expect(results[0].score.urgency_bonus).toBe(-5)
-  })
-
-  it('awards 0 for fill_rate between 10% and 80%', () => {
-    const lead = makeLead()
-    const order = makeOrder({ leads_delivered: 50, total_leads: 100 })
-    const results = scoreLead(lead, [order])
     expect(results[0].score.urgency_bonus).toBe(0)
+  })
+})
+
+describe('Round-robin fairness', () => {
+  it('picks order with oldest last_assigned_at over higher score', () => {
+    const lead = makeLead()
+    const oldOrder = makeOrder({ last_assigned_at: '2026-03-01T00:00:00Z', leads_delivered: 80, total_leads: 100 })
+    const newOrder = makeOrder({ last_assigned_at: '2026-03-17T00:00:00Z', leads_delivered: 2, total_leads: 100 })
+    const results = scoreLead(lead, [newOrder, oldOrder])
+    expect(results[0].order_id).toBe(oldOrder.id)
+  })
+
+  it('picks never-assigned order first (null last_assigned_at)', () => {
+    const lead = makeLead()
+    const existingOrder = makeOrder({ last_assigned_at: '2026-03-17T00:00:00Z' })
+    const newOrder = makeOrder({ last_assigned_at: null })
+    const results = scoreLead(lead, [existingOrder, newOrder])
+    expect(results[0].order_id).toBe(newOrder.id)
+  })
+
+  it('uses score as tiebreaker when last_assigned_at is equal', () => {
+    const lead = makeLead()
+    const sameTime = '2026-03-17T00:00:00Z'
+    const highPriority = makeOrder({ last_assigned_at: sameTime, priority: 'high' })
+    const normalPriority = makeOrder({ last_assigned_at: sameTime, priority: 'normal' })
+    const results = scoreLead(lead, [normalPriority, highPriority])
+    expect(results[0].order_id).toBe(highPriority.id)
   })
 })
 

@@ -29,7 +29,7 @@ export async function assignLead(leadId: string): Promise<AssignmentResult> {
     .select(`
       id, broker_id, status, verticals, credit_score_min,
       leads_remaining, leads_delivered, total_leads, bonus_mode,
-      loan_min, loan_max, priority,
+      loan_min, loan_max, priority, last_assigned_at,
       brokers!inner ( assignment_status )
     `)
     .eq('status', 'active')
@@ -53,6 +53,7 @@ export async function assignLead(leadId: string): Promise<AssignmentResult> {
     loan_max: o.loan_max,
     priority: o.priority,
     broker_assignment_status: o.brokers.assignment_status,
+    last_assigned_at: o.last_assigned_at,
   }))
 
   // 4. Score all orders (full results for audit trail)

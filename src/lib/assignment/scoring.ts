@@ -24,6 +24,7 @@ export interface OrderForScoring {
   loan_max: number | null
   priority: string // 'high' | 'normal'
   broker_assignment_status: string
+  last_assigned_at: string | null
 }
 
 export interface ScoreBreakdown {
@@ -41,6 +42,7 @@ export interface ScoredOrder {
   broker_id: string
   score: ScoreBreakdown
   fill_rate: number
+  last_assigned_at: string | null
   disqualified: boolean
   disqualify_reason?: string
 }
@@ -142,11 +144,8 @@ function priorityBonus(order: OrderForScoring): number {
   return order.priority === 'high' ? 8 : 0
 }
 
-/** SCORE-07: Urgency Bonus (+5 when fill > 80%, -5 when fill < 10%) */
-function urgencyBonus(order: OrderForScoring): number {
-  const fillRate = order.total_leads > 0 ? order.leads_delivered / order.total_leads : 0
-  if (fillRate > 0.8) return 5
-  if (fillRate < 0.1) return -5
+/** SCORE-07: Urgency Bonus — disabled, replaced by round-robin fairness */
+function urgencyBonus(_order: OrderForScoring): number {
   return 0
 }
 
@@ -164,6 +163,7 @@ function scoreAllOrders(lead: LeadForScoring, orders: OrderForScoring[]): Scored
         order_id: order.id,
         broker_id: order.broker_id,
         fill_rate: fillRate,
+        last_assigned_at: order.last_assigned_at,
         disqualified: true,
         disqualify_reason: filterResult.reason,
         score: { credit_fit: 0, capacity: 0, tier_match: 0, loan_fit: 0, priority_bonus: 0, urgency_bonus: 0, total: 0 },
@@ -183,6 +183,7 @@ function scoreAllOrders(lead: LeadForScoring, orders: OrderForScoring[]): Scored
       order_id: order.id,
       broker_id: order.broker_id,
       fill_rate: fillRate,
+      last_assigned_at: order.last_assigned_at,
       disqualified: false,
       score: { credit_fit, capacity, tier_match, loan_fit, priority_bonus: priority, urgency_bonus: urgency, total },
     })
@@ -195,7 +196,15 @@ function sortEligible(results: ScoredOrder[]): ScoredOrder[] {
   return results
     .filter((r) => !r.disqualified)
     .sort((a, b) => {
+      // Round-robin: oldest last_assigned_at wins (fairness first)
+      const aTime = a.last_assigned_at ? new Date(a.last_assigned_at).getTime() : 0
+      const bTime = b.last_assigned_at ? new Date(b.last_assigned_at).getTime() : 0
+      if (aTime !== bTime) return aTime - bTime // oldest first
+
+      // Tiebreaker: highest score wins
       if (b.score.total !== a.score.total) return b.score.total - a.score.total
+
+      // Final tiebreaker: lowest fill rate wins
       return a.fill_rate - b.fill_rate
     })
 }

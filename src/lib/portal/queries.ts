@@ -252,6 +252,38 @@ function lookupPrice(
   return fallback ?? 0
 }
 
+/* ------------------------------------------------------------------ */
+/*  Billing queries                                                    */
+/* ------------------------------------------------------------------ */
+
+export type BillingOrder = {
+  id: string
+  verticals: string[]
+  total_leads: number
+  leads_delivered: number
+  status: string
+  total_price_cents: number | null
+  price_per_lead_cents: number | null
+  stripe_checkout_session_id: string | null
+  created_at: string
+}
+
+/**
+ * All orders for this broker, sorted newest first.
+ * Used on the billing page to show payment history.
+ */
+export async function fetchBrokerBillingOrders(brokerId: string): Promise<BillingOrder[]> {
+  const supabase = createAdminClient()
+  const { data, error } = await supabase
+    .from('orders')
+    .select('id, verticals, total_leads, leads_delivered, status, total_price_cents, price_per_lead_cents, stripe_checkout_session_id, created_at')
+    .eq('broker_id', brokerId)
+    .order('created_at', { ascending: false })
+
+  if (error) return []
+  return (data ?? []) as BillingOrder[]
+}
+
 export type DeliveryHealth = {
   channel: string
   total: number
@@ -298,4 +330,118 @@ export async function fetchBrokerDeliveryHealth(brokerId: string): Promise<Deliv
   }
 
   return results.sort((a, b) => b.total - a.total)
+}
+
+/* ------------------------------------------------------------------ */
+/*  Broker settings (self-service)                                     */
+/* ------------------------------------------------------------------ */
+
+export type BrokerSettings = {
+  delivery_methods: string[] | null
+  crm_webhook_url: string | null
+  delivery_email: string | null
+  delivery_phone: string | null
+  contact_hours: string | null
+  custom_hours_start: string | null
+  custom_hours_end: string | null
+  weekend_pause: boolean | null
+  timezone: string | null
+}
+
+export async function getPortalBrokerSettings(brokerId: string): Promise<BrokerSettings | null> {
+  const supabase = createAdminClient()
+  const { data, error } = await supabase
+    .from('brokers')
+    .select('delivery_methods, crm_webhook_url, delivery_email, delivery_phone, contact_hours, custom_hours_start, custom_hours_end, weekend_pause, timezone')
+    .eq('id', brokerId)
+    .single()
+
+  if (error) return null
+  return data as BrokerSettings
+}
+
+/* ------------------------------------------------------------------ */
+/*  Paginated leads with delivery status                               */
+/* ------------------------------------------------------------------ */
+
+export type LeadWithDelivery = {
+  id: string
+  first_name: string | null
+  last_name: string | null
+  vertical: string | null
+  credit_score: number | null
+  funding_amount: number | null
+  status: string | null
+  assigned_at: string | null
+  created_at: string
+  delivery_status: string | null
+  delivery_channel: string | null
+}
+
+const DELIVERY_STATUS_PRIORITY: Record<string, number> = {
+  sent: 0,
+  retrying: 1,
+  queued: 2,
+  failed: 3,
+  failed_permanent: 4,
+}
+
+/**
+ * Paginated leads for a broker with best delivery status per lead.
+ */
+export async function fetchBrokerLeadsPaginated(
+  brokerId: string,
+  page = 1,
+  perPage = 20
+): Promise<{ leads: LeadWithDelivery[]; total: number }> {
+  const supabase = createAdminClient()
+  const offset = (page - 1) * perPage
+
+  // Fetch leads page
+  const { data: leadsData, error, count } = await supabase
+    .from('leads')
+    .select(
+      'id, first_name, last_name, vertical, credit_score, funding_amount, status, assigned_at, created_at',
+      { count: 'exact' }
+    )
+    .eq('assigned_broker_id', brokerId)
+    .order('assigned_at', { ascending: false })
+    .range(offset, offset + perPage - 1)
+
+  if (error || !leadsData) return { leads: [], total: 0 }
+
+  // Fetch delivery statuses for this page of leads
+  const leadIds = leadsData.map((l) => l.id)
+  const deliveryMap = new Map<string, { status: string; channel: string }>()
+
+  if (leadIds.length > 0) {
+    const { data: deliveries } = await supabase
+      .from('deliveries')
+      .select('lead_id, status, channel')
+      .in('lead_id', leadIds)
+
+    if (deliveries) {
+      for (const d of deliveries) {
+        const existing = deliveryMap.get(d.lead_id)
+        const existingPriority = existing
+          ? (DELIVERY_STATUS_PRIORITY[existing.status] ?? 99)
+          : 99
+        const newPriority = DELIVERY_STATUS_PRIORITY[d.status] ?? 99
+        if (newPriority < existingPriority) {
+          deliveryMap.set(d.lead_id, { status: d.status, channel: d.channel })
+        }
+      }
+    }
+  }
+
+  const leads: LeadWithDelivery[] = leadsData.map((lead) => {
+    const delivery = deliveryMap.get(lead.id)
+    return {
+      ...lead,
+      delivery_status: delivery?.status ?? null,
+      delivery_channel: delivery?.channel ?? null,
+    }
+  })
+
+  return { leads, total: count ?? 0 }
 }

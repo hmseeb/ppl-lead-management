@@ -452,6 +452,41 @@ export type Database = {
           },
         ]
       }
+      magic_links: {
+        Row: {
+          id: string
+          token: string
+          broker_id: string
+          expires_at: string
+          used: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          token: string
+          broker_id: string
+          expires_at: string
+          used?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          token?: string
+          broker_id?: string
+          expires_at?: string
+          used?: boolean
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "magic_links_broker_id_fkey"
+            columns: ["broker_id"]
+            isOneToOne: false
+            referencedRelation: "brokers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           bonus_mode: boolean

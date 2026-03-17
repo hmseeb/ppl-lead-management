@@ -56,7 +56,7 @@
 **Milestone Goal:** Add date range, broker, and vertical filters to the KPI dashboard with comparison mode, adaptive charts, and auto-reassignment of unassigned leads on order changes.
 
 - [x] **Phase 18: Dashboard Filters** - Date range, broker, and vertical filters wired into all dashboard queries with URL persistence (completed 2026-03-17)
-- [ ] **Phase 19: Comparison Mode** - Delta badges showing current vs previous period on KPI cards
+- [x] **Phase 19: Comparison Mode** - Delta badges showing current vs previous period on KPI cards (completed 2026-03-17)
 - [ ] **Phase 20: Chart Adaptation** - Lead volume chart responds to selected date filter with smart bucketing
 - [ ] **Phase 21: Auto-Reassignment** - Unassigned leads automatically re-routed when matching orders activate
 
@@ -130,7 +130,7 @@ Phases execute in numeric order: 18 → 19 → 20 → 21
 | 10-12 | v1.2 Hours | 4/4 | Complete | 2026-03-13 |
 | 13-17 | v2.0 Scoring | 9/9 | Complete | 2026-03-17 |
 | 18. Dashboard Filters | 2/2 | Complete    | 2026-03-17 | - |
-| 19. Comparison Mode | v2.1 Analytics | 0/1 | Not started | - |
+| 19. Comparison Mode | 1/1 | Complete   | 2026-03-17 | - |
 | 20. Chart Adaptation | v2.1 Analytics | 0/? | Not started | - |
 | 21. Auto-Reassignment | v2.1 Analytics | 0/? | Not started | - |
 

@@ -252,3 +252,77 @@ export async function fetchRecentActivity(filters?: DashboardFilters, limit = 20
   if (error) return []
   return data ?? []
 }
+
+/* ------------------------------------------------------------------ */
+/*  Revenue summary (admin)                                            */
+/* ------------------------------------------------------------------ */
+
+export type RevenueSummary = {
+  totalRevenueCents: number
+  byBroker: { brokerId: string; name: string; revenueCents: number }[]
+  byVertical: { vertical: string; revenueCents: number }[]
+}
+
+/**
+ * Revenue analytics for admin dashboard.
+ * Aggregates total_price_cents from all paid orders (excludes pending_payment).
+ */
+export async function fetchRevenueSummary(): Promise<RevenueSummary> {
+  const supabase = createAdminClient()
+
+  // Get all paid orders with broker + vertical data
+  const { data: orders, error } = await supabase
+    .from('orders')
+    .select('broker_id, verticals, total_price_cents, status')
+    .neq('status', 'pending_payment')
+
+  if (error || !orders) {
+    return { totalRevenueCents: 0, byBroker: [], byVertical: [] }
+  }
+
+  // Get broker names for display
+  const brokerIds = [...new Set(orders.map((o) => o.broker_id))]
+  const { data: brokers } = await supabase
+    .from('brokers')
+    .select('id, first_name, last_name')
+    .in('id', brokerIds)
+
+  const brokerNameMap = new Map<string, string>()
+  for (const b of brokers ?? []) {
+    brokerNameMap.set(b.id, `${b.first_name} ${b.last_name}`)
+  }
+
+  let totalRevenue = 0
+  const brokerRevenue = new Map<string, number>()
+  const verticalRevenue = new Map<string, number>()
+
+  for (const order of orders) {
+    const amount = order.total_price_cents ?? 0
+    if (amount <= 0) continue
+
+    totalRevenue += amount
+
+    // By broker
+    const prev = brokerRevenue.get(order.broker_id) ?? 0
+    brokerRevenue.set(order.broker_id, prev + amount)
+
+    // By vertical (use first vertical in array)
+    const vertical = order.verticals?.[0] ?? 'Unknown'
+    const prevV = verticalRevenue.get(vertical) ?? 0
+    verticalRevenue.set(vertical, prevV + amount)
+  }
+
+  const byBroker = [...brokerRevenue.entries()]
+    .map(([brokerId, revenueCents]) => ({
+      brokerId,
+      name: brokerNameMap.get(brokerId) ?? 'Unknown',
+      revenueCents,
+    }))
+    .sort((a, b) => b.revenueCents - a.revenueCents)
+
+  const byVertical = [...verticalRevenue.entries()]
+    .map(([vertical, revenueCents]) => ({ vertical, revenueCents }))
+    .sort((a, b) => b.revenueCents - a.revenueCents)
+
+  return { totalRevenueCents: totalRevenue, byBroker, byVertical }
+}

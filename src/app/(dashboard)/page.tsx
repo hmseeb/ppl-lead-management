@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
-import { fetchKpis, fetchRecentActivity, fetchLeadVolume, fetchDeliveryStats } from '@/lib/queries/dashboard'
+import { fetchKpis, fetchRecentActivity, fetchLeadVolume, fetchDeliveryStats, fetchRevenueSummary } from '@/lib/queries/dashboard'
 import { fetchBrokersForFilter } from '@/lib/queries/leads'
 import { getPreviousDateRange } from '@/lib/types/dashboard-filters'
 import { KpiCards } from '@/components/dashboard/kpi-cards'
@@ -9,6 +9,7 @@ import { DeliveryStatsCards } from '@/components/dashboard/delivery-stats-cards'
 import { LeadVolumeChart } from '@/components/dashboard/lead-volume-chart'
 import { ActivityFeed } from '@/components/dashboard/activity-feed'
 import { DashboardFilters } from '@/components/dashboard/dashboard-filters'
+import { RevenueSummarySection } from '@/components/admin/revenue-summary'
 import type { DashboardFilters as DashboardFiltersType } from '@/lib/types/dashboard-filters'
 
 export default async function DashboardPage({
@@ -29,12 +30,13 @@ export default async function DashboardPage({
 
   const isCompare = !!filters.compare
 
-  const [kpis, activity, volume, deliveryStats, brokers] = await Promise.all([
+  const [kpis, activity, volume, deliveryStats, brokers, revenue] = await Promise.all([
     fetchKpis(filters),
     fetchRecentActivity(filters),
     fetchLeadVolume(filters),
     fetchDeliveryStats(filters),
     fetchBrokersForFilter(),
+    fetchRevenueSummary(),
   ])
 
   let previousKpis = null
@@ -64,6 +66,7 @@ export default async function DashboardPage({
           <LeadVolumeChart data={volume.data} bucketType={volume.bucketType} totalDays={volume.totalDays} />
           <ActivityFeed activity={activity as Parameters<typeof ActivityFeed>[0]['activity']} />
         </div>
+        <RevenueSummarySection data={revenue} />
       </div>
     </NuqsAdapter>
   )

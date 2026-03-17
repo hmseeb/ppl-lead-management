@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { createCheckoutSession, lookupPrice } from '@/lib/actions/portal-order'
-import { PRICING_VERTICALS, CREDIT_TIERS } from '@/lib/schemas/pricing'
+import { PRICING_VERTICALS } from '@/lib/schemas/pricing'
 import { ShoppingCart, Loader2 } from 'lucide-react'
 
 export function OrderForm() {
@@ -88,20 +88,18 @@ export function OrderForm() {
             </select>
           </div>
 
-          {/* Credit Tier */}
+          {/* Credit Score Minimum */}
           <div className="space-y-2">
-            <Label htmlFor="credit_tier_min">Minimum Credit Tier</Label>
-            <select
+            <Label htmlFor="credit_tier_min">Minimum Credit Score</Label>
+            <Input
               id="credit_tier_min"
+              type="number"
+              min={500}
+              max={850}
+              placeholder="e.g. 600"
               value={creditTierMin}
               onChange={(e) => setCreditTierMin(e.target.value)}
-              className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
-            >
-              <option value="">Select credit tier...</option>
-              {CREDIT_TIERS.map((tier) => (
-                <option key={tier} value={tier}>{tier}+</option>
-              ))}
-            </select>
+            />
           </div>
 
           {/* Lead Count */}

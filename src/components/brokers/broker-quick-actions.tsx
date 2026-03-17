@@ -3,21 +3,24 @@
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { useState } from 'react'
-import { Loader2, Pause, Pencil, Play, Plus, Webhook } from 'lucide-react'
+import { Loader2, Mail, Pause, Pencil, Play, Plus, Webhook } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { pauseAllBrokerOrders, resumeAllBrokerOrders } from '@/lib/actions/brokers'
+import { inviteBrokerToPortal } from '@/lib/actions/magic-link'
 
 interface BrokerQuickActionsProps {
   brokerId: string
+  email: string
   activeOrdersCount: number
   pausedOrdersCount: number
   hasWebhook?: boolean
 }
 
-export function BrokerQuickActions({ brokerId, activeOrdersCount, pausedOrdersCount, hasWebhook }: BrokerQuickActionsProps) {
+export function BrokerQuickActions({ brokerId, email, activeOrdersCount, pausedOrdersCount, hasWebhook }: BrokerQuickActionsProps) {
   const router = useRouter()
   const [sendingWebhook, setSendingWebhook] = useState(false)
+  const [inviting, setInviting] = useState(false)
 
   async function handlePauseAll() {
     const result = await pauseAllBrokerOrders(brokerId)
@@ -60,6 +63,22 @@ export function BrokerQuickActions({ brokerId, activeOrdersCount, pausedOrdersCo
     }
   }
 
+  async function handleInvite() {
+    setInviting(true)
+    try {
+      const result = await inviteBrokerToPortal(brokerId)
+      if (result && 'error' in result && result.error) {
+        toast.error(typeof result.error === 'string' ? result.error : 'Failed to send invite')
+      } else {
+        toast.success(`Portal invite sent to ${email}`)
+      }
+    } catch {
+      toast.error('Failed to send portal invite')
+    } finally {
+      setInviting(false)
+    }
+  }
+
   return (
     <div className="flex gap-2">
       {hasWebhook && (
@@ -77,6 +96,20 @@ export function BrokerQuickActions({ brokerId, activeOrdersCount, pausedOrdersCo
           Test Webhook
         </Button>
       )}
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={handleInvite}
+        disabled={inviting}
+        title={`Send portal invite to ${email}`}
+      >
+        {inviting ? (
+          <Loader2 className="size-4 mr-1 animate-spin" />
+        ) : (
+          <Mail className="size-4 mr-1" />
+        )}
+        Invite to Portal
+      </Button>
       <Link href={`/brokers/${brokerId}/edit`}>
         <Button variant="outline" size="sm">
           <Pencil className="size-4 mr-1" /> Edit

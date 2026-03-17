@@ -76,40 +76,40 @@ Requirements for Broker Portal milestone. Each maps to roadmap phases.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | - | Pending |
-| AUTH-02 | - | Pending |
-| AUTH-03 | - | Pending |
-| AUTH-04 | - | Pending |
-| DASH-01 | - | Pending |
-| DASH-02 | - | Pending |
-| DASH-03 | - | Pending |
-| DASH-04 | - | Pending |
-| PRICE-01 | - | Pending |
-| PRICE-02 | - | Pending |
-| PRICE-03 | - | Pending |
-| ORDER-01 | - | Pending |
-| ORDER-02 | - | Pending |
-| ORDER-03 | - | Pending |
-| ORDER-04 | - | Pending |
-| ORDER-05 | - | Pending |
-| SELF-01 | - | Pending |
-| SELF-02 | - | Pending |
-| SELF-03 | - | Pending |
-| SELF-04 | - | Pending |
-| LEAD-01 | - | Pending |
-| LEAD-02 | - | Pending |
-| LEAD-03 | - | Pending |
-| BILL-01 | - | Pending |
-| BILL-02 | - | Pending |
-| BILL-03 | - | Pending |
-| ISO-01 | - | Pending |
-| ISO-02 | - | Pending |
-| ISO-03 | - | Pending |
+| AUTH-01 | Phase 22 | Pending |
+| AUTH-02 | Phase 22 | Pending |
+| AUTH-03 | Phase 22 | Pending |
+| AUTH-04 | Phase 22 | Pending |
+| DASH-01 | Phase 26 | Pending |
+| DASH-02 | Phase 26 | Pending |
+| DASH-03 | Phase 26 | Pending |
+| DASH-04 | Phase 26 | Pending |
+| PRICE-01 | Phase 24 | Pending |
+| PRICE-02 | Phase 24 | Pending |
+| PRICE-03 | Phase 24 | Pending |
+| ORDER-01 | Phase 25 | Pending |
+| ORDER-02 | Phase 25 | Pending |
+| ORDER-03 | Phase 25 | Pending |
+| ORDER-04 | Phase 25 | Pending |
+| ORDER-05 | Phase 25 | Pending |
+| SELF-01 | Phase 27 | Pending |
+| SELF-02 | Phase 27 | Pending |
+| SELF-03 | Phase 27 | Pending |
+| SELF-04 | Phase 27 | Pending |
+| LEAD-01 | Phase 28 | Pending |
+| LEAD-02 | Phase 28 | Pending |
+| LEAD-03 | Phase 28 | Pending |
+| BILL-01 | Phase 29 | Pending |
+| BILL-02 | Phase 29 | Pending |
+| BILL-03 | Phase 29 | Pending |
+| ISO-01 | Phase 23 | Pending |
+| ISO-02 | Phase 23 | Pending |
+| ISO-03 | Phase 23 | Pending |
 
 **Coverage:**
 - v3.0 requirements: 29 total
-- Mapped to phases: 0
-- Unmapped: 29 (roadmap pending)
+- Mapped to phases: 29
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-17*

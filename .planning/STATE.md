@@ -5,15 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** v3.0 Broker Portal
+**Current focus:** v3.0 Broker Portal - Phase 22 (Broker Auth)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Status: Defining requirements
-Last activity: 2026-03-17 — Milestone v3.0 started
+Phase: 22 of 29 (Broker Auth)
+Plan: 0 of 2 in current phase
+Status: Ready to plan
+Last activity: 2026-03-17 — v3.0 roadmap created (8 phases, 29 requirements)
 
-Progress: [██████████████████████████████] 100% (37 plans, 21 phases)
+Progress: [██████████████████████████████░░░░░░░░░░] 72% (37/51 plans)
 
 ## Performance Metrics
 
@@ -27,15 +28,22 @@ Progress: [███████████████████████
 ### Decisions
 
 All decisions logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- [v3.0 Roadmap]: Data isolation (Phase 23) placed immediately after auth, before any portal features. All portal queries will be RLS-protected from the start.
+- [v3.0 Roadmap]: Existing iron-session pattern extended for broker sessions (broker_id instead of admin flag).
+- [v3.0 Roadmap]: Stripe Checkout (redirect model) chosen over Stripe Elements (embedded). Simpler, less PCI scope.
 
 ### Pending Todos
 
-(Auto-reassign todo resolved in Phase 21)
+None.
 
 ### Blockers/Concerns
 
 - GHL webhook payload schema not formally documented. Raw jsonb stored alongside parsed fields.
 - GHL rate limit behavior under real load (100 req/10s) not empirically tested.
+- Stripe test mode keys needed before Phase 25 (Order Creation + Payment).
+- Magic link email delivery: need email sending service (Supabase Auth, Resend, or GHL).
 
 ### Quick Tasks Completed
 
@@ -48,5 +56,5 @@ All decisions logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-03-17
-Stopped at: v2.1 milestone completed and archived
+Stopped at: v3.0 roadmap created, ready to plan Phase 22
 Resume file: None

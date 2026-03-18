@@ -5,6 +5,7 @@ import {
   fetchBrokerRecentLeads,
   fetchBrokerSpendSummary,
   fetchBrokerDeliveryHealth,
+  fetchBrokerMonthlySpend,
 } from '@/lib/portal/queries'
 import {
   ActiveOrdersCard,
@@ -12,17 +13,19 @@ import {
   SpendSummaryCard,
   DeliveryHealthCard,
 } from '@/components/portal/dashboard-cards'
+import { SpendTrendChart } from '@/components/portal/spend-trend-chart'
 
 export default async function PortalHomePage() {
   const { brokerId } = await requireBrokerSession()
 
-  const [broker, activeOrders, recentLeads, spend, deliveryHealth] =
+  const [broker, activeOrders, recentLeads, spend, deliveryHealth, monthlySpend] =
     await Promise.all([
       getPortalBroker(brokerId),
       fetchBrokerActiveOrders(brokerId),
       fetchBrokerRecentLeads(brokerId, 20),
       fetchBrokerSpendSummary(brokerId),
       fetchBrokerDeliveryHealth(brokerId),
+      fetchBrokerMonthlySpend(brokerId),
     ])
 
   return (
@@ -44,6 +47,9 @@ export default async function PortalHomePage() {
         <SpendSummaryCard spend={spend} />
         <DeliveryHealthCard health={deliveryHealth} />
       </div>
+
+      {/* Spend Trend - full width */}
+      <SpendTrendChart data={monthlySpend} />
 
       {/* Recent Leads - full width */}
       <RecentLeadsCard leads={recentLeads} />

@@ -6,6 +6,28 @@ import { Badge } from '@/components/ui/badge'
 import { OrderStatusBadge, BonusBadge } from './order-status-badge'
 import { OrderActions } from './order-actions'
 
+function OrderProgress({ delivered, total, status }: { delivered: number; total: number; status: string }) {
+  const pct = total > 0 ? Math.round((delivered / total) * 100) : 0
+  const barColor =
+    status === 'completed' ? 'bg-muted-foreground/40'
+    : status === 'paused' ? 'bg-amber-500'
+    : 'bg-red-500'
+
+  return (
+    <div className="flex items-center gap-2">
+      <div className="relative h-2 w-full rounded-full bg-muted overflow-hidden">
+        <div
+          className={`absolute inset-y-0 left-0 rounded-full transition-all ${barColor}`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <span className="text-xs text-muted-foreground whitespace-nowrap">
+        {delivered}/{total}
+      </span>
+    </div>
+  )
+}
+
 type OrderWithBroker = {
   id: string
   broker_id: string
@@ -36,10 +58,8 @@ export function OrdersTable({ orders }: { orders: OrderWithBroker[] }) {
         <TableRow>
           <TableHead>Order ID</TableHead>
           <TableHead>Broker</TableHead>
-          <TableHead className="text-right">Total</TableHead>
           <TableHead className="text-right">Assigned</TableHead>
-          <TableHead className="text-right">Delivered</TableHead>
-          <TableHead className="text-right">Remaining</TableHead>
+          <TableHead className="w-40">Progress</TableHead>
           <TableHead>Verticals</TableHead>
           <TableHead className="text-right">Credit Min</TableHead>
           <TableHead>Priority</TableHead>
@@ -63,10 +83,14 @@ export function OrdersTable({ orders }: { orders: OrderWithBroker[] }) {
                   {broker.first_name} {broker.last_name}
                 </Link>
               </TableCell>
-              <TableCell className="text-right">{order.total_leads}</TableCell>
               <TableCell className="text-right">{order.leads?.[0]?.count ?? 0}</TableCell>
-              <TableCell className="text-right">{order.leads_delivered}</TableCell>
-              <TableCell className="text-right">{order.leads_remaining}</TableCell>
+              <TableCell>
+                <OrderProgress
+                  delivered={order.leads_delivered}
+                  total={order.total_leads}
+                  status={order.status}
+                />
+              </TableCell>
               <TableCell>
                 <div className="flex gap-1 flex-wrap">
                   {(order.verticals as string[]).map((v) => (

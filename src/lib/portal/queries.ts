@@ -361,6 +361,40 @@ export async function getPortalBrokerSettings(brokerId: string): Promise<BrokerS
 }
 
 /* ------------------------------------------------------------------ */
+/*  Lead delivery attempt history                                      */
+/* ------------------------------------------------------------------ */
+
+export type DeliveryAttempt = {
+  id: string
+  channel: string
+  status: string
+  error_message: string | null
+  retry_count: number
+  sent_at: string | null
+  created_at: string
+}
+
+/**
+ * All delivery attempts for a single lead, scoped to the broker.
+ * Ordered oldest-first so the timeline reads chronologically top-to-bottom.
+ */
+export async function fetchLeadDeliveryAttempts(
+  brokerId: string,
+  leadId: string
+): Promise<DeliveryAttempt[]> {
+  const supabase = createAdminClient()
+  const { data, error } = await supabase
+    .from('deliveries')
+    .select('id, channel, status, error_message, retry_count, sent_at, created_at')
+    .eq('broker_id', brokerId)
+    .eq('lead_id', leadId)
+    .order('created_at', { ascending: true })
+
+  if (error) return []
+  return (data ?? []) as DeliveryAttempt[]
+}
+
+/* ------------------------------------------------------------------ */
 /*  Paginated leads with delivery status                               */
 /* ------------------------------------------------------------------ */
 

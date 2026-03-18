@@ -4,7 +4,8 @@ import { getContact } from '@/lib/ghl/client'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
-  const phone = searchParams.get('phone')?.trim()
+  // + in query strings decodes as space, normalize it back before trimming
+  const phone = searchParams.get('phone')?.replace(/^\s/, '+').trim()
 
   if (!phone) {
     return NextResponse.json(

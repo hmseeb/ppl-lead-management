@@ -2,25 +2,22 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-17)
+See: .planning/PROJECT.md (updated 2026-03-18)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** v3.0 Broker Portal - Phase 22 (Broker Auth)
+**Current focus:** v3.1 Broker Portal Enhancements
 
 ## Current Position
 
-Phase: 22 of 29 (Broker Auth)
-Plan: 0 of 2 in current phase
-Status: Ready to plan
-Last activity: 2026-03-17 — v3.0 roadmap created (8 phases, 29 requirements)
-
-Progress: [██████████████████████████████░░░░░░░░░░] 72% (37/51 plans)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-18 — Milestone v3.1 started
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 37 (v1.0: 13, v1.1: 6, v1.2: 4, v2.0: 9, v2.1: 5)
-- Total execution time: ~2.5 hours
+- Total plans completed: 37+ (v1.0: 13, v1.1: 6, v1.2: 4, v2.0: 9, v2.1: 5, v3.0: built outside GSD)
 - Codebase: ~13,000 LOC TypeScript
 
 ## Accumulated Context
@@ -30,9 +27,11 @@ Progress: [███████████████████████
 All decisions logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- [v3.0 Roadmap]: Data isolation (Phase 23) placed immediately after auth, before any portal features. All portal queries will be RLS-protected from the start.
-- [v3.0 Roadmap]: Existing iron-session pattern extended for broker sessions (broker_id instead of admin flag).
-- [v3.0 Roadmap]: Stripe Checkout (redirect model) chosen over Stripe Elements (embedded). Simpler, less PCI scope.
+- [v3.1]: Broker reorder must go through Stripe payment (no free reorder for brokers, admin free reorder stays)
+- [v3.1]: All work isolated to portal directories (src/app/portal/, src/components/portal/, src/lib/actions/portal-*, src/lib/portal/)
+- [v3.1]: Admin dashboard unaffected, admin reorder action remains as-is
+- [v3.0]: Stripe Checkout (redirect model) chosen over Stripe Elements
+- [v3.0]: iron-session pattern extended for broker sessions
 
 ### Pending Todos
 
@@ -40,10 +39,7 @@ None.
 
 ### Blockers/Concerns
 
-- GHL webhook payload schema not formally documented. Raw jsonb stored alongside parsed fields.
-- GHL rate limit behavior under real load (100 req/10s) not empirically tested.
-- Stripe test mode keys needed before Phase 25 (Order Creation + Payment).
-- Magic link email delivery: need email sending service (Supabase Auth, Resend, or GHL).
+None.
 
 ### Quick Tasks Completed
 
@@ -55,6 +51,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-17
-Stopped at: v3.0 roadmap created, ready to plan Phase 22
+Last session: 2026-03-18
+Stopped at: v3.1 milestone started, defining requirements
 Resume file: None

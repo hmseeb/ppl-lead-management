@@ -80,3 +80,21 @@
 
 ---
 
+## v3.0 Broker Portal (Shipped: 2026-03-17)
+
+**Phases completed:** 8 phases (22-29)
+**Codebase:** ~13,000 LOC TypeScript
+
+**Key accomplishments:**
+- Magic link auth for brokers (passwordless email login via Supabase edge function)
+- Broker dashboard with 4 KPI cards (active orders, recent leads, spend summary, delivery health)
+- Order creation with Stripe Checkout (tiered pricing by vertical x credit tier)
+- Admin pricing table management with per-broker overrides
+- Broker self-service: pause/resume orders, delivery preferences, contact hours, timezone
+- Paginated lead list with delivery status badges
+- Billing page with Stripe receipt links
+- Broker settings: webhook URL, email/SMS delivery toggles, weekend pause
+- Data isolation via server-side broker_id filtering
+
+---
+

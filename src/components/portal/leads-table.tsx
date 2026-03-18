@@ -12,10 +12,11 @@ import {
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { ChevronDown, ChevronLeft, ChevronRight, Users } from 'lucide-react'
+import { ChevronDown, ChevronLeft, ChevronRight, Download, Users } from 'lucide-react'
 import { format } from 'date-fns'
 import type { LeadWithDelivery, DeliveryAttempt } from '@/lib/portal/queries'
 import { getLeadDeliveries } from '@/lib/actions/portal-deliveries'
+import { exportLeadsCsv } from '@/lib/actions/portal-export'
 
 /* ------------------------------------------------------------------ */
 /*  Delivery status badge (table-level, for the main row)              */
@@ -162,6 +163,7 @@ export function LeadsTable({
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [deliveryCache, setDeliveryCache] = useState<Record<string, DeliveryAttempt[]>>({})
   const [loading, setLoading] = useState(false)
+  const [exporting, setExporting] = useState(false)
 
   const totalPages = Math.max(1, Math.ceil(total / perPage))
   const hasPrev = page > 1
@@ -170,6 +172,27 @@ export function LeadsTable({
   const hasActiveFilters = filterParams
     ? Object.entries(filterParams).some(([k, v]) => k !== 'page' && !!v)
     : false
+
+  async function handleExport() {
+    setExporting(true)
+    try {
+      const filters: { search?: string; vertical?: string; deliveryStatus?: string } = {}
+      if (filterParams?.search) filters.search = filterParams.search
+      if (filterParams?.vertical) filters.vertical = filterParams.vertical
+      if (filterParams?.delivery_status) filters.deliveryStatus = filterParams.delivery_status
+
+      const csv = await exportLeadsCsv(filters)
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `leads-export-${new Date().toISOString().slice(0, 10)}.csv`
+      a.click()
+      URL.revokeObjectURL(url)
+    } finally {
+      setExporting(false)
+    }
+  }
 
   function paginationUrl(p: number) {
     const url = new URLSearchParams()
@@ -216,6 +239,16 @@ export function LeadsTable({
           <Badge variant="secondary" className="text-xs">
             {total}
           </Badge>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 text-xs ml-auto"
+            onClick={handleExport}
+            disabled={exporting || leads.length === 0}
+          >
+            <Download className="size-3 mr-1" />
+            {exporting ? 'Exporting...' : 'Export CSV'}
+          </Button>
         </div>
       </div>
 

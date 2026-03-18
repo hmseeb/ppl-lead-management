@@ -201,10 +201,10 @@ Plans:
   2. Broker can select a vertical from a dropdown to filter leads by that vertical
   3. Broker can select a delivery status from a dropdown to filter leads by delivery outcome
   4. Applying any combination of search and filters resets pagination to page 1 and works correctly with the existing paginator
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 31-01: Lead search and filter controls (name search, vertical dropdown, status dropdown, pagination integration)
+- [ ] 31-01-PLAN.md -- Search input, vertical/delivery status dropdowns, pagination integration with filter persistence
 
 ### Phase 32: Delivery Transparency
 **Goal**: Brokers can see the full delivery history for any lead, including every attempt with channel, status, and timing

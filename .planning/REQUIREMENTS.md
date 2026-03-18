@@ -78,9 +78,9 @@ Requirements for Broker Portal Enhancements milestone. Each maps to roadmap phas
 
 ### Delivery Transparency
 
-- [ ] **DLVR-01**: Broker can view delivery attempt history for each lead
-- [ ] **DLVR-02**: Each attempt shows channel (webhook/email/SMS), status, and timestamp
-- [ ] **DLVR-03**: Failed attempts show error reason and retry info
+- [x] **DLVR-01**: Broker can view delivery attempt history for each lead
+- [x] **DLVR-02**: Each attempt shows channel (webhook/email/SMS), status, and timestamp
+- [x] **DLVR-03**: Failed attempts show error reason and retry info
 
 ### Export & Analytics
 
@@ -110,9 +110,9 @@ Requirements for Broker Portal Enhancements milestone. Each maps to roadmap phas
 | LSRCH-02 | Phase 31 | Complete |
 | LSRCH-03 | Phase 31 | Complete |
 | LSRCH-04 | Phase 31 | Complete |
-| DLVR-01 | Phase 32 | Pending |
-| DLVR-02 | Phase 32 | Pending |
-| DLVR-03 | Phase 32 | Pending |
+| DLVR-01 | Phase 32 | Complete |
+| DLVR-02 | Phase 32 | Complete |
+| DLVR-03 | Phase 32 | Complete |
 | EXPT-01 | Phase 33 | Pending |
 | EXPT-02 | Phase 33 | Pending |
 

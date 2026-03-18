@@ -7,6 +7,9 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { createCheckoutSession, lookupPrice } from '@/lib/actions/portal-order'
 import { PRICING_VERTICALS } from '@/lib/schemas/pricing'
+import {
+  Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
+} from '@/components/ui/select'
 import { ShoppingCart, Loader2 } from 'lucide-react'
 
 type OrderFormProps = {
@@ -88,17 +91,17 @@ export function OrderForm(props: OrderFormProps) {
           {/* Vertical */}
           <div className="space-y-2">
             <Label htmlFor="vertical">Vertical</Label>
-            <select
-              id="vertical"
-              value={vertical}
-              onChange={(e) => setVertical(e.target.value)}
-              className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
-            >
-              <option value="">Select vertical...</option>
-              {PRICING_VERTICALS.map((v) => (
-                <option key={v} value={v}>{v}</option>
-              ))}
-            </select>
+            <Select value={vertical} onValueChange={(v) => setVertical(v ?? '')}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select vertical..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">Select vertical...</SelectItem>
+                {PRICING_VERTICALS.map((v) => (
+                  <SelectItem key={v} value={v}>{v}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Credit Score Minimum */}

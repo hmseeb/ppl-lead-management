@@ -19,9 +19,9 @@ import Link from 'next/link'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-
-const selectClass =
-  'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring'
+import {
+  Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
+} from '@/components/ui/select'
 
 interface BrokerFormProps {
   mode?: 'create' | 'edit'
@@ -202,26 +202,48 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <Label htmlFor="primary_vertical">Primary Vertical (optional)</Label>
-            <select id="primary_vertical" {...register('primary_vertical')} className={selectClass}>
-              <option value="">Select...</option>
-              {verticalOptions.map((v) => (
-                <option key={v} value={v}>{v}</option>
-              ))}
-            </select>
+            <Label>Primary Vertical (optional)</Label>
+            <Controller
+              control={control}
+              name="primary_vertical"
+              render={({ field }) => (
+                <Select value={field.value ?? ''} onValueChange={(v) => field.onChange(v ?? '')}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Select...</SelectItem>
+                    {verticalOptions.map((v) => (
+                      <SelectItem key={v} value={v}>{v}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
             {errors.primary_vertical && (
               <p className="text-sm text-destructive">{errors.primary_vertical.message}</p>
             )}
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="secondary_vertical">Secondary Vertical (optional)</Label>
-            <select id="secondary_vertical" {...register('secondary_vertical')} className={selectClass}>
-              <option value="">Select...</option>
-              {verticalOptions.map((v) => (
-                <option key={v} value={v}>{v}</option>
-              ))}
-            </select>
+            <Label>Secondary Vertical (optional)</Label>
+            <Controller
+              control={control}
+              name="secondary_vertical"
+              render={({ field }) => (
+                <Select value={field.value ?? ''} onValueChange={(v) => field.onChange(v ?? '')}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Select...</SelectItem>
+                    {verticalOptions.map((v) => (
+                      <SelectItem key={v} value={v}>{v}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
             {errors.secondary_vertical && (
               <p className="text-sm text-destructive">{errors.secondary_vertical.message}</p>
             )}
@@ -350,13 +372,24 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
 
         {/* Timezone */}
         <div className="space-y-1.5">
-          <Label htmlFor="timezone">Timezone</Label>
-          <select id="timezone" {...register('timezone')} className={selectClass}>
-            <option value="">Default (America/Los_Angeles)</option>
-            {TIMEZONE_OPTIONS.map((tz) => (
-              <option key={tz} value={tz}>{tz.replace('_', ' ')}</option>
-            ))}
-          </select>
+          <Label>Timezone</Label>
+          <Controller
+            control={control}
+            name="timezone"
+            render={({ field }) => (
+              <Select value={field.value ?? ''} onValueChange={(v) => field.onChange(v ?? '')}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Default (America/Los_Angeles)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Default (America/Los_Angeles)</SelectItem>
+                  {TIMEZONE_OPTIONS.map((tz) => (
+                    <SelectItem key={tz} value={tz}>{tz.replace('_', ' ')}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
           {errors.timezone && (
             <p className="text-sm text-destructive">{errors.timezone.message}</p>
           )}
@@ -364,14 +397,25 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
 
         {/* Contact Hours */}
         <div className="space-y-1.5">
-          <Label htmlFor="contact_hours">Contact Hours</Label>
-          <select id="contact_hours" {...register('contact_hours')} className={selectClass}>
-            {CONTACT_HOURS_OPTIONS.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt === 'anytime' ? 'Anytime' : opt === 'business_hours' ? 'Business Hours (9-5)' : 'Custom'}
-              </option>
-            ))}
-          </select>
+          <Label>Contact Hours</Label>
+          <Controller
+            control={control}
+            name="contact_hours"
+            render={({ field }) => (
+              <Select value={field.value ?? 'anytime'} onValueChange={(v) => v && field.onChange(v)}>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {CONTACT_HOURS_OPTIONS.map((opt) => (
+                    <SelectItem key={opt} value={opt}>
+                      {opt === 'anytime' ? 'Anytime' : opt === 'business_hours' ? 'Business Hours (9-5)' : 'Custom'}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
           {errors.contact_hours && (
             <p className="text-sm text-destructive">{errors.contact_hours.message}</p>
           )}
@@ -422,14 +466,25 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
 
         {/* Assignment Status */}
         <div className="space-y-1.5">
-          <Label htmlFor="assignment_status">Assignment Status</Label>
-          <select id="assignment_status" {...register('assignment_status')} className={selectClass}>
-            {ASSIGNMENT_STATUS_OPTIONS.map((opt) => (
-              <option key={opt} value={opt} className="capitalize">
-                {opt.charAt(0).toUpperCase() + opt.slice(1)}
-              </option>
-            ))}
-          </select>
+          <Label>Assignment Status</Label>
+          <Controller
+            control={control}
+            name="assignment_status"
+            render={({ field }) => (
+              <Select value={field.value ?? 'active'} onValueChange={(v) => v && field.onChange(v)}>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {ASSIGNMENT_STATUS_OPTIONS.map((opt) => (
+                    <SelectItem key={opt} value={opt}>
+                      {opt.charAt(0).toUpperCase() + opt.slice(1)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
           {errors.assignment_status && (
             <p className="text-sm text-destructive">{errors.assignment_status.message}</p>
           )}

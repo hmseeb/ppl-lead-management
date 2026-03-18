@@ -6,6 +6,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
+import {
+  Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
+} from '@/components/ui/select'
 import { Settings, Loader2, CheckCircle, Webhook, Mail, Phone, Clock, Globe } from 'lucide-react'
 import { updateBrokerSettings } from '@/lib/actions/portal-self-service'
 import {
@@ -15,8 +18,6 @@ import {
 } from '@/lib/schemas/broker'
 import type { BrokerSettings } from '@/lib/portal/queries'
 
-const selectClassName =
-  'flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30'
 
 function deliveryMethodLabel(method: string) {
   switch (method) {
@@ -230,32 +231,32 @@ export function SettingsForm({ settings }: { settings: BrokerSettings | null }) 
               <Globe className="size-3 inline mr-1" />
               Timezone
             </Label>
-            <select
-              id="timezone"
-              value={timezone}
-              onChange={(e) => setTimezone(e.target.value)}
-              className={selectClassName}
-            >
-              <option value="">Select timezone...</option>
-              {TIMEZONE_OPTIONS.map((tz) => (
-                <option key={tz} value={tz}>{timezoneLabel(tz)}</option>
-              ))}
-            </select>
+            <Select value={timezone} onValueChange={(v) => setTimezone(v ?? '')}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select timezone..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">Select timezone...</SelectItem>
+                {TIMEZONE_OPTIONS.map((tz) => (
+                  <SelectItem key={tz} value={tz}>{timezoneLabel(tz)}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Contact Hours */}
           <div className="space-y-2">
             <Label htmlFor="contact_hours">Contact Hours</Label>
-            <select
-              id="contact_hours"
-              value={contactHours}
-              onChange={(e) => setContactHours(e.target.value)}
-              className={selectClassName}
-            >
-              {CONTACT_HOURS_OPTIONS.map((h) => (
-                <option key={h} value={h}>{contactHoursLabel(h)}</option>
-              ))}
-            </select>
+            <Select value={contactHours} onValueChange={(v) => v && setContactHours(v)}>
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {CONTACT_HOURS_OPTIONS.map((h) => (
+                  <SelectItem key={h} value={h}>{contactHoursLabel(h)}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Custom Hours */}

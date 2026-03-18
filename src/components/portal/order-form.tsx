@@ -9,10 +9,16 @@ import { createCheckoutSession, lookupPrice } from '@/lib/actions/portal-order'
 import { PRICING_VERTICALS } from '@/lib/schemas/pricing'
 import { ShoppingCart, Loader2 } from 'lucide-react'
 
-export function OrderForm() {
-  const [vertical, setVertical] = useState('')
-  const [creditTierMin, setCreditTierMin] = useState('')
-  const [leadCount, setLeadCount] = useState('')
+type OrderFormProps = {
+  defaultVertical?: string
+  defaultCreditTier?: string
+  defaultLeadCount?: string
+}
+
+export function OrderForm(props: OrderFormProps) {
+  const [vertical, setVertical] = useState(props.defaultVertical || '')
+  const [creditTierMin, setCreditTierMin] = useState(props.defaultCreditTier || '')
+  const [leadCount, setLeadCount] = useState(props.defaultLeadCount || '')
   const [priceCents, setPriceCents] = useState<number | null>(null)
   const [priceLoading, setPriceLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -65,13 +71,16 @@ export function OrderForm() {
     })
   }
 
+  const isReorder = !!(props.defaultVertical || props.defaultCreditTier || props.defaultLeadCount)
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>New Lead Order</CardTitle>
+        <CardTitle>{isReorder ? 'Reorder Leads' : 'New Lead Order'}</CardTitle>
         <CardDescription>
-          Select a vertical, credit tier, and number of leads.
-          You will be redirected to Stripe to complete payment.
+          {isReorder
+            ? 'Reordering with your previous settings. Adjust if needed, then proceed to payment.'
+            : 'Select a vertical, credit tier, and number of leads. You will be redirected to Stripe to complete payment.'}
         </CardDescription>
       </CardHeader>
       <CardContent>

@@ -4,7 +4,7 @@ import { useTransition } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Package, Pause, Play, Loader2, Plus } from 'lucide-react'
+import { Package, Pause, Play, Loader2, Plus, RefreshCw } from 'lucide-react'
 import { format } from 'date-fns'
 import { brokerPauseOrder, brokerResumeOrder } from '@/lib/actions/portal-self-service'
 import Link from 'next/link'
@@ -115,6 +115,15 @@ function OrderRow({ order }: { order: Order }) {
                 </>
               )}
             </Button>
+          )}
+          {order.status === 'completed' && (
+            <Link
+              href={`/portal/orders/new?reorder_vertical=${encodeURIComponent(order.verticals[0] || '')}&reorder_credit=${order.credit_score_min || ''}&reorder_count=${order.total_leads}`}
+            >
+              <Button variant="outline" size="sm" className="h-7 text-xs">
+                <RefreshCw className="size-3 mr-1" /> Reorder
+              </Button>
+            </Link>
           )}
         </div>
       </div>

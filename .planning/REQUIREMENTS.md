@@ -102,24 +102,24 @@ Requirements for Broker Portal Enhancements milestone. Each maps to roadmap phas
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| REORD-01 | TBD | Pending |
-| REORD-02 | TBD | Pending |
-| REORD-03 | TBD | Pending |
-| REORD-04 | TBD | Pending |
-| LSRCH-01 | TBD | Pending |
-| LSRCH-02 | TBD | Pending |
-| LSRCH-03 | TBD | Pending |
-| LSRCH-04 | TBD | Pending |
-| DLVR-01 | TBD | Pending |
-| DLVR-02 | TBD | Pending |
-| DLVR-03 | TBD | Pending |
-| EXPT-01 | TBD | Pending |
-| EXPT-02 | TBD | Pending |
+| REORD-01 | Phase 30 | Pending |
+| REORD-02 | Phase 30 | Pending |
+| REORD-03 | Phase 30 | Pending |
+| REORD-04 | Phase 30 | Pending |
+| LSRCH-01 | Phase 31 | Pending |
+| LSRCH-02 | Phase 31 | Pending |
+| LSRCH-03 | Phase 31 | Pending |
+| LSRCH-04 | Phase 31 | Pending |
+| DLVR-01 | Phase 32 | Pending |
+| DLVR-02 | Phase 32 | Pending |
+| DLVR-03 | Phase 32 | Pending |
+| EXPT-01 | Phase 33 | Pending |
+| EXPT-02 | Phase 33 | Pending |
 
 **Coverage:**
 - v3.1 requirements: 13 total
-- Mapped to phases: 0
-- Unmapped: 13
+- Mapped to phases: 13
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-18*

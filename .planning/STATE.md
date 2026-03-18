@@ -5,19 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-03-18)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** v3.1 Broker Portal Enhancements
+**Current focus:** v3.1 Broker Portal Enhancements - Phase 30 (Broker Reorder)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-03-18 — Milestone v3.1 started
+Phase: 30 of 33 (Broker Reorder)
+Plan: 0 of 1 in current phase
+Status: Ready to plan
+Last activity: 2026-03-18 — Roadmap created for v3.1
+
+Progress: [####################..........] 0/5 plans (v3.1)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 37+ (v1.0: 13, v1.1: 6, v1.2: 4, v2.0: 9, v2.1: 5, v3.0: built outside GSD)
+- Total plans completed: 56 (v1.0: 13, v1.1: 6, v1.2: 4, v2.0: 9, v2.1: 5, v3.0: 14, plus 5 pending in v3.1)
 - Codebase: ~13,000 LOC TypeScript
 
 ## Accumulated Context
@@ -52,5 +54,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-18
-Stopped at: v3.1 milestone started, defining requirements
+Stopped at: v3.1 roadmap created, ready to plan Phase 30
 Resume file: None

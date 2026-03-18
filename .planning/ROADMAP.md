@@ -229,7 +229,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 33-01-PLAN.md -- CSV export (server action to generate CSV from filtered leads, download trigger on leads page)
+- [x] 33-01-PLAN.md -- CSV export (server action to generate CSV from filtered leads, download trigger on leads page)
 - [ ] 33-02-PLAN.md -- Spend trend chart (monthly aggregation query, recharts bar chart on portal dashboard)
 
 ## Progress
@@ -248,6 +248,6 @@ Phases execute in numeric order: 30 -> 31 -> 32 -> 33
 | 30. Broker Reorder | 1/1 | Complete    | 2026-03-18 | - |
 | 31. Lead Search & Filters | 1/1 | Complete    | 2026-03-18 | - |
 | 32. Delivery Transparency | 1/1 | Complete    | 2026-03-18 | - |
-| 33. Export & Analytics | v3.1 Enhancements | 0/2 | Not started | - |
+| 33. Export & Analytics | v3.1 Enhancements | 1/2 | In progress | - |
 
 **Total: 33 phases, 60 plans across 7 milestones**

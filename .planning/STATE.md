@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-03-18)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** v3.1 Broker Portal Enhancements - Phase 32 (Delivery Transparency)
+**Current focus:** v3.1 Broker Portal Enhancements - Phase 33 complete (Export & Analytics)
 
 ## Current Position
 
-Phase: 32 of 33 (Delivery Transparency)
-Plan: 1 of 1 in current phase
-Status: Phase 32 complete
-Last activity: 2026-03-18 — Completed 32-01-PLAN.md
+Phase: 33 of 33 (Export & Analytics)
+Plan: 2 of 2 in current phase
+Status: Phase 33 complete
+Last activity: 2026-03-18 — Completed 33-02-PLAN.md
 
-Progress: [##########################....] 3/5 plans (v3.1)
+Progress: [##############################] 5/5 plans (v3.1)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 56 (v1.0: 13, v1.1: 6, v1.2: 4, v2.0: 9, v2.1: 5, v3.0: 14, plus 5 pending in v3.1)
+- Total plans completed: 57 (v1.0: 13, v1.1: 6, v1.2: 4, v2.0: 9, v2.1: 5, v3.0: 14, v3.1: 5 + 1 pending from 33-01)
 - Codebase: ~13,000 LOC TypeScript
 
 ## Accumulated Context
@@ -39,6 +39,8 @@ Recent decisions affecting current work:
 - [Phase 31]: Used _all sentinel value for base-ui Select "All" options (consistent with admin pattern)
 - [Phase 32]: Single-expansion mode for lead rows (one at a time) with client-side delivery cache
 - [Phase 32]: Server action pattern for on-demand delivery data loading with session auth guard
+- [Phase 33]: Hand-rolled CSV export (no library) with proper escaping for 6 columns
+- [Phase 33]: Blob download via temp anchor element pattern for client-side file download
 
 ### Pending Todos
 
@@ -56,9 +58,10 @@ None.
 | 2 | Make KPI cards clickable with inline expandable preview tables | 2026-03-13 | 7ae360a | [2-make-kpi-cards-clickable-with-inline-exp](./quick/2-make-kpi-cards-clickable-with-inline-exp/) |
 | 3 | Add search and filters to brokers, orders, unassigned, activity pages | 2026-03-13 | 2b92f68 | [3-add-search-and-filters-to-brokers-orders](./quick/3-add-search-and-filters-to-brokers-orders/) |
 | Phase 32 P01 | 2min | 2 tasks | 3 files |
+| Phase 33-01 P01 | 2min | 2 tasks | 2 files |
 
 ## Session Continuity
 
 Last session: 2026-03-18
-Stopped at: Completed 32-01-PLAN.md
+Stopped at: Completed 33-01-PLAN.md
 Resume file: None

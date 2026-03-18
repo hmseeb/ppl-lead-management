@@ -534,3 +534,68 @@ export async function fetchBrokerLeadsPaginated(
 
   return { leads, total: count ?? 0 }
 }
+
+/* ------------------------------------------------------------------ */
+/*  Monthly spend trend                                                */
+/* ------------------------------------------------------------------ */
+
+export type MonthlySpend = {
+  month: string    // "YYYY-MM" format
+  label: string    // "Jan '25", "Feb '25", etc. for chart display
+  totalCents: number
+}
+
+/**
+ * Monthly spend aggregation for the last N months.
+ * Returns one entry per month (zero-filled for months with no orders).
+ * Sorted chronologically, oldest first.
+ */
+export async function fetchBrokerMonthlySpend(
+  brokerId: string,
+  months = 12
+): Promise<MonthlySpend[]> {
+  const supabase = createAdminClient()
+
+  // Calculate cutoff date
+  const now = new Date()
+  const cutoff = new Date(now.getFullYear(), now.getMonth() - months + 1, 1)
+
+  const { data, error } = await supabase
+    .from('orders')
+    .select('total_price_cents, created_at')
+    .eq('broker_id', brokerId)
+    .not('total_price_cents', 'is', null)
+    .gte('created_at', cutoff.toISOString())
+
+  // Group by month in JS
+  const monthMap = new Map<string, number>()
+  if (!error && data) {
+    for (const order of data) {
+      const d = new Date(order.created_at)
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+      monthMap.set(key, (monthMap.get(key) ?? 0) + (order.total_price_cents ?? 0))
+    }
+  }
+
+  // Generate full month range with zero-fill
+  const results: MonthlySpend[] = []
+  const cursor = new Date(cutoff.getFullYear(), cutoff.getMonth(), 1)
+  const end = new Date(now.getFullYear(), now.getMonth(), 1)
+
+  while (cursor <= end) {
+    const y = cursor.getFullYear()
+    const m = cursor.getMonth()
+    const key = `${y}-${String(m + 1).padStart(2, '0')}`
+    const shortLabel = `${new Date(y, m).toLocaleString('en-US', { month: 'short' })} '${String(y).slice(2)}`
+
+    results.push({
+      month: key,
+      label: shortLabel,
+      totalCents: monthMap.get(key) ?? 0,
+    })
+
+    cursor.setMonth(cursor.getMonth() + 1)
+  }
+
+  return results
+}

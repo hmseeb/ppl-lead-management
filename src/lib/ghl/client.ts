@@ -107,6 +107,66 @@ function buildSmsBody(lead: LeadPayload): string {
   return parts.join('\n')
 }
 
+export interface GhlContact {
+  id: string
+  firstName?: string
+  lastName?: string
+  email?: string
+  phone?: string
+  companyName?: string
+  tags?: string[]
+}
+
+export interface GhlContactResult {
+  success: boolean
+  contact?: GhlContact
+  error?: string
+  statusCode?: number
+}
+
+export async function getContact(contactId: string): Promise<GhlContactResult> {
+  if (!contactId) {
+    return { success: false, error: 'Missing GHL Contact ID', statusCode: 0 }
+  }
+
+  try {
+    const response = await fetch(`${GHL_BASE_URL}/contacts/${contactId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${getApiToken()}`,
+        'Version': GHL_API_VERSION,
+      },
+      signal: AbortSignal.timeout(15_000),
+    })
+
+    if (!response.ok) {
+      const body = await response.text().catch(() => '')
+      const err = parseGhlError(response.status, body)
+      return { success: false, error: err.error, statusCode: err.statusCode }
+    }
+
+    const data = await response.json()
+    const c = data.contact ?? data
+    return {
+      success: true,
+      contact: {
+        id: c.id,
+        firstName: c.firstName,
+        lastName: c.lastName,
+        email: c.email,
+        phone: c.phone,
+        companyName: c.companyName,
+        tags: c.tags,
+      },
+    }
+  } catch (err) {
+    if (err instanceof Error && err.name === 'TimeoutError') {
+      return { success: false, error: 'GHL API request timed out (15s)', statusCode: 0 }
+    }
+    return { success: false, error: err instanceof Error ? err.message : 'unknown_error', statusCode: 0 }
+  }
+}
+
 export async function sendEmail(
   contactId: string,
   lead: LeadPayload,

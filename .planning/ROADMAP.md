@@ -82,7 +82,7 @@
 **Milestone Goal:** Enhance the broker portal with reorder flow (paid via Stripe), lead search/filters, delivery transparency, and export/analytics. All work isolated to portal directories. Zero impact on admin dashboard.
 
 - [x] **Phase 30: Broker Reorder** - Reorder completed orders with pre-filled Stripe Checkout payment (completed 2026-03-18)
-- [ ] **Phase 31: Lead Search & Filters** - Name search, vertical/delivery status filters on broker leads page
+- [x] **Phase 31: Lead Search & Filters** - Name search, vertical/delivery status filters on broker leads page (completed 2026-03-18)
 - [ ] **Phase 32: Delivery Transparency** - Per-lead delivery attempt history with channel, status, and timestamps
 - [ ] **Phase 33: Export & Analytics** - CSV export for leads, monthly spend trend chart on dashboard
 
@@ -246,7 +246,7 @@ Phases execute in numeric order: 30 -> 31 -> 32 -> 33
 | 18-21 | v2.1 Analytics | 5/5 | Complete | 2026-03-17 |
 | 22-29 | v3.0 Portal | 14/14 | Complete | 2026-03-17 |
 | 30. Broker Reorder | 1/1 | Complete    | 2026-03-18 | - |
-| 31. Lead Search & Filters | v3.1 Enhancements | 0/1 | Not started | - |
+| 31. Lead Search & Filters | 1/1 | Complete   | 2026-03-18 | - |
 | 32. Delivery Transparency | v3.1 Enhancements | 0/1 | Not started | - |
 | 33. Export & Analytics | v3.1 Enhancements | 0/2 | Not started | - |
 

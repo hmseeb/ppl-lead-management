@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-18)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** v3.1 Broker Portal Enhancements - Phase 30 (Broker Reorder)
+**Current focus:** v3.1 Broker Portal Enhancements - Phase 31 (Lead Search Filters)
 
 ## Current Position
 
-Phase: 30 of 33 (Broker Reorder)
+Phase: 31 of 33 (Lead Search Filters)
 Plan: 1 of 1 in current phase
-Status: Phase 30 complete
-Last activity: 2026-03-18 — Completed 30-01-PLAN.md
+Status: Phase 31 complete
+Last activity: 2026-03-18 — Completed 31-01-PLAN.md
 
-Progress: [######################........] 1/5 plans (v3.1)
+Progress: [########################......] 2/5 plans (v3.1)
 
 ## Performance Metrics
 
@@ -35,6 +35,8 @@ Recent decisions affecting current work:
 - [v3.0]: Stripe Checkout (redirect model) chosen over Stripe Elements
 - [v3.0]: iron-session pattern extended for broker sessions
 - [Phase 30]: Used URL query params for reorder pre-fill (Link navigation, no server action)
+- [Phase 31]: Delivery status filter pre-queries deliveries table for correct pagination counts
+- [Phase 31]: Used _all sentinel value for base-ui Select "All" options (consistent with admin pattern)
 
 ### Pending Todos
 
@@ -55,5 +57,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-18
-Stopped at: Completed 30-01-PLAN.md
+Stopped at: Completed 31-01-PLAN.md
 Resume file: None

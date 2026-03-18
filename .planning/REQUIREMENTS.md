@@ -71,10 +71,10 @@ Requirements for Broker Portal Enhancements milestone. Each maps to roadmap phas
 
 ### Lead Search & Filters
 
-- [ ] **LSRCH-01**: Broker can search their leads by name
-- [ ] **LSRCH-02**: Broker can filter leads by vertical
-- [ ] **LSRCH-03**: Broker can filter leads by delivery status
-- [ ] **LSRCH-04**: Filters work alongside existing pagination
+- [x] **LSRCH-01**: Broker can search their leads by name
+- [x] **LSRCH-02**: Broker can filter leads by vertical
+- [x] **LSRCH-03**: Broker can filter leads by delivery status
+- [x] **LSRCH-04**: Filters work alongside existing pagination
 
 ### Delivery Transparency
 
@@ -106,10 +106,10 @@ Requirements for Broker Portal Enhancements milestone. Each maps to roadmap phas
 | REORD-02 | Phase 30 | Complete |
 | REORD-03 | Phase 30 | Complete |
 | REORD-04 | Phase 30 | Complete |
-| LSRCH-01 | Phase 31 | Pending |
-| LSRCH-02 | Phase 31 | Pending |
-| LSRCH-03 | Phase 31 | Pending |
-| LSRCH-04 | Phase 31 | Pending |
+| LSRCH-01 | Phase 31 | Complete |
+| LSRCH-02 | Phase 31 | Complete |
+| LSRCH-03 | Phase 31 | Complete |
+| LSRCH-04 | Phase 31 | Complete |
 | DLVR-01 | Phase 32 | Pending |
 | DLVR-02 | Phase 32 | Pending |
 | DLVR-03 | Phase 32 | Pending |

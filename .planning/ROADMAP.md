@@ -246,7 +246,7 @@ Phases execute in numeric order: 30 -> 31 -> 32 -> 33
 | 18-21 | v2.1 Analytics | 5/5 | Complete | 2026-03-17 |
 | 22-29 | v3.0 Portal | 14/14 | Complete | 2026-03-17 |
 | 30. Broker Reorder | 1/1 | Complete    | 2026-03-18 | - |
-| 31. Lead Search & Filters | 1/1 | Complete   | 2026-03-18 | - |
+| 31. Lead Search & Filters | 1/1 | Complete    | 2026-03-18 | - |
 | 32. Delivery Transparency | v3.1 Enhancements | 0/1 | Not started | - |
 | 33. Export & Analytics | v3.1 Enhancements | 0/2 | Not started | - |
 

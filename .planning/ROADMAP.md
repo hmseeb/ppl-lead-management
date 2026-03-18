@@ -217,7 +217,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 32-01-PLAN.md -- Expandable lead rows with delivery attempt timeline (channel/status/error/retry details)
+- [x] 32-01-PLAN.md -- Expandable lead rows with delivery attempt timeline (channel/status/error/retry details)
 
 ### Phase 33: Export & Analytics
 **Goal**: Brokers can export their lead data as CSV and view spend trends over time on their dashboard
@@ -226,11 +226,11 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Broker can click an export button on the leads page and download a CSV file containing their filtered leads with all visible columns
   2. Broker's portal dashboard includes a monthly spend trend chart showing spend amounts per month over time
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 33-01: CSV export (server action to generate CSV from filtered leads, download trigger)
-- [ ] 33-02: Spend trend chart (monthly aggregation query, recharts line/bar chart on dashboard)
+- [ ] 33-01-PLAN.md -- CSV export (server action to generate CSV from filtered leads, download trigger on leads page)
+- [ ] 33-02-PLAN.md -- Spend trend chart (monthly aggregation query, recharts bar chart on portal dashboard)
 
 ## Progress
 
@@ -250,4 +250,4 @@ Phases execute in numeric order: 30 -> 31 -> 32 -> 33
 | 32. Delivery Transparency | 1/1 | Complete    | 2026-03-18 | - |
 | 33. Export & Analytics | v3.1 Enhancements | 0/2 | Not started | - |
 
-**Total: 33 phases, 58 plans across 7 milestones**
+**Total: 33 phases, 60 plans across 7 milestones**

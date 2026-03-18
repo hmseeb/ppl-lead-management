@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-18)
 ## Current Position
 
 Phase: 30 of 33 (Broker Reorder)
-Plan: 0 of 1 in current phase
-Status: Ready to plan
-Last activity: 2026-03-18 — Roadmap created for v3.1
+Plan: 1 of 1 in current phase
+Status: Phase 30 complete
+Last activity: 2026-03-18 — Completed 30-01-PLAN.md
 
-Progress: [####################..........] 0/5 plans (v3.1)
+Progress: [######################........] 1/5 plans (v3.1)
 
 ## Performance Metrics
 
@@ -34,6 +34,7 @@ Recent decisions affecting current work:
 - [v3.1]: Admin dashboard unaffected, admin reorder action remains as-is
 - [v3.0]: Stripe Checkout (redirect model) chosen over Stripe Elements
 - [v3.0]: iron-session pattern extended for broker sessions
+- [Phase 30]: Used URL query params for reorder pre-fill (Link navigation, no server action)
 
 ### Pending Todos
 
@@ -54,5 +55,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-18
-Stopped at: v3.1 roadmap created, ready to plan Phase 30
+Stopped at: Completed 30-01-PLAN.md
 Resume file: None

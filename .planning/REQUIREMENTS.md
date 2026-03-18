@@ -64,10 +64,10 @@ Requirements for Broker Portal Enhancements milestone. Each maps to roadmap phas
 
 ### Reorder
 
-- [ ] **REORD-01**: Broker can click "Reorder" on a completed order in the portal
-- [ ] **REORD-02**: Reorder pre-fills the order form with previous order's vertical, credit tier, and lead count
-- [ ] **REORD-03**: Reorder routes through Stripe Checkout (same payment flow as new order)
-- [ ] **REORD-04**: New order is created only after successful Stripe payment
+- [x] **REORD-01**: Broker can click "Reorder" on a completed order in the portal
+- [x] **REORD-02**: Reorder pre-fills the order form with previous order's vertical, credit tier, and lead count
+- [x] **REORD-03**: Reorder routes through Stripe Checkout (same payment flow as new order)
+- [x] **REORD-04**: New order is created only after successful Stripe payment
 
 ### Lead Search & Filters
 
@@ -102,10 +102,10 @@ Requirements for Broker Portal Enhancements milestone. Each maps to roadmap phas
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| REORD-01 | Phase 30 | Pending |
-| REORD-02 | Phase 30 | Pending |
-| REORD-03 | Phase 30 | Pending |
-| REORD-04 | Phase 30 | Pending |
+| REORD-01 | Phase 30 | Complete |
+| REORD-02 | Phase 30 | Complete |
+| REORD-03 | Phase 30 | Complete |
+| REORD-04 | Phase 30 | Complete |
 | LSRCH-01 | Phase 31 | Pending |
 | LSRCH-02 | Phase 31 | Pending |
 | LSRCH-03 | Phase 31 | Pending |

@@ -187,10 +187,10 @@
   2. Clicking "Reorder" opens the order form pre-filled with the original order's vertical, credit tier, and lead count
   3. Submitting the reorder redirects to Stripe Checkout with the correct amount (same payment flow as new orders)
   4. The new order only appears in the broker's portal after Stripe payment succeeds (no order created on abandoned checkout)
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 30-01: Reorder flow (UI button, pre-filled form, Stripe Checkout redirect)
+- [ ] 30-01-PLAN.md -- Reorder flow (UI button, pre-filled form, Stripe Checkout redirect)
 
 ### Phase 31: Lead Search & Filters
 **Goal**: Brokers can quickly find specific leads using name search and vertical/delivery status filters
@@ -250,4 +250,4 @@ Phases execute in numeric order: 30 -> 31 -> 32 -> 33
 | 32. Delivery Transparency | v3.1 Enhancements | 0/1 | Not started | - |
 | 33. Export & Analytics | v3.1 Enhancements | 0/2 | Not started | - |
 
-**Total: 33 phases, 56 plans across 7 milestones**
+**Total: 33 phases, 57 plans across 7 milestones**

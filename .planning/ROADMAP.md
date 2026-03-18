@@ -204,7 +204,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 31-01-PLAN.md -- Search input, vertical/delivery status dropdowns, pagination integration with filter persistence
+- [x] 31-01-PLAN.md -- Search input, vertical/delivery status dropdowns, pagination integration with filter persistence
 
 ### Phase 32: Delivery Transparency
 **Goal**: Brokers can see the full delivery history for any lead, including every attempt with channel, status, and timing
@@ -214,10 +214,10 @@ Plans:
   1. Broker can expand or click into any lead row to view its delivery attempt history
   2. Each delivery attempt shows the channel used (webhook, email, or SMS), whether it succeeded or failed, and when it happened
   3. Failed delivery attempts display the error reason and whether a retry was attempted
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 32-01: Delivery attempt history (expandable lead row, attempt timeline with channel/status/error details)
+- [ ] 32-01-PLAN.md -- Expandable lead rows with delivery attempt timeline (channel/status/error/retry details)
 
 ### Phase 33: Export & Analytics
 **Goal**: Brokers can export their lead data as CSV and view spend trends over time on their dashboard
@@ -250,4 +250,4 @@ Phases execute in numeric order: 30 -> 31 -> 32 -> 33
 | 32. Delivery Transparency | v3.1 Enhancements | 0/1 | Not started | - |
 | 33. Export & Analytics | v3.1 Enhancements | 0/2 | Not started | - |
 
-**Total: 33 phases, 57 plans across 7 milestones**
+**Total: 33 phases, 58 plans across 7 milestones**

@@ -388,23 +388,78 @@ const DELIVERY_STATUS_PRIORITY: Record<string, number> = {
 
 /**
  * Paginated leads for a broker with best delivery status per lead.
+ * Supports optional search (name ilike), vertical, and delivery status filters.
  */
 export async function fetchBrokerLeadsPaginated(
   brokerId: string,
   page = 1,
-  perPage = 20
+  perPage = 20,
+  filters?: { search?: string; vertical?: string; deliveryStatus?: string }
 ): Promise<{ leads: LeadWithDelivery[]; total: number }> {
   const supabase = createAdminClient()
   const offset = (page - 1) * perPage
 
-  // Fetch leads page
-  const { data: leadsData, error, count } = await supabase
+  // If filtering by delivery status, pre-fetch matching lead IDs from deliveries table
+  if (filters?.deliveryStatus) {
+    const { data: matchingDeliveries } = await supabase
+      .from('deliveries')
+      .select('lead_id')
+      .eq('broker_id', brokerId)
+      .eq('status', filters.deliveryStatus)
+
+    const matchingLeadIds = [...new Set((matchingDeliveries ?? []).map((d) => d.lead_id))]
+    if (matchingLeadIds.length === 0) return { leads: [], total: 0 }
+
+    // Build query with delivery status pre-filter
+    let query = supabase
+      .from('leads')
+      .select(
+        'id, first_name, last_name, vertical, credit_score, funding_amount, status, assigned_at, created_at',
+        { count: 'exact' }
+      )
+      .eq('assigned_broker_id', brokerId)
+      .in('id', matchingLeadIds)
+
+    if (filters?.search) {
+      query = query.or(`first_name.ilike.%${filters.search}%,last_name.ilike.%${filters.search}%`)
+    }
+    if (filters?.vertical) {
+      query = query.eq('vertical', filters.vertical)
+    }
+
+    const { data: leadsData, error, count } = await query
+      .order('assigned_at', { ascending: false })
+      .range(offset, offset + perPage - 1)
+
+    if (error || !leadsData) return { leads: [], total: 0 }
+
+    return {
+      leads: leadsData.map((lead) => ({
+        ...lead,
+        delivery_status: filters.deliveryStatus!,
+        delivery_channel: null,
+      })),
+      total: count ?? 0,
+    }
+  }
+
+  // Standard path: no delivery status filter
+  let query = supabase
     .from('leads')
     .select(
       'id, first_name, last_name, vertical, credit_score, funding_amount, status, assigned_at, created_at',
       { count: 'exact' }
     )
     .eq('assigned_broker_id', brokerId)
+
+  if (filters?.search) {
+    query = query.or(`first_name.ilike.%${filters.search}%,last_name.ilike.%${filters.search}%`)
+  }
+  if (filters?.vertical) {
+    query = query.eq('vertical', filters.vertical)
+  }
+
+  const { data: leadsData, error, count } = await query
     .order('assigned_at', { ascending: false })
     .range(offset, offset + perPage - 1)
 

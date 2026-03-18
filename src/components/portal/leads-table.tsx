@@ -53,15 +53,32 @@ export function LeadsTable({
   total,
   page,
   perPage,
+  filterParams,
 }: {
   leads: LeadWithDelivery[]
   total: number
   page: number
   perPage: number
+  filterParams?: Record<string, string | undefined>
 }) {
   const totalPages = Math.max(1, Math.ceil(total / perPage))
   const hasPrev = page > 1
   const hasNext = page < totalPages
+
+  const hasActiveFilters = filterParams
+    ? Object.entries(filterParams).some(([k, v]) => k !== 'page' && !!v)
+    : false
+
+  function paginationUrl(p: number) {
+    const url = new URLSearchParams()
+    if (filterParams) {
+      Object.entries(filterParams).forEach(([k, v]) => {
+        if (v && k !== 'page') url.set(k, v)
+      })
+    }
+    url.set('page', String(p))
+    return `/portal/leads?${url.toString()}`
+  }
 
   return (
     <div className="space-y-4">
@@ -77,7 +94,7 @@ export function LeadsTable({
 
       {leads.length === 0 ? (
         <p className="text-sm text-muted-foreground py-8 text-center">
-          No leads assigned yet.
+          {hasActiveFilters ? 'No leads found.' : 'No leads assigned yet.'}
         </p>
       ) : (
         <>
@@ -127,7 +144,7 @@ export function LeadsTable({
             </p>
             <div className="flex items-center gap-2">
               {hasPrev ? (
-                <Link href={`/portal/leads?page=${page - 1}`}>
+                <Link href={paginationUrl(page - 1)}>
                   <Button variant="outline" size="sm" className="h-7 text-xs">
                     <ChevronLeft className="size-3 mr-1" /> Prev
                   </Button>
@@ -138,7 +155,7 @@ export function LeadsTable({
                 </Button>
               )}
               {hasNext ? (
-                <Link href={`/portal/leads?page=${page + 1}`}>
+                <Link href={paginationUrl(page + 1)}>
                   <Button variant="outline" size="sm" className="h-7 text-xs">
                     Next <ChevronRight className="size-3 ml-1" />
                   </Button>

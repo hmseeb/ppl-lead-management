@@ -85,7 +85,7 @@ Requirements for Broker Portal Enhancements milestone. Each maps to roadmap phas
 ### Export & Analytics
 
 - [x] **EXPT-01**: Broker can export their leads table as CSV
-- [ ] **EXPT-02**: Broker can view a monthly spend trend chart on the dashboard
+- [x] **EXPT-02**: Broker can view a monthly spend trend chart on the dashboard
 
 ## Out of Scope
 
@@ -114,7 +114,7 @@ Requirements for Broker Portal Enhancements milestone. Each maps to roadmap phas
 | DLVR-02 | Phase 32 | Complete |
 | DLVR-03 | Phase 32 | Complete |
 | EXPT-01 | Phase 33 | Complete |
-| EXPT-02 | Phase 33 | Pending |
+| EXPT-02 | Phase 33 | Complete |
 
 **Coverage:**
 - v3.1 requirements: 13 total

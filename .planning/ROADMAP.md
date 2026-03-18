@@ -84,7 +84,7 @@
 - [x] **Phase 30: Broker Reorder** - Reorder completed orders with pre-filled Stripe Checkout payment (completed 2026-03-18)
 - [x] **Phase 31: Lead Search & Filters** - Name search, vertical/delivery status filters on broker leads page (completed 2026-03-18)
 - [x] **Phase 32: Delivery Transparency** - Per-lead delivery attempt history with channel, status, and timestamps (completed 2026-03-18)
-- [ ] **Phase 33: Export & Analytics** - CSV export for leads, monthly spend trend chart on dashboard
+- [x] **Phase 33: Export & Analytics** - CSV export for leads, monthly spend trend chart on dashboard (completed 2026-03-18)
 
 ## Phase Details
 
@@ -226,7 +226,7 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Broker can click an export button on the leads page and download a CSV file containing their filtered leads with all visible columns
   2. Broker's portal dashboard includes a monthly spend trend chart showing spend amounts per month over time
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 33-01-PLAN.md -- CSV export (server action to generate CSV from filtered leads, download trigger on leads page)
@@ -248,6 +248,6 @@ Phases execute in numeric order: 30 -> 31 -> 32 -> 33
 | 30. Broker Reorder | 1/1 | Complete    | 2026-03-18 | - |
 | 31. Lead Search & Filters | 1/1 | Complete    | 2026-03-18 | - |
 | 32. Delivery Transparency | 1/1 | Complete    | 2026-03-18 | - |
-| 33. Export & Analytics | v3.1 Enhancements | 1/2 | In progress | - |
+| 33. Export & Analytics | 2/2 | Complete   | 2026-03-18 | - |
 
 **Total: 33 phases, 60 plans across 7 milestones**

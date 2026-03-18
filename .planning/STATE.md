@@ -41,6 +41,8 @@ Recent decisions affecting current work:
 - [Phase 32]: Server action pattern for on-demand delivery data loading with session auth guard
 - [Phase 33]: Hand-rolled CSV export (no library) with proper escaping for 6 columns
 - [Phase 33]: Blob download via temp anchor element pattern for client-side file download
+- [Phase 33]: JS-side monthly grouping for spend aggregation (Supabase JS client lacks GROUP BY)
+- [Phase 33]: Emerald-themed portal charts distinct from admin red
 
 ### Pending Todos
 
@@ -59,9 +61,10 @@ None.
 | 3 | Add search and filters to brokers, orders, unassigned, activity pages | 2026-03-13 | 2b92f68 | [3-add-search-and-filters-to-brokers-orders](./quick/3-add-search-and-filters-to-brokers-orders/) |
 | Phase 32 P01 | 2min | 2 tasks | 3 files |
 | Phase 33-01 P01 | 2min | 2 tasks | 2 files |
+| Phase 33-02 P02 | 2min | 2 tasks | 3 files |
 
 ## Session Continuity
 
 Last session: 2026-03-18
-Stopped at: Completed 33-01-PLAN.md
+Stopped at: Completed 33-02-PLAN.md
 Resume file: None

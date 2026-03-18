@@ -56,16 +56,21 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 - ✓ Lead volume chart adapts range to selected date filter — v2.1
 - ✓ Auto-reassign unassigned leads when matching orders become available — v2.1
 
+- ✓ Broker portal at /portal/* with magic link auth (passwordless) — v3.0
+- ✓ Broker dashboard: active orders, recent leads, spend summary, delivery health — v3.0
+- ✓ Broker order creation with Stripe Checkout payment — v3.0
+- ✓ Admin pricing table management (vertical x credit tier = price per lead) — v3.0
+- ✓ Broker self-service: pause/resume orders, update webhook/delivery prefs, contact hours — v3.0
+- ✓ Broker lead visibility: their assigned leads with delivery status — v3.0
+- ✓ Broker spend history with Stripe receipts — v3.0
+- ✓ Strict data isolation (broker sees only their own data) — v3.0
+
 ### Active
 
-- [ ] Broker portal at /portal/* with magic link auth (passwordless)
-- [ ] Broker dashboard: active orders, recent leads, spend summary, delivery health
-- [ ] Broker order creation with Stripe Checkout payment
-- [ ] Admin pricing table management (vertical x credit tier = price per lead)
-- [ ] Broker self-service: pause/resume orders, update webhook/delivery prefs, contact hours
-- [ ] Broker lead visibility: their assigned leads with delivery status
-- [ ] Broker spend history with Stripe receipts
-- [ ] Strict data isolation (broker sees only their own data)
+- [ ] Broker reorder with payment (completed orders → pre-filled checkout → Stripe payment → new order)
+- [ ] Broker lead search and filtering (name search, vertical/delivery status filters)
+- [ ] Broker delivery transparency (attempt history per lead, success/fail with timestamps)
+- [ ] Broker export and analytics (CSV export for leads, spend trends over time)
 
 ### Out of Scope
 
@@ -74,13 +79,12 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 | State/geo-based matching criteria | Deferred to future iteration |
 | Mobile-optimized UI | Desktop-first admin tool |
 | Multi-user admin accounts | Single shared password for now |
-| Broker self-service portal | Admin-only for current scope |
-| Payment/billing integration | Orders tracked manually |
 | Configurable alert channels (Slack, email, push) | One admin, one channel (GHL SMS) |
 | Alert severity levels / acknowledgement / escalation | One-person operation |
 | Weekly/monthly roll-up digests | Defer until operational patterns emerge |
 | Multi-broker filter on dashboard | Single-select sufficient for broker scorecard |
-| Exportable reports (CSV/PDF) | Defer until reporting needs emerge |
+| Free broker reorder (admin-only) | Brokers must pay for each order via Stripe |
+| Broker order editing | Only admin can edit existing orders |
 
 ## Context
 
@@ -126,19 +130,15 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 | Inner join for delivery vertical filtering | Deliveries lack vertical column, join through leads table | ✓ Good |
 
 ---
-## Current Milestone: v3.0 Broker Portal
+## Current Milestone: v3.1 Broker Portal Enhancements
 
-**Goal:** Build a broker-facing portal where brokers can create and manage their own orders, pay for leads via Stripe, and monitor their delivery health. Same app, /portal/* routes.
+**Goal:** Enhance the broker portal with reorder flow (paid via Stripe), lead search/filters, delivery transparency, and export/analytics. All work isolated to portal directories.
 
 **Target features:**
-- Magic link auth for brokers (email-based, passwordless)
-- Broker dashboard with active orders, recent leads, spend, delivery health
-- Order creation with Stripe Checkout (tiered pricing by vertical x credit tier)
-- Admin pricing table in Settings
-- Broker self-service: pause/resume orders, update delivery preferences
-- Broker lead list with delivery status
-- Spend history with Stripe receipts
-- Strict broker data isolation
+- Reorder completed orders with pre-filled Stripe checkout
+- Lead search by name and filtering by vertical/delivery status
+- Per-lead delivery attempt history with timestamps
+- CSV export for leads table and spend trend charts
 
 ---
-*Last updated: 2026-03-17 after v3.0 milestone start*
+*Last updated: 2026-03-18 after v3.1 milestone start*

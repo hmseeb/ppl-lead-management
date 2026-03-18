@@ -36,12 +36,12 @@ export function OrdersFilters() {
         />
       </div>
 
-      <Select value={status || '_all'} onValueChange={(v) => setStatus(v === '_all' ? '' : (v ?? ''))}>
+      <Select value={status} onValueChange={(v) => setStatus(v ?? '')}>
         <SelectTrigger>
-          <SelectValue />
+          <SelectValue placeholder="All Status" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="_all">All Status</SelectItem>
+          <SelectItem value="">All Status</SelectItem>
           <SelectItem value="active">Active</SelectItem>
           <SelectItem value="paused">Paused</SelectItem>
           <SelectItem value="completed">Completed</SelectItem>
@@ -49,12 +49,12 @@ export function OrdersFilters() {
         </SelectContent>
       </Select>
 
-      <Select value={vertical || '_all'} onValueChange={(v) => setVertical(v === '_all' ? '' : (v ?? ''))}>
+      <Select value={vertical} onValueChange={(v) => setVertical(v ?? '')}>
         <SelectTrigger>
-          <SelectValue />
+          <SelectValue placeholder="All Verticals" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="_all">All Verticals</SelectItem>
+          <SelectItem value="">All Verticals</SelectItem>
           {VERTICALS.map((v) => <SelectItem key={v} value={v}>{v}</SelectItem>)}
         </SelectContent>
       </Select>

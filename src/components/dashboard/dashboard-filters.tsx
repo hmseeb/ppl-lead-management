@@ -3,6 +3,9 @@
 import { useQueryState, parseAsString } from 'nuqs'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import {
+  Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
+} from '@/components/ui/select'
 import { X, ArrowUpDown } from 'lucide-react'
 import { DATE_PRESETS, VERTICALS } from '@/lib/types/dashboard-filters'
 
@@ -83,27 +86,29 @@ export function DashboardFilters({ brokers }: DashboardFiltersProps) {
         placeholder="To"
       />
 
-      <select
-        className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-        value={brokerId}
-        onChange={(e) => setBrokerId(e.target.value || '')}
-      >
-        <option value="">All Brokers</option>
-        {brokers.map((b) => (
-          <option key={b.id} value={b.id}>{b.first_name} {b.last_name}</option>
-        ))}
-      </select>
+      <Select value={brokerId} onValueChange={(v) => setBrokerId(v ?? '')}>
+        <SelectTrigger>
+          <SelectValue placeholder="All Brokers" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="">All Brokers</SelectItem>
+          {brokers.map((b) => (
+            <SelectItem key={b.id} value={b.id}>{b.first_name} {b.last_name}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
-      <select
-        className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-        value={vertical}
-        onChange={(e) => setVertical(e.target.value || '')}
-      >
-        <option value="">All Verticals</option>
-        {VERTICALS.map((v) => (
-          <option key={v} value={v}>{v}</option>
-        ))}
-      </select>
+      <Select value={vertical} onValueChange={(v) => setVertical(v ?? '')}>
+        <SelectTrigger>
+          <SelectValue placeholder="All Verticals" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="">All Verticals</SelectItem>
+          {VERTICALS.map((v) => (
+            <SelectItem key={v} value={v}>{v}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
       <Button
         variant={compare ? 'default' : 'outline'}

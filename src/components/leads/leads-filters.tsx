@@ -3,6 +3,9 @@
 import { useQueryState, parseAsString, parseAsInteger } from 'nuqs'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import {
+  Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
+} from '@/components/ui/select'
 import { X } from 'lucide-react'
 
 const VERTICALS = ['MCA', 'SBA', 'Equipment Finance', 'Working Capital', 'Lines of Credit']
@@ -47,36 +50,39 @@ export function LeadsFilters({ brokers }: LeadsFiltersProps) {
         />
       </div>
 
-      <select
-        className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-        value={vertical}
-        onChange={(e) => setVertical(e.target.value || '')}
-      >
-        <option value="">All Verticals</option>
-        {VERTICALS.map((v) => <option key={v} value={v}>{v}</option>)}
-      </select>
+      <Select value={vertical} onValueChange={(v) => setVertical(v ?? '')}>
+        <SelectTrigger>
+          <SelectValue placeholder="All Verticals" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="">All Verticals</SelectItem>
+          {VERTICALS.map((v) => <SelectItem key={v} value={v}>{v}</SelectItem>)}
+        </SelectContent>
+      </Select>
 
-      <select
-        className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-        value={status}
-        onChange={(e) => setStatus(e.target.value || '')}
-      >
-        <option value="">All Status</option>
-        <option value="assigned">Assigned</option>
-        <option value="unassigned">Unassigned</option>
-        <option value="rejected">Rejected</option>
-      </select>
+      <Select value={status} onValueChange={(v) => setStatus(v ?? '')}>
+        <SelectTrigger>
+          <SelectValue placeholder="All Status" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="">All Status</SelectItem>
+          <SelectItem value="assigned">Assigned</SelectItem>
+          <SelectItem value="unassigned">Unassigned</SelectItem>
+          <SelectItem value="rejected">Rejected</SelectItem>
+        </SelectContent>
+      </Select>
 
-      <select
-        className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-        value={brokerId}
-        onChange={(e) => setBrokerId(e.target.value || '')}
-      >
-        <option value="">All Brokers</option>
-        {brokers.map((b) => (
-          <option key={b.id} value={b.id}>{b.first_name} {b.last_name}</option>
-        ))}
-      </select>
+      <Select value={brokerId} onValueChange={(v) => setBrokerId(v ?? '')}>
+        <SelectTrigger>
+          <SelectValue placeholder="All Brokers" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="">All Brokers</SelectItem>
+          {brokers.map((b) => (
+            <SelectItem key={b.id} value={b.id}>{b.first_name} {b.last_name}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
       <Input
         type="number"

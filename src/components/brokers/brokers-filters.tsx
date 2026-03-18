@@ -3,6 +3,9 @@
 import { useQueryState, parseAsString } from 'nuqs'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import {
+  Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
+} from '@/components/ui/select'
 import { X } from 'lucide-react'
 
 const serverSync = { shallow: false } as const
@@ -31,27 +34,29 @@ export function BrokersFilters() {
         />
       </div>
 
-      <select
-        className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-        value={assignmentStatus}
-        onChange={(e) => setAssignmentStatus(e.target.value || '')}
-      >
-        <option value="">All Status</option>
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
-        <option value="suspended">Suspended</option>
-      </select>
+      <Select value={assignmentStatus} onValueChange={(v) => setAssignmentStatus(v ?? '')}>
+        <SelectTrigger>
+          <SelectValue placeholder="All Status" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="">All Status</SelectItem>
+          <SelectItem value="active">Active</SelectItem>
+          <SelectItem value="inactive">Inactive</SelectItem>
+          <SelectItem value="suspended">Suspended</SelectItem>
+        </SelectContent>
+      </Select>
 
-      <select
-        className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-        value={onboardingStatus}
-        onChange={(e) => setOnboardingStatus(e.target.value || '')}
-      >
-        <option value="">All Onboarding</option>
-        <option value="completed">Completed</option>
-        <option value="in_progress">In Progress</option>
-        <option value="not_started">Not Started</option>
-      </select>
+      <Select value={onboardingStatus} onValueChange={(v) => setOnboardingStatus(v ?? '')}>
+        <SelectTrigger>
+          <SelectValue placeholder="All Onboarding" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="">All Onboarding</SelectItem>
+          <SelectItem value="completed">Completed</SelectItem>
+          <SelectItem value="in_progress">In Progress</SelectItem>
+          <SelectItem value="not_started">Not Started</SelectItem>
+        </SelectContent>
+      </Select>
 
       {hasFilters && (
         <Button variant="ghost" size="sm" onClick={clearAll}>

@@ -3,6 +3,9 @@
 import { useQueryState, parseAsString } from 'nuqs'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import {
+  Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
+} from '@/components/ui/select'
 import { X } from 'lucide-react'
 
 const serverSync = { shallow: false } as const
@@ -40,27 +43,29 @@ export function ActivityFilters({ eventTypes, brokers }: ActivityFiltersProps) {
         />
       </div>
 
-      <select
-        className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-        value={eventType}
-        onChange={(e) => setEventType(e.target.value || '')}
-      >
-        <option value="">All Events</option>
-        {eventTypes.map((t) => (
-          <option key={t} value={t}>{t.replace(/_/g, ' ')}</option>
-        ))}
-      </select>
+      <Select value={eventType} onValueChange={(v) => setEventType(v ?? '')}>
+        <SelectTrigger>
+          <SelectValue placeholder="All Events" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="">All Events</SelectItem>
+          {eventTypes.map((t) => (
+            <SelectItem key={t} value={t}>{t.replace(/_/g, ' ')}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
-      <select
-        className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-        value={brokerId}
-        onChange={(e) => setBrokerId(e.target.value || '')}
-      >
-        <option value="">All Brokers</option>
-        {brokers.map((b) => (
-          <option key={b.id} value={b.id}>{b.first_name} {b.last_name}</option>
-        ))}
-      </select>
+      <Select value={brokerId} onValueChange={(v) => setBrokerId(v ?? '')}>
+        <SelectTrigger>
+          <SelectValue placeholder="All Brokers" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="">All Brokers</SelectItem>
+          {brokers.map((b) => (
+            <SelectItem key={b.id} value={b.id}>{b.first_name} {b.last_name}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
       <Input
         type="date"

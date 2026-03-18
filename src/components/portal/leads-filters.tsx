@@ -34,12 +34,12 @@ export function LeadsFilters() {
   }
 
   function handleVertical(value: string | null) {
-    setVertical(value === '_all' ? '' : (value ?? ''))
+    setVertical(value ?? '')
     setPage(null)
   }
 
   function handleDeliveryStatus(value: string | null) {
-    setDeliveryStatus(value === '_all' ? '' : (value ?? ''))
+    setDeliveryStatus(value ?? '')
     setPage(null)
   }
 
@@ -60,22 +60,22 @@ export function LeadsFilters() {
         />
       </div>
 
-      <Select value={vertical || '_all'} onValueChange={handleVertical}>
+      <Select value={vertical} onValueChange={handleVertical}>
         <SelectTrigger>
-          <SelectValue />
+          <SelectValue placeholder="All Verticals" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="_all">All Verticals</SelectItem>
+          <SelectItem value="">All Verticals</SelectItem>
           {VERTICALS.map((v) => <SelectItem key={v} value={v}>{v}</SelectItem>)}
         </SelectContent>
       </Select>
 
-      <Select value={deliveryStatus || '_all'} onValueChange={handleDeliveryStatus}>
+      <Select value={deliveryStatus} onValueChange={handleDeliveryStatus}>
         <SelectTrigger>
-          <SelectValue />
+          <SelectValue placeholder="All Statuses" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="_all">All Statuses</SelectItem>
+          <SelectItem value="">All Statuses</SelectItem>
           {DELIVERY_STATUSES.map((s) => (
             <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
           ))}

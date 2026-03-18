@@ -3,6 +3,9 @@
 import { useQueryState, parseAsString } from 'nuqs'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import {
+  Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
+} from '@/components/ui/select'
 import { X } from 'lucide-react'
 
 const serverSync = { shallow: false } as const
@@ -29,14 +32,15 @@ export function UnassignedFilters() {
         />
       </div>
 
-      <select
-        className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-        value={reason}
-        onChange={(e) => setReason(e.target.value || '')}
-      >
-        <option value="">All Reasons</option>
-        <option value="no_matching_order">No Matching Order</option>
-      </select>
+      <Select value={reason} onValueChange={(v) => setReason(v ?? '')}>
+        <SelectTrigger>
+          <SelectValue placeholder="All Reasons" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="">All Reasons</SelectItem>
+          <SelectItem value="no_matching_order">No Matching Order</SelectItem>
+        </SelectContent>
+      </Select>
 
       {hasFilters && (
         <Button variant="ghost" size="sm" onClick={clearAll}>

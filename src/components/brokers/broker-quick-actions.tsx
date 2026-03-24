@@ -8,16 +8,20 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { pauseAllBrokerOrders, resumeAllBrokerOrders } from '@/lib/actions/brokers'
 import { inviteBrokerToPortal } from '@/lib/actions/magic-link'
+import { BrokerReassignDialog } from './broker-reassign-dialog'
 
 interface BrokerQuickActionsProps {
   brokerId: string
+  brokerName: string
   email: string
   activeOrdersCount: number
   pausedOrdersCount: number
   hasWebhook?: boolean
+  leads?: any[]
+  orders?: any[]
 }
 
-export function BrokerQuickActions({ brokerId, email, activeOrdersCount, pausedOrdersCount, hasWebhook }: BrokerQuickActionsProps) {
+export function BrokerQuickActions({ brokerId, brokerName, email, activeOrdersCount, pausedOrdersCount, hasWebhook, leads = [], orders = [] }: BrokerQuickActionsProps) {
   const router = useRouter()
   const [sendingWebhook, setSendingWebhook] = useState(false)
   const [inviting, setInviting] = useState(false)
@@ -131,6 +135,11 @@ export function BrokerQuickActions({ brokerId, email, activeOrdersCount, pausedO
       >
         <Play className="size-4 mr-1" /> Resume All ({pausedOrdersCount})
       </Button>
+      <BrokerReassignDialog
+        brokerName={brokerName}
+        leads={leads}
+        orders={orders}
+      />
       <Link href={`/orders/new?broker_id=${brokerId}`}>
         <Button size="sm">
           <Plus className="size-4 mr-1" /> New Order

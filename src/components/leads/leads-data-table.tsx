@@ -85,9 +85,14 @@ export function LeadsDataTable<T extends { id: string; assigned_broker_id: strin
         <TableBody>
           {table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && 'selected'}
+                className={row.getCanSelect() ? 'cursor-pointer' : undefined}
+                onClick={() => { if (row.getCanSelect()) row.toggleSelected() }}
+              >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell key={cell.id} onClick={cell.column.id === 'select' ? (e) => e.stopPropagation() : undefined}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

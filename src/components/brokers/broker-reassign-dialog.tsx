@@ -142,23 +142,22 @@ export function BrokerReassignDialog({ brokerName, leads, orders }: BrokerReassi
         </div>
 
         <div className="flex-1 overflow-y-auto border rounded-md">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm table-fixed">
             <thead className="sticky top-0 bg-background border-b">
               <tr>
-                <th className="p-2 w-8">
+                <th className="p-2 w-10">
                   <Checkbox checked={allSelected} onCheckedChange={handleSelectAll} />
                 </th>
                 <th className="p-2 text-left font-medium">Name</th>
-                <th className="p-2 text-left font-medium">Vertical</th>
-                <th className="p-2 text-left font-medium">Credit</th>
-                <th className="p-2 text-left font-medium">Assigned</th>
-                <th className="p-2 text-left font-medium">Order</th>
+                <th className="p-2 text-left font-medium w-20">Vertical</th>
+                <th className="p-2 text-left font-medium w-16">Credit</th>
+                <th className="p-2 text-left font-medium w-28">Assigned</th>
               </tr>
             </thead>
             <tbody>
               {filteredLeads.map((lead) => (
-                <tr key={lead.id} className="border-b hover:bg-muted/50">
-                  <td className="p-2">
+                <tr key={lead.id} className="border-b hover:bg-muted/50 cursor-pointer" onClick={() => toggleLead(lead.id)}>
+                  <td className="p-2" onClick={(e) => e.stopPropagation()}>
                     <Checkbox checked={selectedLeadIds.has(lead.id)} onCheckedChange={() => toggleLead(lead.id)} />
                   </td>
                   <td className="p-2">{[lead.first_name, lead.last_name].filter(Boolean).join(' ') || 'Unknown'}</td>
@@ -167,12 +166,11 @@ export function BrokerReassignDialog({ brokerName, leads, orders }: BrokerReassi
                   </td>
                   <td className="p-2">{lead.credit_score ?? '-'}</td>
                   <td className="p-2">{lead.assigned_at ? format(new Date(lead.assigned_at), 'MMM d, h:mm a') : '-'}</td>
-                  <td className="p-2 font-mono text-xs">{lead.assigned_order_id?.slice(0, 8) || '-'}</td>
                 </tr>
               ))}
               {filteredLeads.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="p-4 text-center text-muted-foreground">No leads match filters</td>
+                  <td colSpan={5} className="p-4 text-center text-muted-foreground">No leads match filters</td>
                 </tr>
               )}
             </tbody>

@@ -97,13 +97,6 @@ export const leadsColumns: ColumnDef<LeadRow>[] = [
     },
   },
   {
-    accessorKey: 'ai_call_status',
-    header: 'AI Call',
-    cell: ({ row }) => row.original.ai_call_status ? (
-      <Badge variant="secondary" className="text-xs capitalize">{row.original.ai_call_status}</Badge>
-    ) : '-',
-  },
-  {
     accessorKey: 'status',
     header: 'Status',
     cell: ({ row }) => {
@@ -122,5 +115,12 @@ export const leadsColumns: ColumnDef<LeadRow>[] = [
         </div>
       )
     },
+  },
+  {
+    accessorKey: 'ai_call_status',
+    header: 'AI Call',
+    cell: ({ row }) => row.original.ai_call_status ? (
+      <Badge variant="secondary" className="text-xs capitalize">{row.original.ai_call_status}</Badge>
+    ) : '-',
   },
 ]

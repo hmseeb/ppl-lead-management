@@ -115,12 +115,20 @@ export async function POST(request: Request) {
     }
   }
 
-  // If any pre-flight check failed, reject the lead
+  // If any pre-flight check failed, reject the lead but add to unassigned queue for manual override
   if (rejectionReason) {
     await supabase
       .from('leads')
       .update({ status: 'rejected', rejection_reason: rejectionReason })
       .eq('id', lead.id)
+
+    await supabase
+      .from('unassigned_queue')
+      .insert({
+        lead_id: lead.id,
+        reason: rejectionReason,
+        details: `credit: ${data.credit_score ?? 'N/A'}, amount: ${data.funding_amount ?? 'N/A'}`,
+      })
 
     await supabase
       .from('activity_log')

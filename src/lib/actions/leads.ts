@@ -10,7 +10,7 @@ export async function manualAssignLead(leadId: string, brokerId: string, orderId
 
   const supabase = createAdminClient()
 
-  // Update lead
+  // Update lead (clear rejection_reason for previously rejected leads)
   const { error: leadError } = await supabase
     .from('leads')
     .update({
@@ -18,6 +18,7 @@ export async function manualAssignLead(leadId: string, brokerId: string, orderId
       assigned_order_id: orderId,
       status: 'assigned',
       assigned_at: new Date().toISOString(),
+      rejection_reason: null,
     })
     .eq('id', leadId)
 

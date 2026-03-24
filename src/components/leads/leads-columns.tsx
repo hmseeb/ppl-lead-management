@@ -4,6 +4,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { format } from 'date-fns'
+import { ManualAssignDialog } from '@/components/unassigned/manual-assign-dialog'
 
 // Type the lead row from the query
 export type LeadRow = {
@@ -74,10 +75,25 @@ export const leadsColumns: ColumnDef<LeadRow>[] = [
   {
     id: 'broker',
     header: 'Broker',
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const broker = row.original.brokers
-      if (!broker) return <Badge variant="outline" className="text-xs bg-amber-50 text-amber-700">Unassigned</Badge>
-      return `${broker.first_name} ${broker.last_name}`
+      if (broker) return `${broker.first_name} ${broker.last_name}`
+
+      const brokersWithOrders = (table.options.meta as any)?.brokersWithOrders ?? []
+      const lead = row.original
+      const leadName = [lead.first_name, lead.last_name].filter(Boolean).join(' ') || 'Unknown'
+
+      return (
+        <div className="flex items-center gap-2">
+          <ManualAssignDialog
+            leadId={lead.id}
+            leadName={leadName}
+            leadVertical={lead.vertical}
+            leadCreditScore={lead.credit_score}
+            brokers={brokersWithOrders}
+          />
+        </div>
+      )
     },
   },
   {

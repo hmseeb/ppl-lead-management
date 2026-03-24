@@ -39,6 +39,10 @@ export function UnassignedFilters() {
         <SelectContent>
           <SelectItem value="">All Reasons</SelectItem>
           <SelectItem value="no_matching_order">No Matching Order</SelectItem>
+          <SelectItem value="credit_too_low">Credit Too Low</SelectItem>
+          <SelectItem value="no_active_orders">No Active Orders</SelectItem>
+          <SelectItem value="invalid_loan_amount">Invalid Loan Amount</SelectItem>
+          <SelectItem value="assignment_error">Assignment Error</SelectItem>
         </SelectContent>
       </Select>
 

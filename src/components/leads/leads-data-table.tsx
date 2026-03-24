@@ -14,13 +14,15 @@ interface DataTableProps<T> {
   data: T[]
   columns: ColumnDef<T, unknown>[]
   totalCount: number
+  brokersWithOrders?: any[]
 }
 
-export function LeadsDataTable<T>({ data, columns, totalCount }: DataTableProps<T>) {
+export function LeadsDataTable<T>({ data, columns, totalCount, brokersWithOrders }: DataTableProps<T>) {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    meta: { brokersWithOrders },
   })
 
   return (

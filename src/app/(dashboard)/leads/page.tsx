@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { fetchLeads, fetchBrokersForFilter } from '@/lib/queries/leads'
+import { fetchActiveBrokersWithOrders } from '@/lib/queries/unassigned'
 import { LeadsFilters } from '@/components/leads/leads-filters'
 import { LeadsDataTable } from '@/components/leads/leads-data-table'
 import { leadsColumns } from '@/components/leads/leads-columns'
@@ -18,7 +19,7 @@ export default async function LeadsPage({
   const page = parseInt(params.page ?? '1')
   const perPage = 50
 
-  const [{ data, count }, brokers] = await Promise.all([
+  const [{ data, count }, brokers, brokersWithOrders] = await Promise.all([
     fetchLeads({
       search: params.search || undefined,
       status: params.status || undefined,
@@ -32,6 +33,7 @@ export default async function LeadsPage({
       per_page: perPage,
     }),
     fetchBrokersForFilter(),
+    fetchActiveBrokersWithOrders(),
   ])
 
   const totalPages = Math.ceil(count / perPage)
@@ -53,7 +55,7 @@ export default async function LeadsPage({
           <h1 className="text-2xl font-semibold">Leads <span className="text-muted-foreground text-base font-normal">({count})</span></h1>
         </div>
         <LeadsFilters brokers={brokers} />
-        <LeadsDataTable data={data as any} columns={leadsColumns as any} totalCount={count} />
+        <LeadsDataTable data={data as any} columns={leadsColumns as any} totalCount={count} brokersWithOrders={brokersWithOrders as any} />
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2">
             {page > 1 ? (

@@ -1,10 +1,12 @@
 export const dynamic = 'force-dynamic'
 
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
-import { fetchCallKpis } from '@/lib/queries/call-reporting'
+import { fetchCallKpis, fetchCallOutcomeVolume, fetchUpcomingCallbacks } from '@/lib/queries/call-reporting'
 import { fetchBrokersForFilter } from '@/lib/queries/leads'
 import { CallReportingFilters } from '@/components/calls/call-reporting-filters'
 import { CallKpiCards } from '@/components/calls/call-kpi-cards'
+import { CallOutcomeChart } from '@/components/calls/call-outcome-chart'
+import { UpcomingCallbacks } from '@/components/calls/upcoming-callbacks'
 import type { DashboardFilters } from '@/lib/types/dashboard-filters'
 
 export default async function CallReportingPage({
@@ -21,8 +23,10 @@ export default async function CallReportingPage({
     broker_id: params.broker_id || undefined,
   }
 
-  const [kpis, brokers] = await Promise.all([
+  const [kpis, volume, callbacks, brokers] = await Promise.all([
     fetchCallKpis(filters),
+    fetchCallOutcomeVolume(filters),
+    fetchUpcomingCallbacks(),
     fetchBrokersForFilter(),
   ])
 
@@ -35,7 +39,8 @@ export default async function CallReportingPage({
         </div>
         <CallReportingFilters brokers={brokers} />
         <CallKpiCards data={kpis} />
-        {/* Chart and callbacks table added by Plan 37-02 */}
+        <CallOutcomeChart data={volume.data} bucketType={volume.bucketType} totalDays={volume.totalDays} />
+        <UpcomingCallbacks callbacks={callbacks} />
       </div>
     </NuqsAdapter>
   )

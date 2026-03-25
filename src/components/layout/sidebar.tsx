@@ -6,7 +6,7 @@ import { logout } from '@/lib/auth/actions'
 import { Button } from '@/components/ui/button'
 import {
   LayoutDashboard, Users, ShoppingCart, FileText,
-  AlertCircle, Activity, Settings, LogOut,
+  AlertCircle, Activity, Phone, Settings, LogOut,
 } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
 
@@ -17,6 +17,7 @@ const navItems = [
   { href: '/orders', label: 'Orders', icon: ShoppingCart },
   { href: '/unassigned', label: 'Unassigned', icon: AlertCircle },
   { href: '/activity', label: 'Activity', icon: Activity },
+  { href: '/calls', label: 'Calls', icon: Phone },
   { href: '/settings', label: 'Settings', icon: Settings },
 ]
 

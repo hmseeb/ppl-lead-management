@@ -2,18 +2,19 @@
 
 ## Milestones
 
-- ✅ **v1.0 MVP** — Phases 1-5 (shipped 2026-03-12)
-- ✅ **v1.1 Monitoring & Alerting** — Phases 6-9 (shipped 2026-03-13)
-- ✅ **v1.2 Broker Hours Enforcement** — Phases 10-12 (shipped 2026-03-13)
-- ✅ **v2.0 Smart Scoring Engine** — Phases 13-17 (shipped 2026-03-17)
-- ✅ **v2.1 Dashboard Analytics** — Phases 18-21 (shipped 2026-03-17)
-- ✅ **v3.0 Broker Portal** — Phases 22-29 (shipped 2026-03-17)
-- **v3.1 Broker Portal Enhancements** — Phases 30-33 (in progress)
+- ✅ **v1.0 MVP** -- Phases 1-5 (shipped 2026-03-12)
+- ✅ **v1.1 Monitoring & Alerting** -- Phases 6-9 (shipped 2026-03-13)
+- ✅ **v1.2 Broker Hours Enforcement** -- Phases 10-12 (shipped 2026-03-13)
+- ✅ **v2.0 Smart Scoring Engine** -- Phases 13-17 (shipped 2026-03-17)
+- ✅ **v2.1 Dashboard Analytics** -- Phases 18-21 (shipped 2026-03-17)
+- ✅ **v3.0 Broker Portal** -- Phases 22-29 (shipped 2026-03-17)
+- ✅ **v3.1 Broker Portal Enhancements** -- Phases 30-33 (shipped 2026-03-18)
+- **v4.0 Callback System + Call Reporting** -- Phases 34-37 (in progress)
 
 ## Phases
 
 <details>
-<summary>v1.0 MVP (Phases 1-5) — SHIPPED 2026-03-12</summary>
+<summary>v1.0 MVP (Phases 1-5) -- SHIPPED 2026-03-12</summary>
 
 - [x] Phase 1: Foundation + Assignment Engine (3/3 plans)
 - [x] Phase 2: Webhook Ingestion (2/2 plans)
@@ -24,7 +25,7 @@
 </details>
 
 <details>
-<summary>v1.1 Monitoring & Alerting (Phases 6-9) — SHIPPED 2026-03-13</summary>
+<summary>v1.1 Monitoring & Alerting (Phases 6-9) -- SHIPPED 2026-03-13</summary>
 
 - [x] Phase 6: Alert Foundation (2/2 plans)
 - [x] Phase 7: Real-time Alerts (1/1 plan)
@@ -34,7 +35,7 @@
 </details>
 
 <details>
-<summary>v1.2 Broker Hours Enforcement (Phases 10-12) — SHIPPED 2026-03-13</summary>
+<summary>v1.2 Broker Hours Enforcement (Phases 10-12) -- SHIPPED 2026-03-13</summary>
 
 - [x] Phase 10: Hours-Aware Delivery (1/1 plan)
 - [x] Phase 11: Queue Processing (1/1 plan)
@@ -43,7 +44,7 @@
 </details>
 
 <details>
-<summary>v2.0 Smart Scoring Engine (Phases 13-17) — SHIPPED 2026-03-17</summary>
+<summary>v2.0 Smart Scoring Engine (Phases 13-17) -- SHIPPED 2026-03-17</summary>
 
 - [x] Phase 13: Order Model Expansion (2/2 plans)
 - [x] Phase 14: Pre-flight Validation (2/2 plans)
@@ -54,7 +55,7 @@
 </details>
 
 <details>
-<summary>v2.1 Dashboard Analytics (Phases 18-21) — SHIPPED 2026-03-17</summary>
+<summary>v2.1 Dashboard Analytics (Phases 18-21) -- SHIPPED 2026-03-17</summary>
 
 - [x] Phase 18: Dashboard Filters (2/2 plans)
 - [x] Phase 19: Comparison Mode (1/1 plan)
@@ -64,7 +65,7 @@
 </details>
 
 <details>
-<summary>v3.0 Broker Portal (Phases 22-29) — SHIPPED 2026-03-17</summary>
+<summary>v3.0 Broker Portal (Phases 22-29) -- SHIPPED 2026-03-17</summary>
 
 - [x] Phase 22: Broker Auth (2/2 plans)
 - [x] Phase 23: Data Isolation (1/1 plan)
@@ -77,14 +78,24 @@
 
 </details>
 
-### v3.1 Broker Portal Enhancements
+<details>
+<summary>v3.1 Broker Portal Enhancements (Phases 30-33) -- SHIPPED 2026-03-18</summary>
 
-**Milestone Goal:** Enhance the broker portal with reorder flow (paid via Stripe), lead search/filters, delivery transparency, and export/analytics. All work isolated to portal directories. Zero impact on admin dashboard.
+- [x] Phase 30: Broker Reorder (1/1 plan)
+- [x] Phase 31: Lead Search & Filters (1/1 plan)
+- [x] Phase 32: Delivery Transparency (1/1 plan)
+- [x] Phase 33: Export & Analytics (2/2 plans)
 
-- [x] **Phase 30: Broker Reorder** - Reorder completed orders with pre-filled Stripe Checkout payment (completed 2026-03-18)
-- [x] **Phase 31: Lead Search & Filters** - Name search, vertical/delivery status filters on broker leads page (completed 2026-03-18)
-- [x] **Phase 32: Delivery Transparency** - Per-lead delivery attempt history with channel, status, and timestamps (completed 2026-03-18)
-- [x] **Phase 33: Export & Analytics** - CSV export for leads, monthly spend trend chart on dashboard (completed 2026-03-18)
+</details>
+
+### v4.0 Callback System + Call Reporting
+
+**Milestone Goal:** Enable callback scheduling when brokers are unavailable during Retell call transfers, with full call outcome logging and a reporting dashboard.
+
+- [ ] **Phase 34: Callback API + Broker Availability** - Callbacks table, booking/cancellation API, immediate webhook notifications, and broker availability in leads lookup
+- [ ] **Phase 35: Call Logging** - Call logs table and API for Retell to log every call outcome
+- [ ] **Phase 36: Callback Scheduling** - pg_cron job firing reminder and due-time webhooks for upcoming callbacks
+- [ ] **Phase 37: Call Reporting Dashboard** - Admin dashboard page with call outcome KPIs, charts, filters, and upcoming callbacks list
 
 ## Phase Details
 
@@ -178,6 +189,9 @@
 
 </details>
 
+<details>
+<summary>v3.1 Phase Details (Shipped)</summary>
+
 ### Phase 30: Broker Reorder
 **Goal**: Brokers can reorder a completed order with one click, paying via Stripe Checkout with pre-filled parameters
 **Depends on**: Phase 25 (existing order creation + Stripe payment infrastructure)
@@ -187,10 +201,7 @@
   2. Clicking "Reorder" opens the order form pre-filled with the original order's vertical, credit tier, and lead count
   3. Submitting the reorder redirects to Stripe Checkout with the correct amount (same payment flow as new orders)
   4. The new order only appears in the broker's portal after Stripe payment succeeds (no order created on abandoned checkout)
-**Plans**: 1 plan
-
-Plans:
-- [x] 30-01-PLAN.md -- Reorder flow (UI button, pre-filled form, Stripe Checkout redirect)
+**Plans**: 1 plan (complete)
 
 ### Phase 31: Lead Search & Filters
 **Goal**: Brokers can quickly find specific leads using name search and vertical/delivery status filters
@@ -201,10 +212,7 @@ Plans:
   2. Broker can select a vertical from a dropdown to filter leads by that vertical
   3. Broker can select a delivery status from a dropdown to filter leads by delivery outcome
   4. Applying any combination of search and filters resets pagination to page 1 and works correctly with the existing paginator
-**Plans**: 1 plan
-
-Plans:
-- [x] 31-01-PLAN.md -- Search input, vertical/delivery status dropdowns, pagination integration with filter persistence
+**Plans**: 1 plan (complete)
 
 ### Phase 32: Delivery Transparency
 **Goal**: Brokers can see the full delivery history for any lead, including every attempt with channel, status, and timing
@@ -214,10 +222,7 @@ Plans:
   1. Broker can expand or click into any lead row to view its delivery attempt history
   2. Each delivery attempt shows the channel used (webhook, email, or SMS), whether it succeeded or failed, and when it happened
   3. Failed delivery attempts display the error reason and whether a retry was attempted
-**Plans**: 1 plan
-
-Plans:
-- [x] 32-01-PLAN.md -- Expandable lead rows with delivery attempt timeline (channel/status/error/retry details)
+**Plans**: 1 plan (complete)
 
 ### Phase 33: Export & Analytics
 **Goal**: Brokers can export their lead data as CSV and view spend trends over time on their dashboard
@@ -226,16 +231,72 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Broker can click an export button on the leads page and download a CSV file containing their filtered leads with all visible columns
   2. Broker's portal dashboard includes a monthly spend trend chart showing spend amounts per month over time
-**Plans:** 2/2 plans complete
+**Plans**: 2 plans (complete)
+
+</details>
+
+### Phase 34: Callback API + Broker Availability
+**Goal**: Retell can book and cancel callbacks for unavailable brokers, with immediate webhook notification to the broker's CRM
+**Depends on**: Nothing (first phase of v4.0, builds on existing brokers + leads tables and webhook infrastructure)
+**Requirements**: CALL-01, CALL-02, CALL-05, CALL-06, CALL-07, AVAIL-01
+**Success Criteria** (what must be TRUE):
+  1. POST /api/callbacks with lead_id, broker_id, and scheduled_time creates a callback record and returns 201 with the callback data
+  2. Creating a callback immediately fires a callback_created webhook to the broker's crm_webhook_url with full lead + broker payload and type discriminator
+  3. DELETE /api/callbacks/[id] marks the callback as cancelled and immediately fires a callback_cancelled webhook to the broker's crm_webhook_url
+  4. GET /api/leads/lookup response includes the matched broker's contact_hours, timezone, and weekend_pause fields
+  5. All callback webhooks include the type field (callback_created, callback_cancelled) plus full lead and broker details in the payload
+**Plans**: TBD
 
 Plans:
-- [x] 33-01-PLAN.md -- CSV export (server action to generate CSV from filtered leads, download trigger on leads page)
-- [ ] 33-02-PLAN.md -- Spend trend chart (monthly aggregation query, recharts bar chart on portal dashboard)
+- [ ] 34-01: Callbacks table, booking API, cancellation API, and immediate webhook notifications
+- [ ] 34-02: Broker availability extension to leads lookup endpoint
+
+### Phase 35: Call Logging
+**Goal**: Retell can log every call outcome so the system has a complete record of all calls for reporting
+**Depends on**: Nothing (independent table, no dependency on callbacks)
+**Requirements**: LOG-01, LOG-02, LOG-03
+**Success Criteria** (what must be TRUE):
+  1. POST /api/call-logs with lead_id, broker_id, outcome, duration, and retell_call_id creates a call log record and returns 201
+  2. The outcome field only accepts the four valid values: transferred, callback_booked, no_answer, voicemail
+  3. Call logs are queryable by broker_id and date range (needed by Phase 37 reporting)
+**Plans**: TBD
+
+Plans:
+- [ ] 35-01: Call logs table, API endpoint, and input validation
+
+### Phase 36: Callback Scheduling
+**Goal**: Brokers receive automated reminder and due-time webhook notifications for upcoming callbacks without any manual intervention
+**Depends on**: Phase 34 (callbacks table must exist with scheduled_time and status fields)
+**Requirements**: CALL-03, CALL-04
+**Success Criteria** (what must be TRUE):
+  1. A pg_cron job fires a callback_reminder webhook to the broker's crm_webhook_url approximately 15 minutes before the callback's scheduled time
+  2. A pg_cron job fires a callback_due webhook to the broker's crm_webhook_url at the callback's scheduled time
+  3. Only pending (non-cancelled, non-completed) callbacks receive reminder and due webhooks
+  4. Webhooks include the same full lead + broker payload format as callback_created (type discriminator: callback_reminder, callback_due)
+**Plans**: TBD
+
+Plans:
+- [ ] 36-01: pg_cron scheduler and edge function for callback reminder and due-time webhooks
+
+### Phase 37: Call Reporting Dashboard
+**Goal**: Admin can see a complete picture of call activity and upcoming callbacks from a dedicated reporting page
+**Depends on**: Phase 34 (callbacks data), Phase 35 (call logs data)
+**Requirements**: RPT-01, RPT-02, RPT-03, RPT-04
+**Success Criteria** (what must be TRUE):
+  1. Admin sees a call reporting page with KPI cards showing total calls, transferred count, callbacks booked count, no answer count, and voicemail count
+  2. A call outcome chart (bar or area) shows outcome distribution over time, adapting to the selected date range
+  3. A broker dropdown filter scopes all KPIs and charts to a single broker's data
+  4. An upcoming callbacks section lists scheduled callbacks with lead name, broker name, scheduled time, and status
+**Plans**: TBD
+
+Plans:
+- [ ] 37-01: Call reporting page with KPI cards and broker filter
+- [ ] 37-02: Call outcome chart and upcoming callbacks list
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 30 -> 31 -> 32 -> 33
+Phases execute in numeric order: 34 -> 35 -> 36 -> 37
 
 | Phase | Milestone | Plans | Status | Completed |
 |-------|-----------|-------|--------|-----------|
@@ -245,9 +306,10 @@ Phases execute in numeric order: 30 -> 31 -> 32 -> 33
 | 13-17 | v2.0 Scoring | 9/9 | Complete | 2026-03-17 |
 | 18-21 | v2.1 Analytics | 5/5 | Complete | 2026-03-17 |
 | 22-29 | v3.0 Portal | 14/14 | Complete | 2026-03-17 |
-| 30. Broker Reorder | 1/1 | Complete    | 2026-03-18 | - |
-| 31. Lead Search & Filters | 1/1 | Complete    | 2026-03-18 | - |
-| 32. Delivery Transparency | 1/1 | Complete    | 2026-03-18 | - |
-| 33. Export & Analytics | 2/2 | Complete    | 2026-03-18 | - |
+| 30-33 | v3.1 Enhancements | 5/5 | Complete | 2026-03-18 |
+| 34. Callback API + Broker Availability | v4.0 | 0/2 | Not started | - |
+| 35. Call Logging | v4.0 | 0/1 | Not started | - |
+| 36. Callback Scheduling | v4.0 | 0/1 | Not started | - |
+| 37. Call Reporting Dashboard | v4.0 | 0/2 | Not started | - |
 
-**Total: 33 phases, 60 plans across 7 milestones**
+**Total: 37 phases, 66 plans across 8 milestones**

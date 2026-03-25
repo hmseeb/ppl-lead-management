@@ -48,7 +48,7 @@ Deferred to future release.
 
 - **RPT-05**: Broker-facing call history in portal
 - **RPT-06**: Call outcome CSV export
-- **RPT-07**: Conversion tracking (callback → deal closed)
+- **RPT-07**: Conversion tracking (callback -> deal closed)
 
 ## Out of Scope
 
@@ -66,27 +66,27 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CALL-01 | — | Pending |
-| CALL-02 | — | Pending |
-| CALL-03 | — | Pending |
-| CALL-04 | — | Pending |
-| CALL-05 | — | Pending |
-| CALL-06 | — | Pending |
-| CALL-07 | — | Pending |
-| LOG-01 | — | Pending |
-| LOG-02 | — | Pending |
-| LOG-03 | — | Pending |
-| AVAIL-01 | — | Pending |
-| RPT-01 | — | Pending |
-| RPT-02 | — | Pending |
-| RPT-03 | — | Pending |
-| RPT-04 | — | Pending |
+| CALL-01 | Phase 34 | Pending |
+| CALL-02 | Phase 34 | Pending |
+| CALL-03 | Phase 36 | Pending |
+| CALL-04 | Phase 36 | Pending |
+| CALL-05 | Phase 34 | Pending |
+| CALL-06 | Phase 34 | Pending |
+| CALL-07 | Phase 34 | Pending |
+| LOG-01 | Phase 35 | Pending |
+| LOG-02 | Phase 35 | Pending |
+| LOG-03 | Phase 35 | Pending |
+| AVAIL-01 | Phase 34 | Pending |
+| RPT-01 | Phase 37 | Pending |
+| RPT-02 | Phase 37 | Pending |
+| RPT-03 | Phase 37 | Pending |
+| RPT-04 | Phase 37 | Pending |
 
 **Coverage:**
 - v4.0 requirements: 15 total
-- Mapped to phases: 0
-- Unmapped: 15
+- Mapped to phases: 15
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-25*
-*Last updated: 2026-03-25 after initial definition*
+*Last updated: 2026-03-25 after roadmap creation*

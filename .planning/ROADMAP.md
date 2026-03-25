@@ -248,8 +248,8 @@
 **Plans**: 2 plans
 
 Plans:
-- [ ] 34-01: Callbacks table, booking API, cancellation API, and immediate webhook notifications
-- [ ] 34-02: Broker availability extension to leads lookup endpoint
+- [x] 34-01-PLAN.md -- Callbacks table, booking API, cancellation API, and immediate webhook notifications
+- [x] 34-02-PLAN.md -- Broker availability extension to leads lookup endpoint
 
 ### Phase 35: Call Logging
 **Goal**: Retell can log every call outcome so the system has a complete record of all calls for reporting
@@ -262,7 +262,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 35-01: Call logs table, API endpoint, and input validation
+- [x] 35-01-PLAN.md -- Call logs table, API endpoint, and input validation
 
 ### Phase 36: Callback Scheduling
 **Goal**: Brokers receive automated reminder and due-time webhook notifications for upcoming callbacks without any manual intervention
@@ -276,7 +276,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 36-01: pg_cron scheduler and edge function for callback reminder and due-time webhooks
+- [x] 36-01-PLAN.md -- pg_cron scheduler and edge function for callback reminder and due-time webhooks
 
 ### Phase 37: Call Reporting Dashboard
 **Goal**: Admin can see a complete picture of call activity and upcoming callbacks from a dedicated reporting page
@@ -287,11 +287,11 @@ Plans:
   2. A call outcome chart (bar or area) shows outcome distribution over time, adapting to the selected date range
   3. A broker dropdown filter scopes all KPIs and charts to a single broker's data
   4. An upcoming callbacks section lists scheduled callbacks with lead name, broker name, scheduled time, and status
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 37-01: Call reporting page with KPI cards and broker filter
-- [ ] 37-02: Call outcome chart and upcoming callbacks list
+- [ ] 37-01-PLAN.md -- Call reporting page with KPI cards and broker/date filters
+- [ ] 37-02-PLAN.md -- Call outcome chart and upcoming callbacks list
 
 ## Progress
 
@@ -312,4 +312,4 @@ Phases execute in numeric order: 34 -> 35 -> 36 -> 37
 | 36. Callback Scheduling | 1/1 | Complete    | 2026-03-25 | - |
 | 37. Call Reporting Dashboard | v4.0 | 0/2 | Not started | - |
 
-**Total: 37 phases, 66 plans across 8 milestones**
+**Total: 37 phases, 68 plans across 8 milestones**

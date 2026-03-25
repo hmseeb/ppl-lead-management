@@ -273,7 +273,7 @@ Plans:
   2. A pg_cron job fires a callback_due webhook to the broker's crm_webhook_url at the callback's scheduled time
   3. Only pending (non-cancelled, non-completed) callbacks receive reminder and due webhooks
   4. Webhooks include the same full lead + broker payload format as callback_created (type discriminator: callback_reminder, callback_due)
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
 - [ ] 36-01: pg_cron scheduler and edge function for callback reminder and due-time webhooks

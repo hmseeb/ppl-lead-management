@@ -30,9 +30,9 @@ Requirements for Callback System + Call Reporting milestone. Each maps to roadma
 ### Reporting
 
 - [x] **RPT-01**: Admin dashboard page showing call outcome KPI cards (total calls, transferred, callbacks booked, no answer, voicemail)
-- [ ] **RPT-02**: Call outcome chart with date range filtering
+- [x] **RPT-02**: Call outcome chart with date range filtering
 - [x] **RPT-03**: Broker filter scoping all reporting KPIs to a single broker
-- [ ] **RPT-04**: Upcoming callbacks list showing scheduled callbacks with lead/broker details
+- [x] **RPT-04**: Upcoming callbacks list showing scheduled callbacks with lead/broker details
 
 ## Future Requirements
 
@@ -78,9 +78,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LOG-03 | Phase 35 | Complete |
 | AVAIL-01 | Phase 34 | Complete |
 | RPT-01 | Phase 37 | Complete |
-| RPT-02 | Phase 37 | Pending |
+| RPT-02 | Phase 37 | Complete |
 | RPT-03 | Phase 37 | Complete |
-| RPT-04 | Phase 37 | Pending |
+| RPT-04 | Phase 37 | Complete |
 
 **Coverage:**
 - v4.0 requirements: 15 total

@@ -245,7 +245,7 @@
   3. DELETE /api/callbacks/[id] marks the callback as cancelled and immediately fires a callback_cancelled webhook to the broker's crm_webhook_url
   4. GET /api/leads/lookup response includes the matched broker's contact_hours, timezone, and weekend_pause fields
   5. All callback webhooks include the type field (callback_created, callback_cancelled) plus full lead and broker details in the payload
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [ ] 34-01: Callbacks table, booking API, cancellation API, and immediate webhook notifications

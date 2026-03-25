@@ -1,125 +1,92 @@
 # Requirements: PPL Lead Management
 
-**Defined:** 2026-03-18
-**Core Value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail of why each assignment was made.
+**Defined:** 2026-03-25
+**Core Value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
 
-## v3.0 Requirements (Shipped)
+## v4.0 Requirements
 
-### Broker Auth
+Requirements for Callback System + Call Reporting milestone. Each maps to roadmap phases.
 
-- [x] **AUTH-01**: Broker enters email on /portal/login, receives magic link, clicks to authenticate
-- [x] **AUTH-02**: Magic link creates a session scoped to the broker's ID (iron-session with broker_id)
-- [x] **AUTH-03**: Portal middleware protects all /portal/* routes, redirects unauthenticated to /portal/login
-- [x] **AUTH-04**: Admin can invite a broker by triggering a magic link email from the admin dashboard
+### Callbacks
 
-### Broker Dashboard
+- [ ] **CALL-01**: Retell can book a callback via POST /api/callbacks with lead_id, broker_id, and scheduled time
+- [ ] **CALL-02**: Callback booking immediately fires callback_created webhook to broker's crm_webhook_url
+- [ ] **CALL-03**: pg_cron fires callback_reminder webhook 15 minutes before scheduled time
+- [ ] **CALL-04**: pg_cron fires callback_due webhook at the scheduled callback time
+- [ ] **CALL-05**: Admin or Retell can cancel a callback via DELETE /api/callbacks/[id]
+- [ ] **CALL-06**: Cancellation fires callback_cancelled webhook to broker's crm_webhook_url
+- [ ] **CALL-07**: All webhooks include full lead + broker payload with type discriminator
 
-- [x] **DASH-01**: Portal home shows active orders with progress bars (leads_delivered / total_leads)
-- [x] **DASH-02**: Portal home shows last 20 leads delivered to the broker with name, vertical, credit score, time
-- [x] **DASH-03**: Portal home shows spend summary (total spent all-time, this month, active order value)
-- [x] **DASH-04**: Portal home shows delivery health (webhook/email/SMS success rates for this broker)
+### Call Logging
 
-### Pricing
+- [ ] **LOG-01**: Retell can log call outcomes via POST /api/call-logs
+- [ ] **LOG-02**: Call log captures: lead_id, broker_id, outcome, duration, retell_call_id
+- [ ] **LOG-03**: Supported outcomes: transferred, callback_booked, no_answer, voicemail
 
-- [x] **PRICE-01**: Admin can manage a pricing table in Settings (vertical x credit_tier = price per lead in cents)
-- [x] **PRICE-02**: Pricing table has default prices and supports per-broker overrides
-- [x] **PRICE-03**: Order creation form shows calculated total (lead_count x price_per_lead) before checkout
+### Broker Availability
 
-### Order Creation + Payment
+- [ ] **AVAIL-01**: GET /api/leads/lookup returns broker contact_hours, timezone, and weekend_pause in response
 
-- [x] **ORDER-01**: Broker can create an order: select vertical, credit tier minimum, lead count
-- [x] **ORDER-02**: Order creation redirects to Stripe Checkout with correct line items and amount
-- [x] **ORDER-03**: Stripe webhook (checkout.session.completed) creates the order in the database and marks it active
-- [x] **ORDER-04**: Failed or abandoned checkout does not create an order
-- [x] **ORDER-05**: Order record stores stripe_checkout_session_id and stripe_payment_intent_id for traceability
+### Reporting
 
-### Broker Self-Service
+- [ ] **RPT-01**: Admin dashboard page showing call outcome KPI cards (total calls, transferred, callbacks booked, no answer, voicemail)
+- [ ] **RPT-02**: Call outcome chart with date range filtering
+- [ ] **RPT-03**: Broker filter scoping all reporting KPIs to a single broker
+- [ ] **RPT-04**: Upcoming callbacks list showing scheduled callbacks with lead/broker details
 
-- [x] **SELF-01**: Broker can pause and resume their own active orders
-- [x] **SELF-02**: Broker can update their webhook URL and delivery method preferences
-- [x] **SELF-03**: Broker can update their contact hours and timezone
-- [x] **SELF-04**: Broker cannot cancel or delete paid orders (admin-only action)
+## Future Requirements
 
-### Lead Visibility
+Deferred to future release.
 
-- [x] **LEAD-01**: Broker can view a paginated list of leads assigned to them
-- [x] **LEAD-02**: Each lead shows name, vertical, credit score, funding amount, delivery status, time
-- [x] **LEAD-03**: Broker cannot see leads assigned to other brokers (RLS enforced)
+### Callback Enhancements
 
-### Spend & Billing
+- **CALL-08**: Callback rescheduling (change time without cancel+rebook)
+- **CALL-09**: Max callback attempts before marking lead as unreachable
+- **CALL-10**: Email/SMS fallback notification to broker (in addition to webhook)
 
-- [x] **BILL-01**: Broker can view order history with amount paid, date, status, leads delivered
-- [x] **BILL-02**: Broker can access Stripe-hosted receipts/invoices for each paid order
-- [x] **BILL-03**: Admin dashboard shows revenue summary (total revenue, by broker, by vertical)
+### Reporting Enhancements
 
-### Data Isolation
-
-- [x] **ISO-01**: All portal queries filter by authenticated broker_id (server-side, not client-side)
-- [x] **ISO-02**: Supabase RLS policies enforce broker can only read their own leads, orders, and deliveries
-- [x] **ISO-03**: Portal API routes validate broker_id matches session before any mutation
-
-## v3.1 Requirements
-
-Requirements for Broker Portal Enhancements milestone. Each maps to roadmap phases.
-
-### Reorder
-
-- [x] **REORD-01**: Broker can click "Reorder" on a completed order in the portal
-- [x] **REORD-02**: Reorder pre-fills the order form with previous order's vertical, credit tier, and lead count
-- [x] **REORD-03**: Reorder routes through Stripe Checkout (same payment flow as new order)
-- [x] **REORD-04**: New order is created only after successful Stripe payment
-
-### Lead Search & Filters
-
-- [x] **LSRCH-01**: Broker can search their leads by name
-- [x] **LSRCH-02**: Broker can filter leads by vertical
-- [x] **LSRCH-03**: Broker can filter leads by delivery status
-- [x] **LSRCH-04**: Filters work alongside existing pagination
-
-### Delivery Transparency
-
-- [x] **DLVR-01**: Broker can view delivery attempt history for each lead
-- [x] **DLVR-02**: Each attempt shows channel (webhook/email/SMS), status, and timestamp
-- [x] **DLVR-03**: Failed attempts show error reason and retry info
-
-### Export & Analytics
-
-- [x] **EXPT-01**: Broker can export their leads table as CSV
-- [x] **EXPT-02**: Broker can view a monthly spend trend chart on the dashboard
+- **RPT-05**: Broker-facing call history in portal
+- **RPT-06**: Call outcome CSV export
+- **RPT-07**: Conversion tracking (callback → deal closed)
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Free broker reorder (no payment) | Brokers must pay for each order via Stripe, admin free reorder stays |
-| Broker order editing | Only admin can edit existing orders |
-| Bulk lead operations | Not a current use case |
-| Lead reassignment by broker | Admin-only action |
-| Real-time delivery notifications | Already handled by GHL delivery channels |
-| PDF export | CSV sufficient for now |
+| GHL calendar integration | pg_cron handles scheduling, brokers can't see GHL calendars in main sub-account |
+| Lead self-service booking UI | Retell handles conversation, no web form needed |
+| Real-time call monitoring | Out of scope for callback scheduling |
+| Call recording storage | Retell handles this natively |
+| Priority callbacks | All callbacks treated equally, no queue jumping |
 
 ## Traceability
 
+Which phases cover which requirements. Updated during roadmap creation.
+
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| REORD-01 | Phase 30 | Complete |
-| REORD-02 | Phase 30 | Complete |
-| REORD-03 | Phase 30 | Complete |
-| REORD-04 | Phase 30 | Complete |
-| LSRCH-01 | Phase 31 | Complete |
-| LSRCH-02 | Phase 31 | Complete |
-| LSRCH-03 | Phase 31 | Complete |
-| LSRCH-04 | Phase 31 | Complete |
-| DLVR-01 | Phase 32 | Complete |
-| DLVR-02 | Phase 32 | Complete |
-| DLVR-03 | Phase 32 | Complete |
-| EXPT-01 | Phase 33 | Complete |
-| EXPT-02 | Phase 33 | Complete |
+| CALL-01 | — | Pending |
+| CALL-02 | — | Pending |
+| CALL-03 | — | Pending |
+| CALL-04 | — | Pending |
+| CALL-05 | — | Pending |
+| CALL-06 | — | Pending |
+| CALL-07 | — | Pending |
+| LOG-01 | — | Pending |
+| LOG-02 | — | Pending |
+| LOG-03 | — | Pending |
+| AVAIL-01 | — | Pending |
+| RPT-01 | — | Pending |
+| RPT-02 | — | Pending |
+| RPT-03 | — | Pending |
+| RPT-04 | — | Pending |
 
 **Coverage:**
-- v3.1 requirements: 13 total
-- Mapped to phases: 13
-- Unmapped: 0
+- v4.0 requirements: 15 total
+- Mapped to phases: 0
+- Unmapped: 15
 
 ---
-*Requirements defined: 2026-03-18*
+*Requirements defined: 2026-03-25*
+*Last updated: 2026-03-25 after initial definition*

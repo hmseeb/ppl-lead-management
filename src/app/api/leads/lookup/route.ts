@@ -53,7 +53,7 @@ export async function GET(request: Request) {
   // Lead is assigned, fetch broker
   const { data: broker, error: brokerError } = await supabase
     .from('brokers')
-    .select('id, first_name, last_name, email, phone, company_name, ghl_contact_id, contact_hours, timezone, weekend_pause')
+    .select('id, first_name, last_name, email, phone, company, company_name, ghl_contact_id, contact_hours, timezone, weekend_pause')
     .eq('id', lead.assigned_broker_id)
     .single()
 
@@ -83,7 +83,7 @@ export async function GET(request: Request) {
       name: [broker.first_name, broker.last_name].filter(Boolean).join(' ') || null,
       email: ghlDetails?.email ?? broker.email,
       phone: ghlDetails?.phone ?? broker.phone,
-      company: ghlDetails?.companyName ?? broker.company_name,
+      company: ghlDetails?.companyName || broker.company_name || broker.company || null,
       ghl_contact_id: broker.ghl_contact_id,
       availability: {
         contact_hours: broker.contact_hours ?? 'anytime',

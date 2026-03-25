@@ -259,7 +259,7 @@ Plans:
   1. POST /api/call-logs with lead_id, broker_id, outcome, duration, and retell_call_id creates a call log record and returns 201
   2. The outcome field only accepts the four valid values: transferred, callback_booked, no_answer, voicemail
   3. Call logs are queryable by broker_id and date range (needed by Phase 37 reporting)
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
 - [ ] 35-01: Call logs table, API endpoint, and input validation

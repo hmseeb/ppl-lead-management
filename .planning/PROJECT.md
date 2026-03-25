@@ -64,13 +64,20 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 - ✓ Broker lead visibility: their assigned leads with delivery status — v3.0
 - ✓ Broker spend history with Stripe receipts — v3.0
 - ✓ Strict data isolation (broker sees only their own data) — v3.0
+- ✓ Broker reorder with Stripe Checkout payment — v3.1
+- ✓ Broker lead search and filtering (name, vertical, delivery status) — v3.1
+- ✓ Broker delivery transparency (per-lead attempt history with timestamps) — v3.1
+- ✓ Broker CSV export for leads and spend trend charts — v3.1
 
 ### Active
 
-- [ ] Broker reorder with payment (completed orders → pre-filled checkout → Stripe payment → new order)
-- [ ] Broker lead search and filtering (name search, vertical/delivery status filters)
-- [ ] Broker delivery transparency (attempt history per lead, success/fail with timestamps)
-- [ ] Broker export and analytics (CSV export for leads, spend trends over time)
+- [ ] Callback booking API for Retell when broker is unavailable
+- [ ] Extend leads lookup endpoint to return broker availability/contact hours
+- [ ] Call logs table + API for Retell to log every call outcome
+- [ ] Webhook notifications to broker CRM: callback_created, callback_reminder, callback_due, callback_cancelled
+- [ ] pg_cron scheduler firing reminder (15 min before) and due (at time) webhooks
+- [ ] Callback cancellation API
+- [ ] Call reporting dashboard with totals and charts (transferred, booked, no answer, voicemail)
 
 ### Out of Scope
 
@@ -130,15 +137,17 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 | Inner join for delivery vertical filtering | Deliveries lack vertical column, join through leads table | ✓ Good |
 
 ---
-## Current Milestone: v3.1 Broker Portal Enhancements
+## Current Milestone: v4.0 Callback System + Call Reporting
 
-**Goal:** Enhance the broker portal with reorder flow (paid via Stripe), lead search/filters, delivery transparency, and export/analytics. All work isolated to portal directories.
+**Goal:** Enable callback scheduling when brokers are unavailable during Retell call transfers, with full call outcome logging and a reporting dashboard.
 
 **Target features:**
-- Reorder completed orders with pre-filled Stripe checkout
-- Lead search by name and filtering by vertical/delivery status
-- Per-lead delivery attempt history with timestamps
-- CSV export for leads table and spend trend charts
+- Callback booking + cancellation API for Retell integration
+- Broker availability in leads lookup response
+- Call outcome logging from Retell (transferred, callback_booked, no_answer, voicemail)
+- Webhook notifications to broker CRM at callback lifecycle events
+- pg_cron scheduler for reminder and due-time webhook delivery
+- Call reporting dashboard with outcome totals and charts
 
 ---
-*Last updated: 2026-03-18 after v3.1 milestone start*
+*Last updated: 2026-03-25 after v4.0 milestone start*

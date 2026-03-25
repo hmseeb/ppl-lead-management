@@ -86,9 +86,9 @@ export async function GET(request: Request) {
       company: ghlDetails?.companyName ?? broker.company_name,
       ghl_contact_id: broker.ghl_contact_id,
       availability: {
-        contact_hours: broker.contact_hours,
-        timezone: broker.timezone,
-        weekend_pause: broker.weekend_pause,
+        contact_hours: broker.contact_hours ?? 'anytime',
+        timezone: broker.timezone ?? 'America/Los_Angeles',
+        weekend_pause: broker.weekend_pause ?? false,
       },
     },
   })

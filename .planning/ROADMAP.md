@@ -94,7 +94,7 @@
 
 - [x] **Phase 34: Callback API + Broker Availability** - Callbacks table, booking/cancellation API, immediate webhook notifications, and broker availability in leads lookup (completed 2026-03-25)
 - [x] **Phase 35: Call Logging** - Call logs table and API for Retell to log every call outcome (completed 2026-03-25)
-- [ ] **Phase 36: Callback Scheduling** - pg_cron job firing reminder and due-time webhooks for upcoming callbacks
+- [x] **Phase 36: Callback Scheduling** - pg_cron job firing reminder and due-time webhooks for upcoming callbacks (completed 2026-03-25)
 - [ ] **Phase 37: Call Reporting Dashboard** - Admin dashboard page with call outcome KPIs, charts, filters, and upcoming callbacks list
 
 ## Phase Details
@@ -309,7 +309,7 @@ Phases execute in numeric order: 34 -> 35 -> 36 -> 37
 | 30-33 | v3.1 Enhancements | 5/5 | Complete | 2026-03-18 |
 | 34. Callback API + Broker Availability | 2/2 | Complete    | 2026-03-25 | - |
 | 35. Call Logging | 1/1 | Complete    | 2026-03-25 | - |
-| 36. Callback Scheduling | v4.0 | 0/1 | Not started | - |
+| 36. Callback Scheduling | 1/1 | Complete   | 2026-03-25 | - |
 | 37. Call Reporting Dashboard | v4.0 | 0/2 | Not started | - |
 
 **Total: 37 phases, 66 plans across 8 milestones**

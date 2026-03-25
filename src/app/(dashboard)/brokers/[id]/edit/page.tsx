@@ -43,7 +43,7 @@ export default async function EditBrokerPage({
           last_name: broker.last_name ?? '',
           email: broker.email ?? '',
           phone: broker.phone ?? '',
-          company_name: broker.company_name ?? '',
+          company_name: broker.company_name || broker.company || '',
           state: broker.state ?? '',
           primary_vertical: (broker.primary_vertical ?? '') as BrokerFormData['primary_vertical'],
           secondary_vertical: (broker.secondary_vertical ?? '') as BrokerFormData['secondary_vertical'],

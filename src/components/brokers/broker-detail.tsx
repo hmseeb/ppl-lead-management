@@ -27,7 +27,7 @@ export function BrokerDetail({ broker, orders, leads, queuedDeliveries }: {
         <CardContent>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div><span className="text-muted-foreground">Name:</span> {broker.first_name} {broker.last_name}</div>
-            <div><span className="text-muted-foreground">Company:</span> {broker.company || '-'}</div>
+            <div><span className="text-muted-foreground">Company:</span> {broker.company || broker.company_name || '-'}</div>
             <div><span className="text-muted-foreground">Email:</span> {broker.email}</div>
             <div><span className="text-muted-foreground">Phone:</span> {broker.phone || '-'}</div>
             <div><span className="text-muted-foreground">GHL Webhook:</span> {broker.crm_webhook_url || 'Not set'}</div>

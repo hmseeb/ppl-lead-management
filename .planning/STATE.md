@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 Phase: 37 of 37 (Call Reporting Dashboard)
 Plan: 2 of 2 in current phase
 Status: All plans executed, pending verification
-Last activity: 2026-03-25 -- Phase 37 plans executed
+Last activity: 2026-03-25 - Completed quick task 4: Add GET /api/callbacks endpoint with filters
 
 Progress: [██████████] 100% (6/6 plans)
 
@@ -43,6 +43,12 @@ None.
 ### Blockers/Concerns
 
 None.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 4 | Add GET /api/callbacks endpoint with filters | 2026-03-25 | 7076bac | [4-add-get-api-callbacks-endpoint-with-filt](./quick/4-add-get-api-callbacks-endpoint-with-filt/) |
 
 ## Session Continuity
 

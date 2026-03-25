@@ -307,7 +307,7 @@ Phases execute in numeric order: 34 -> 35 -> 36 -> 37
 | 18-21 | v2.1 Analytics | 5/5 | Complete | 2026-03-17 |
 | 22-29 | v3.0 Portal | 14/14 | Complete | 2026-03-17 |
 | 30-33 | v3.1 Enhancements | 5/5 | Complete | 2026-03-18 |
-| 34. Callback API + Broker Availability | v4.0 | 0/2 | Not started | - |
+| 34. Callback API + Broker Availability | 1/2 | In Progress|  | - |
 | 35. Call Logging | v4.0 | 0/1 | Not started | - |
 | 36. Callback Scheduling | v4.0 | 0/1 | Not started | - |
 | 37. Call Reporting Dashboard | v4.0 | 0/2 | Not started | - |

@@ -9,13 +9,13 @@ Requirements for Callback System + Call Reporting milestone. Each maps to roadma
 
 ### Callbacks
 
-- [ ] **CALL-01**: Retell can book a callback via POST /api/callbacks with lead_id, broker_id, and scheduled time
-- [ ] **CALL-02**: Callback booking immediately fires callback_created webhook to broker's crm_webhook_url
+- [x] **CALL-01**: Retell can book a callback via POST /api/callbacks with lead_id, broker_id, and scheduled time
+- [x] **CALL-02**: Callback booking immediately fires callback_created webhook to broker's crm_webhook_url
 - [ ] **CALL-03**: pg_cron fires callback_reminder webhook 15 minutes before scheduled time
 - [ ] **CALL-04**: pg_cron fires callback_due webhook at the scheduled callback time
-- [ ] **CALL-05**: Admin or Retell can cancel a callback via DELETE /api/callbacks/[id]
-- [ ] **CALL-06**: Cancellation fires callback_cancelled webhook to broker's crm_webhook_url
-- [ ] **CALL-07**: All webhooks include full lead + broker payload with type discriminator
+- [x] **CALL-05**: Admin or Retell can cancel a callback via DELETE /api/callbacks/[id]
+- [x] **CALL-06**: Cancellation fires callback_cancelled webhook to broker's crm_webhook_url
+- [x] **CALL-07**: All webhooks include full lead + broker payload with type discriminator
 
 ### Call Logging
 
@@ -66,13 +66,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CALL-01 | Phase 34 | Pending |
-| CALL-02 | Phase 34 | Pending |
+| CALL-01 | Phase 34 | Complete |
+| CALL-02 | Phase 34 | Complete |
 | CALL-03 | Phase 36 | Pending |
 | CALL-04 | Phase 36 | Pending |
-| CALL-05 | Phase 34 | Pending |
-| CALL-06 | Phase 34 | Pending |
-| CALL-07 | Phase 34 | Pending |
+| CALL-05 | Phase 34 | Complete |
+| CALL-06 | Phase 34 | Complete |
+| CALL-07 | Phase 34 | Complete |
 | LOG-01 | Phase 35 | Pending |
 | LOG-02 | Phase 35 | Pending |
 | LOG-03 | Phase 35 | Pending |

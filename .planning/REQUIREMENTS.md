@@ -25,7 +25,7 @@ Requirements for Callback System + Call Reporting milestone. Each maps to roadma
 
 ### Broker Availability
 
-- [ ] **AVAIL-01**: GET /api/leads/lookup returns broker contact_hours, timezone, and weekend_pause in response
+- [x] **AVAIL-01**: GET /api/leads/lookup returns broker contact_hours, timezone, and weekend_pause in response
 
 ### Reporting
 
@@ -76,7 +76,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LOG-01 | Phase 35 | Pending |
 | LOG-02 | Phase 35 | Pending |
 | LOG-03 | Phase 35 | Pending |
-| AVAIL-01 | Phase 34 | Pending |
+| AVAIL-01 | Phase 34 | Complete |
 | RPT-01 | Phase 37 | Pending |
 | RPT-02 | Phase 37 | Pending |
 | RPT-03 | Phase 37 | Pending |

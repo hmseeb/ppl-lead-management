@@ -19,9 +19,9 @@ Requirements for Callback System + Call Reporting milestone. Each maps to roadma
 
 ### Call Logging
 
-- [ ] **LOG-01**: Retell can log call outcomes via POST /api/call-logs
-- [ ] **LOG-02**: Call log captures: lead_id, broker_id, outcome, duration, retell_call_id
-- [ ] **LOG-03**: Supported outcomes: transferred, callback_booked, no_answer, voicemail
+- [x] **LOG-01**: Retell can log call outcomes via POST /api/call-logs
+- [x] **LOG-02**: Call log captures: lead_id, broker_id, outcome, duration, retell_call_id
+- [x] **LOG-03**: Supported outcomes: transferred, callback_booked, no_answer, voicemail
 
 ### Broker Availability
 
@@ -73,9 +73,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CALL-05 | Phase 34 | Complete |
 | CALL-06 | Phase 34 | Complete |
 | CALL-07 | Phase 34 | Complete |
-| LOG-01 | Phase 35 | Pending |
-| LOG-02 | Phase 35 | Pending |
-| LOG-03 | Phase 35 | Pending |
+| LOG-01 | Phase 35 | Complete |
+| LOG-02 | Phase 35 | Complete |
+| LOG-03 | Phase 35 | Complete |
 | AVAIL-01 | Phase 34 | Complete |
 | RPT-01 | Phase 37 | Pending |
 | RPT-02 | Phase 37 | Pending |

@@ -308,7 +308,7 @@ Phases execute in numeric order: 34 -> 35 -> 36 -> 37
 | 22-29 | v3.0 Portal | 14/14 | Complete | 2026-03-17 |
 | 30-33 | v3.1 Enhancements | 5/5 | Complete | 2026-03-18 |
 | 34. Callback API + Broker Availability | 2/2 | Complete    | 2026-03-25 | - |
-| 35. Call Logging | 1/1 | Complete   | 2026-03-25 | - |
+| 35. Call Logging | 1/1 | Complete    | 2026-03-25 | - |
 | 36. Callback Scheduling | v4.0 | 0/1 | Not started | - |
 | 37. Call Reporting Dashboard | v4.0 | 0/2 | Not started | - |
 

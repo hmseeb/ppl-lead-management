@@ -270,6 +270,54 @@ export type Database = {
           },
         ]
       }
+      call_logs: {
+        Row: {
+          broker_id: string
+          created_at: string
+          duration: number
+          id: string
+          lead_id: string
+          notes: string | null
+          outcome: string
+          retell_call_id: string
+        }
+        Insert: {
+          broker_id: string
+          created_at?: string
+          duration?: number
+          id?: string
+          lead_id: string
+          notes?: string | null
+          outcome: string
+          retell_call_id: string
+        }
+        Update: {
+          broker_id?: string
+          created_at?: string
+          duration?: number
+          id?: string
+          lead_id?: string
+          notes?: string | null
+          outcome?: string
+          retell_call_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_logs_broker_id_fkey"
+            columns: ["broker_id"]
+            isOneToOne: false
+            referencedRelation: "brokers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "call_logs_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       deliveries: {
         Row: {
           broker_id: string

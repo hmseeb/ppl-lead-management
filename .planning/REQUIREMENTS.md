@@ -11,8 +11,8 @@ Requirements for Callback System + Call Reporting milestone. Each maps to roadma
 
 - [x] **CALL-01**: Retell can book a callback via POST /api/callbacks with lead_id, broker_id, and scheduled time
 - [x] **CALL-02**: Callback booking immediately fires callback_created webhook to broker's crm_webhook_url
-- [ ] **CALL-03**: pg_cron fires callback_reminder webhook 15 minutes before scheduled time
-- [ ] **CALL-04**: pg_cron fires callback_due webhook at the scheduled callback time
+- [x] **CALL-03**: pg_cron fires callback_reminder webhook 15 minutes before scheduled time
+- [x] **CALL-04**: pg_cron fires callback_due webhook at the scheduled callback time
 - [x] **CALL-05**: Admin or Retell can cancel a callback via DELETE /api/callbacks/[id]
 - [x] **CALL-06**: Cancellation fires callback_cancelled webhook to broker's crm_webhook_url
 - [x] **CALL-07**: All webhooks include full lead + broker payload with type discriminator
@@ -68,8 +68,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | CALL-01 | Phase 34 | Complete |
 | CALL-02 | Phase 34 | Complete |
-| CALL-03 | Phase 36 | Pending |
-| CALL-04 | Phase 36 | Pending |
+| CALL-03 | Phase 36 | Complete |
+| CALL-04 | Phase 36 | Complete |
 | CALL-05 | Phase 34 | Complete |
 | CALL-06 | Phase 34 | Complete |
 | CALL-07 | Phase 34 | Complete |

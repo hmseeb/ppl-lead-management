@@ -309,7 +309,7 @@ Phases execute in numeric order: 34 -> 35 -> 36 -> 37
 | 30-33 | v3.1 Enhancements | 5/5 | Complete | 2026-03-18 |
 | 34. Callback API + Broker Availability | 2/2 | Complete    | 2026-03-25 | - |
 | 35. Call Logging | 1/1 | Complete    | 2026-03-25 | - |
-| 36. Callback Scheduling | 1/1 | Complete   | 2026-03-25 | - |
+| 36. Callback Scheduling | 1/1 | Complete    | 2026-03-25 | - |
 | 37. Call Reporting Dashboard | v4.0 | 0/2 | Not started | - |
 
 **Total: 37 phases, 66 plans across 8 milestones**

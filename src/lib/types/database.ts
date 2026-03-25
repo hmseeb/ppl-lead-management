@@ -12,31 +12,6 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.4"
   }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       activity_log: {
@@ -151,54 +126,6 @@ export type Database = {
         }
         Relationships: []
       }
-      callbacks: {
-        Row: {
-          id: string
-          lead_id: string
-          broker_id: string
-          scheduled_time: string
-          status: string
-          notes: string | null
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          lead_id: string
-          broker_id: string
-          scheduled_time: string
-          status?: string
-          notes?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          lead_id?: string
-          broker_id?: string
-          scheduled_time?: string
-          status?: string
-          notes?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "callbacks_lead_id_fkey"
-            columns: ["lead_id"]
-            isOneToOne: false
-            referencedRelation: "leads"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "callbacks_broker_id_fkey"
-            columns: ["broker_id"]
-            isOneToOne: false
-            referencedRelation: "brokers"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       brokers: {
         Row: {
           assignment_status: string
@@ -294,6 +221,54 @@ export type Database = {
           weekend_pause?: boolean | null
         }
         Relationships: []
+      }
+      callbacks: {
+        Row: {
+          broker_id: string
+          created_at: string
+          id: string
+          lead_id: string
+          notes: string | null
+          scheduled_time: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          broker_id: string
+          created_at?: string
+          id?: string
+          lead_id: string
+          notes?: string | null
+          scheduled_time: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          broker_id?: string
+          created_at?: string
+          id?: string
+          lead_id?: string
+          notes?: string | null
+          scheduled_time?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "callbacks_broker_id_fkey"
+            columns: ["broker_id"]
+            isOneToOne: false
+            referencedRelation: "brokers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "callbacks_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       deliveries: {
         Row: {
@@ -412,31 +387,31 @@ export type Database = {
       }
       lead_prices: {
         Row: {
-          id: string
-          vertical: string
-          credit_tier_min: number
-          price_cents: number
           broker_id: string | null
           created_at: string
+          credit_tier_min: number
+          id: string
+          price_cents: number
           updated_at: string
+          vertical: string
         }
         Insert: {
-          id?: string
-          vertical: string
-          credit_tier_min: number
-          price_cents: number
           broker_id?: string | null
           created_at?: string
+          credit_tier_min: number
+          id?: string
+          price_cents: number
           updated_at?: string
+          vertical: string
         }
         Update: {
-          id?: string
-          vertical?: string
-          credit_tier_min?: number
-          price_cents?: number
           broker_id?: string | null
           created_at?: string
+          credit_tier_min?: number
+          id?: string
+          price_cents?: number
           updated_at?: string
+          vertical?: string
         }
         Relationships: [
           {
@@ -540,28 +515,28 @@ export type Database = {
       }
       magic_links: {
         Row: {
+          broker_id: string
+          created_at: string
+          expires_at: string
           id: string
           token: string
-          broker_id: string
-          expires_at: string
           used: boolean
-          created_at: string
         }
         Insert: {
+          broker_id: string
+          created_at?: string
+          expires_at: string
           id?: string
           token: string
-          broker_id: string
-          expires_at: string
           used?: boolean
-          created_at?: string
         }
         Update: {
+          broker_id?: string
+          created_at?: string
+          expires_at?: string
           id?: string
           token?: string
-          broker_id?: string
-          expires_at?: string
           used?: boolean
-          created_at?: string
         }
         Relationships: [
           {
@@ -757,9 +732,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      assign_lead:
-        | { Args: { p_lead_id: string }; Returns: Json }
-        | { Args: { p_lead_id: string; p_order_id?: string }; Returns: Json }
+      assign_lead: {
+        Args: { p_lead_id: string; p_order_id?: string }
+        Returns: Json
+      }
       build_match_failure_reason: {
         Args: { p_lead: Database["public"]["Tables"]["leads"]["Row"] }
         Returns: string
@@ -903,9 +879,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {},
   },

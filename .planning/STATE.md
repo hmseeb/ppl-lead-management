@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 Phase: 37 of 37 (Call Reporting Dashboard)
 Plan: 2 of 2 in current phase
 Status: All plans executed, pending verification
-Last activity: 2026-03-26 - Completed quick task 6: Migrate broker auth to Supabase Auth magic links
+Last activity: 2026-03-26 - Completed quick task 7: Build marketer role system with auth + admin management
 
 Progress: [██████████] 100% (6/6 plans)
 
@@ -53,9 +53,10 @@ None.
 | 4 | Add GET /api/callbacks endpoint with filters | 2026-03-25 | 7076bac | [4-add-get-api-callbacks-endpoint-with-filt](./quick/4-add-get-api-callbacks-endpoint-with-filt/) |
 | 5 | Enhance upcoming callbacks with day grouping and date range | 2026-03-26 | 8602dc5 | [5-enhance-upcoming-callbacks-with-day-grou](./quick/5-enhance-upcoming-callbacks-with-day-grou/) |
 | 6 | Migrate broker auth to Supabase Auth magic links | 2026-03-26 | 59cc5de | [6-migrate-broker-auth-to-supabase-auth-mag](./quick/6-migrate-broker-auth-to-supabase-auth-mag/) |
+| 7 | Build marketer role system with auth + admin management | 2026-03-26 | 5c68840 | [7-build-marketer-role-system-with-auth-adm](./quick/7-build-marketer-role-system-with-auth-adm/) |
 
 ## Session Continuity
 
 Last session: 2026-03-26
-Stopped at: Completed quick-6: Migrate broker auth to Supabase Auth magic links
+Stopped at: Completed quick-7: Build marketer role system with auth + admin management
 Resume file: None

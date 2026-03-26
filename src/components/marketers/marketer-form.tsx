@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Input } from '@/components/ui/input'
@@ -28,6 +28,7 @@ export function MarketerForm({ marketer }: MarketerFormProps) {
   const isEdit = !!marketer
   const [submitting, setSubmitting] = useState(false)
   const [status, setStatus] = useState(marketer?.status ?? 'active')
+  const closeRef = useRef<HTMLButtonElement>(null)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -54,6 +55,7 @@ export function MarketerForm({ marketer }: MarketerFormProps) {
       toast.error(result.error)
     } else {
       toast.success(isEdit ? 'Marketer updated' : 'Marketer created')
+      closeRef.current?.click()
       router.refresh()
     }
   }
@@ -116,6 +118,7 @@ export function MarketerForm({ marketer }: MarketerFormProps) {
           </Select>
         </div>
       )}
+      <DialogClose ref={closeRef} render={<button hidden />} />
       <DialogFooter>
         <DialogClose render={<Button variant="outline" type="button">Cancel</Button>} />
         <Button type="submit" disabled={submitting}>

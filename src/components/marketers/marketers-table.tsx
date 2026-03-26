@@ -9,7 +9,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger, DialogClose,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose,
 } from '@/components/ui/dialog'
 import { MarketerForm } from './marketer-form'
 import { MarketerBrokerAssign } from './marketer-broker-assign'
@@ -45,6 +45,9 @@ export function MarketersTable({ marketers, allBrokers }: MarketersTableProps) {
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
   const [invitingId, setInvitingId] = useState<string | null>(null)
+  const [createOpen, setCreateOpen] = useState(false)
+  const [editId, setEditId] = useState<string | null>(null)
+  const [brokersId, setBrokersId] = useState<string | null>(null)
 
   async function handleInvite(marketer: MarketerRow) {
     setInvitingId(marketer.id)
@@ -78,14 +81,14 @@ export function MarketersTable({ marketers, allBrokers }: MarketersTableProps) {
   return (
     <>
       <div className="flex justify-end">
-        <Dialog>
-          <DialogTrigger render={<Button><Plus className="size-4 mr-2" />New Marketer</Button>} />
+        <Button onClick={() => setCreateOpen(true)}><Plus className="size-4 mr-2" />New Marketer</Button>
+        <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle>New Marketer</DialogTitle>
               <DialogDescription>Create a new marketer account</DialogDescription>
             </DialogHeader>
-            <MarketerForm />
+            <MarketerForm onSuccess={() => setCreateOpen(false)} />
           </DialogContent>
         </Dialog>
       </div>
@@ -125,42 +128,14 @@ export function MarketersTable({ marketers, allBrokers }: MarketersTableProps) {
                 <TableCell>
                   <div className="flex items-center gap-1">
                     {/* Edit */}
-                    <Dialog>
-                      <DialogTrigger render={
-                        <Button variant="ghost" size="icon-sm" title="Edit">
-                          <Pencil className="size-3.5" />
-                        </Button>
-                      } />
-                      <DialogContent className="sm:max-w-md">
-                        <DialogHeader>
-                          <DialogTitle>Edit Marketer</DialogTitle>
-                          <DialogDescription>Update marketer details</DialogDescription>
-                        </DialogHeader>
-                        <MarketerForm marketer={marketer} />
-                      </DialogContent>
-                    </Dialog>
+                    <Button variant="ghost" size="icon-sm" title="Edit" onClick={() => setEditId(marketer.id)}>
+                      <Pencil className="size-3.5" />
+                    </Button>
 
                     {/* Manage Brokers */}
-                    <Dialog>
-                      <DialogTrigger render={
-                        <Button variant="ghost" size="icon-sm" title="Manage Brokers">
-                          <Users className="size-3.5" />
-                        </Button>
-                      } />
-                      <DialogContent className="sm:max-w-lg">
-                        <DialogHeader>
-                          <DialogTitle>Assign Brokers</DialogTitle>
-                          <DialogDescription>
-                            Select brokers for {marketer.first_name} {marketer.last_name}
-                          </DialogDescription>
-                        </DialogHeader>
-                        <MarketerBrokerAssign
-                          marketerId={marketer.id}
-                          allBrokers={allBrokers}
-                          assignedBrokerIds={marketer.marketer_brokers?.map(b => b.broker_id) ?? []}
-                        />
-                      </DialogContent>
-                    </Dialog>
+                    <Button variant="ghost" size="icon-sm" title="Manage Brokers" onClick={() => setBrokersId(marketer.id)}>
+                      <Users className="size-3.5" />
+                    </Button>
 
                     {/* Send Invite */}
                     <Button
@@ -194,6 +169,35 @@ export function MarketersTable({ marketers, allBrokers }: MarketersTableProps) {
           </TableBody>
         </Table>
       )}
+
+      {/* Edit dialog */}
+      <Dialog open={!!editId} onOpenChange={(open) => { if (!open) setEditId(null) }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Marketer</DialogTitle>
+            <DialogDescription>Update marketer details</DialogDescription>
+          </DialogHeader>
+          {editId && <MarketerForm marketer={marketers.find(m => m.id === editId)!} onSuccess={() => setEditId(null)} />}
+        </DialogContent>
+      </Dialog>
+
+      {/* Broker assign dialog */}
+      <Dialog open={!!brokersId} onOpenChange={(open) => { if (!open) setBrokersId(null) }}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Assign Brokers</DialogTitle>
+            <DialogDescription>
+              {brokersId && `Select brokers for ${marketers.find(m => m.id === brokersId)?.first_name} ${marketers.find(m => m.id === brokersId)?.last_name}`}
+            </DialogDescription>
+          </DialogHeader>
+          {brokersId && <MarketerBrokerAssign
+            marketerId={brokersId}
+            allBrokers={allBrokers}
+            assignedBrokerIds={marketers.find(m => m.id === brokersId)?.marketer_brokers?.map(b => b.broker_id) ?? []}
+            onSuccess={() => setBrokersId(null)}
+          />}
+        </DialogContent>
+      </Dialog>
 
       {/* Delete confirmation dialog */}
       <Dialog open={!!deleteId} onOpenChange={(open) => { if (!open) setDeleteId(null) }}>

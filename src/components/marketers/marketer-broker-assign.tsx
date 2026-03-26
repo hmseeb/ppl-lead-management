@@ -21,12 +21,14 @@ interface MarketerBrokerAssignProps {
   marketerId: string
   allBrokers: BrokerOption[]
   assignedBrokerIds: string[]
+  onSuccess?: () => void
 }
 
 export function MarketerBrokerAssign({
   marketerId,
   allBrokers,
   assignedBrokerIds,
+  onSuccess,
 }: MarketerBrokerAssignProps) {
   const router = useRouter()
   const [selected, setSelected] = useState<Set<string>>(new Set(assignedBrokerIds))
@@ -64,6 +66,7 @@ export function MarketerBrokerAssign({
       toast.error(result.error)
     } else {
       toast.success(`${selected.size} broker${selected.size !== 1 ? 's' : ''} assigned`)
+      onSuccess?.()
       router.refresh()
     }
   }

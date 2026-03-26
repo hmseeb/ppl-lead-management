@@ -29,10 +29,13 @@ export interface CallbackWebhookParams {
   }
 }
 
+const CALLBACK_WEBHOOK_URL = process.env.CALLBACK_WEBHOOK_URL
+
 export async function fireCallbackWebhook(params: CallbackWebhookParams): Promise<void> {
   const { type, callback, lead, broker } = params
 
-  if (!broker.crm_webhook_url) {
+  if (!CALLBACK_WEBHOOK_URL) {
+    console.error('callback-webhook: CALLBACK_WEBHOOK_URL not set')
     return
   }
 
@@ -53,7 +56,7 @@ export async function fireCallbackWebhook(params: CallbackWebhookParams): Promis
   const timeout = setTimeout(() => controller.abort(), 10_000)
 
   try {
-    await fetch(broker.crm_webhook_url, {
+    await fetch(CALLBACK_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),

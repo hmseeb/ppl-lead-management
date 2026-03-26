@@ -99,7 +99,12 @@ Deno.serve(async (req) => {
   // Create Supabase client
   const supabaseUrl = Deno.env.get('SUPABASE_URL')!
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+  const callbackWebhookUrl = Deno.env.get('CALLBACK_WEBHOOK_URL')
   const supabase = createClient(supabaseUrl, serviceKey)
+
+  if (!callbackWebhookUrl) {
+    return new Response(JSON.stringify({ error: 'CALLBACK_WEBHOOK_URL not set' }), { status: 500 })
+  }
 
   let dueFired = 0
   let remindersFired = 0
@@ -129,10 +134,8 @@ Deno.serve(async (req) => {
 
   // Fire callback_due webhooks and mark as completed
   for (const row of (dueCallbacks ?? []) as unknown as CallbackRow[]) {
-    if (!row.broker?.crm_webhook_url) continue
-
     const payload = buildPayload('callback_due', row)
-    const ok = await fireWebhook(row.broker.crm_webhook_url, payload)
+    const ok = await fireWebhook(callbackWebhookUrl, payload)
 
     if (ok) dueFired++
 
@@ -186,10 +189,8 @@ Deno.serve(async (req) => {
 
   // Fire callback_reminder webhooks and mark reminder_sent_at
   for (const row of (reminderCallbacks ?? []) as unknown as CallbackRow[]) {
-    if (!row.broker?.crm_webhook_url) continue
-
     const payload = buildPayload('callback_reminder', row)
-    const ok = await fireWebhook(row.broker.crm_webhook_url, payload)
+    const ok = await fireWebhook(callbackWebhookUrl, payload)
 
     if (ok) remindersFired++
 

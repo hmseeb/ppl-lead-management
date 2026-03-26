@@ -3,7 +3,7 @@
 -- to fire callback_reminder and callback_due webhooks via the fire-callback-webhooks
 -- edge function.
 --
--- Schedule: */5 * * * * = every 5 minutes
+-- Schedule: * * * * * = every minute
 -- Reminders fire within a 20-minute window before scheduled_time to ensure the
 -- 5-minute cron cycle catches callbacks ~15 minutes out.
 --
@@ -27,7 +27,7 @@ ALTER TABLE callbacks ADD COLUMN reminder_sent_at timestamptz;
 
 SELECT cron.schedule(
   'fire-callback-webhooks',
-  '*/5 * * * *',
+  '* * * * *',
   $$
   SELECT net.http_post(
     url := (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'supabase_url')

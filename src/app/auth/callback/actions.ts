@@ -5,6 +5,7 @@ import { cookies } from 'next/headers'
 import { getIronSession } from 'iron-session'
 import { marketerSessionOptions, MarketerSessionData } from '@/lib/auth/marketer-session'
 import { brokerSessionOptions, BrokerSessionData } from '@/lib/auth/broker-session'
+import { sessionOptions, SessionData } from '@/lib/auth/session'
 
 export async function createSessionFromEmail(email: string): Promise<{ role: 'marketer' | 'broker'; error?: never } | { error: string; role?: never }> {
   const supabase = createAdminClient()
@@ -19,6 +20,12 @@ export async function createSessionFromEmail(email: string): Promise<{ role: 'ma
     .single()
 
   if (marketer) {
+    // Clear conflicting sessions
+    const adminSession = await getIronSession<SessionData>(cookieStore, sessionOptions)
+    adminSession.destroy()
+    const brokerSession = await getIronSession<BrokerSessionData>(cookieStore, brokerSessionOptions)
+    brokerSession.destroy()
+
     const session = await getIronSession<MarketerSessionData>(cookieStore, marketerSessionOptions)
     session.isMarketer = true
     session.marketerId = marketer.id
@@ -34,6 +41,12 @@ export async function createSessionFromEmail(email: string): Promise<{ role: 'ma
     .single()
 
   if (broker) {
+    // Clear conflicting sessions
+    const adminSession = await getIronSession<SessionData>(cookieStore, sessionOptions)
+    adminSession.destroy()
+    const marketerSession = await getIronSession<MarketerSessionData>(cookieStore, marketerSessionOptions)
+    marketerSession.destroy()
+
     const session = await getIronSession<BrokerSessionData>(cookieStore, brokerSessionOptions)
     session.isBroker = true
     session.brokerId = broker.id

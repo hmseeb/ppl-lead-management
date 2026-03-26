@@ -4,6 +4,8 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { cookies } from 'next/headers'
 import { getIronSession } from 'iron-session'
 import { brokerSessionOptions, BrokerSessionData } from '@/lib/auth/broker-session'
+import { sessionOptions, SessionData } from '@/lib/auth/session'
+import { marketerSessionOptions, MarketerSessionData } from '@/lib/auth/marketer-session'
 
 export async function createBrokerSessionFromEmail(email: string) {
   const supabase = createAdminClient()
@@ -19,8 +21,14 @@ export async function createBrokerSessionFromEmail(email: string) {
     return { error: 'no_broker' }
   }
 
-  // Create iron-session
+  // Clear conflicting sessions
   const cookieStore = await cookies()
+  const adminSession = await getIronSession<SessionData>(cookieStore, sessionOptions)
+  adminSession.destroy()
+  const marketerSession = await getIronSession<MarketerSessionData>(cookieStore, marketerSessionOptions)
+  marketerSession.destroy()
+
+  // Create broker session
   const session = await getIronSession<BrokerSessionData>(cookieStore, brokerSessionOptions)
   session.isBroker = true
   session.brokerId = broker.id

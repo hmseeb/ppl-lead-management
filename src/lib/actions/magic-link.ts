@@ -2,6 +2,13 @@
 
 import { createAdminClient } from '@/lib/supabase/admin'
 
+function getAppUrl() {
+  if (process.env.NEXT_PUBLIC_APP_URL) return process.env.NEXT_PUBLIC_APP_URL
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
+  return 'http://localhost:3000'
+}
+
 export async function sendMagicLink(email: string) {
   const supabase = createAdminClient()
 
@@ -17,11 +24,14 @@ export async function sendMagicLink(email: string) {
     return { error: 'no_broker' }
   }
 
+  const redirectTo = `${getAppUrl()}/portal/auth/callback`
+  console.log('Magic link emailRedirectTo:', redirectTo)
+
   // Send magic link via Supabase Auth OTP
   const { error: otpError } = await supabase.auth.signInWithOtp({
     email: broker.email,
     options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/portal/auth/callback`,
+      emailRedirectTo: redirectTo,
       shouldCreateUser: true,
     },
   })

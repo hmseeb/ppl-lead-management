@@ -10,38 +10,46 @@ import { Suspense } from 'react'
 function CallbackHandler() {
   const router = useRouter()
   const searchParams = useSearchParams()
+
   useEffect(() => {
     async function handleCallback() {
+      const supabase = createClient()
+
+      // Try PKCE flow first (code in query params)
       const code = searchParams.get('code')
-
-      if (!code) {
-        router.replace('/portal/login?error=invalid_link')
-        return
+      if (code) {
+        try {
+          const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
+          if (!exchangeError && data.session?.user?.email) {
+            const result = await createBrokerSessionFromEmail(data.session.user.email)
+            if (!('error' in result) || !result.error) {
+              router.replace('/portal')
+              return
+            }
+          }
+        } catch (err) {
+          console.error('PKCE code exchange failed:', err)
+        }
       }
 
+      // Try implicit flow (hash fragment with access_token)
+      // Supabase client auto-detects hash fragments on init
       try {
-        const supabase = createClient()
-        const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
-
-        if (exchangeError || !data.session?.user?.email) {
-          console.error('Code exchange failed:', exchangeError)
-          router.replace('/portal/login?error=invalid_link')
-          return
+        const { data: { session }, error } = await supabase.auth.getSession()
+        if (session?.user?.email) {
+          const result = await createBrokerSessionFromEmail(session.user.email)
+          if (!('error' in result) || !result.error) {
+            router.replace('/portal')
+            return
+          }
         }
-
-        const result = await createBrokerSessionFromEmail(data.session.user.email)
-
-        if ('error' in result && result.error) {
-          console.error('Session creation failed:', result.error)
-          router.replace('/portal/login?error=invalid_link')
-          return
-        }
-
-        router.replace('/portal')
       } catch (err) {
-        console.error('Callback error:', err)
-        router.replace('/portal/login?error=invalid_link')
+        console.error('Session detection failed:', err)
       }
+
+      // Neither flow worked
+      console.error('Auth callback: no valid session found')
+      router.replace('/portal/login?error=invalid_link')
     }
 
     handleCallback()

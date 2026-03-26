@@ -561,6 +561,75 @@ export type Database = {
           },
         ]
       }
+      marketers: {
+        Row: {
+          id: string
+          email: string
+          first_name: string
+          last_name: string
+          phone: string | null
+          status: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          email: string
+          first_name: string
+          last_name: string
+          phone?: string | null
+          status?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string
+          first_name?: string
+          last_name?: string
+          phone?: string | null
+          status?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      marketer_brokers: {
+        Row: {
+          id: string
+          marketer_id: string
+          broker_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          marketer_id: string
+          broker_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          marketer_id?: string
+          broker_id?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketer_brokers_marketer_id_fkey"
+            columns: ["marketer_id"]
+            isOneToOne: false
+            referencedRelation: "marketers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketer_brokers_broker_id_fkey"
+            columns: ["broker_id"]
+            isOneToOne: false
+            referencedRelation: "brokers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       magic_links: {
         Row: {
           broker_id: string

@@ -14,7 +14,9 @@ export default function AuthLayout({
     const hash = window.location.hash
     if (hash.includes('access_token') && hash.includes('type=magiclink')) {
       setIsMagicLink(true)
-      window.location.href = '/portal/auth/callback' + hash
+      const callback = localStorage.getItem('auth_callback') || '/portal/auth/callback'
+      localStorage.removeItem('auth_callback')
+      window.location.href = callback + hash
     }
   }, [])
 

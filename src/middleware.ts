@@ -4,12 +4,15 @@ import { sessionOptions, SessionData } from '@/lib/auth/session'
 import { marketerSessionOptions, MarketerSessionData } from '@/lib/auth/marketer-session'
 
 export async function middleware(request: NextRequest) {
-  // If Supabase redirects to root with a code param, forward to portal auth callback
+  // If Supabase redirects to root with a code param, check cookie for intended callback
   const code = request.nextUrl.searchParams.get('code')
   if (code && request.nextUrl.pathname === '/') {
-    const callbackUrl = new URL('/portal/auth/callback', request.url)
+    const authCallback = request.cookies.get('auth_callback')?.value || '/portal/auth/callback'
+    const callbackUrl = new URL(authCallback, request.url)
     callbackUrl.searchParams.set('code', code)
-    return NextResponse.redirect(callbackUrl)
+    const response = NextResponse.redirect(callbackUrl)
+    response.cookies.delete('auth_callback')
+    return response
   }
 
   const response = NextResponse.next()

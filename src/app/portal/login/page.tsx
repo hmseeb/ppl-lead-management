@@ -69,6 +69,8 @@ function LoginForm() {
 
               <form action={(formData) => {
                 emailRef.current = formData.get('email') as string
+                localStorage.setItem('auth_callback', '/portal/auth/callback')
+                document.cookie = 'auth_callback=/portal/auth/callback;path=/;max-age=600'
                 formAction(formData)
               }}>
                 <div className="space-y-4">

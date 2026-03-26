@@ -130,45 +130,37 @@ export function UpcomingCallbacks() {
             No upcoming callbacks in this range
           </div>
         ) : (
-          <div>
-            {sortedDays.map((dateKey, idx) => (
-              <div key={dateKey}>
-                <div
-                  className={`text-sm font-medium text-foreground border-b pb-1 mb-2 ${
-                    idx === 0 ? '' : 'mt-4'
-                  }`}
-                >
-                  {formatDayHeader(dateKey)}
-                </div>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="text-xs">Lead</TableHead>
-                      <TableHead className="text-xs">Broker</TableHead>
-                      <TableHead className="text-xs">Scheduled Time</TableHead>
-                      <TableHead className="text-xs">Status</TableHead>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-xs">Lead</TableHead>
+                <TableHead className="text-xs">Broker</TableHead>
+                <TableHead className="text-xs">Scheduled Time</TableHead>
+                <TableHead className="text-xs text-right">Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {sortedDays.map((dateKey) => (
+                <>
+                  <TableRow key={`day-${dateKey}`} className="bg-muted/30 hover:bg-muted/30">
+                    <TableCell colSpan={4} className="text-xs font-semibold py-2">
+                      {formatDayHeader(dateKey)}
+                    </TableCell>
+                  </TableRow>
+                  {grouped[dateKey].map((cb) => (
+                    <TableRow key={cb.id}>
+                      <TableCell className="text-sm">{cb.lead_name || '-'}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{cb.broker_name || '-'}</TableCell>
+                      <TableCell className="text-sm">{format(new Date(cb.scheduled_time), 'h:mm a')}</TableCell>
+                      <TableCell className="text-right">
+                        <span className="capitalize text-xs text-amber-500 font-medium">{cb.status}</span>
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {grouped[dateKey].map((cb) => (
-                      <TableRow key={cb.id}>
-                        <TableCell className="text-xs">{cb.lead_name || '-'}</TableCell>
-                        <TableCell className="text-xs">{cb.broker_name || '-'}</TableCell>
-                        <TableCell className="text-xs">
-                          {format(new Date(cb.scheduled_time), 'h:mm a')}
-                        </TableCell>
-                        <TableCell className="text-xs">
-                          <span className="capitalize text-amber-500 font-medium">
-                            {cb.status}
-                          </span>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            ))}
-          </div>
+                  ))}
+                </>
+              ))}
+            </TableBody>
+          </Table>
         )}
       </CardContent>
     </Card>

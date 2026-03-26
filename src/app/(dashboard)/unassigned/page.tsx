@@ -1,5 +1,6 @@
 export const dynamic = 'force-dynamic'
 
+import { redirect } from 'next/navigation'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { fetchUnassignedQueue, fetchActiveBrokersWithOrders } from '@/lib/queries/unassigned'
 import { UnassignedTable } from '@/components/unassigned/unassigned-table'
@@ -18,6 +19,7 @@ export default async function UnassignedPage({
   const page = parseInt(params.page ?? '1')
   const perPage = 50
   const role = await getRole()
+  if (role !== 'admin') redirect('/')
   const brokerIds = role === 'marketer' ? await getMarketerBrokerIds() : undefined
 
   const [{ data: queue, count }, brokers] = await Promise.all([

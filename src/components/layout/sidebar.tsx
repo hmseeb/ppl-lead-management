@@ -15,7 +15,7 @@ const allNavItems = [
   { href: '/leads', label: 'Leads', icon: FileText, roles: ['admin', 'marketer'] as Role[] },
   { href: '/brokers', label: 'Brokers', icon: Users, roles: ['admin', 'marketer'] as Role[] },
   { href: '/orders', label: 'Orders', icon: ShoppingCart, roles: ['admin', 'marketer'] as Role[] },
-  { href: '/unassigned', label: 'Unassigned', icon: AlertCircle, roles: ['admin', 'marketer'] as Role[] },
+  { href: '/unassigned', label: 'Unassigned', icon: AlertCircle, roles: ['admin'] as Role[] },
   { href: '/activity', label: 'Activity', icon: Activity, roles: ['admin', 'marketer'] as Role[] },
   { href: '/calls', label: 'Calls', icon: Phone, roles: ['admin', 'marketer'] as Role[] },
   { href: '/marketers', label: 'Marketers', icon: UserCog, roles: ['admin'] as Role[] },

@@ -1,40 +1,13 @@
 'use client'
 
-import { useActionState, useEffect, useState } from 'react'
+import { useActionState } from 'react'
 import { login } from '@/lib/auth/actions'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { Loader2 } from 'lucide-react'
-
-function isMagicLinkHash() {
-  if (typeof window === 'undefined') return false
-  const hash = window.location.hash
-  return hash.includes('access_token') && hash.includes('type=magiclink')
-}
 
 export default function LoginPage() {
   const [state, formAction, pending] = useActionState(login, null)
-  const [redirecting, setRedirecting] = useState(isMagicLinkHash)
-
-  // Supabase magic link implicit flow redirects to root with hash fragment.
-  // Middleware sends it here (/login). Catch it and forward to portal callback.
-  useEffect(() => {
-    if (redirecting) {
-      window.location.href = '/portal/auth/callback' + window.location.hash
-    }
-  }, [redirecting])
-
-  if (redirecting) {
-    return (
-      <div className="w-full max-w-sm">
-        <div className="glass-card rounded-2xl p-8 glow-red text-center space-y-4">
-          <Loader2 className="size-6 text-red-500 animate-spin mx-auto" />
-          <p className="text-sm text-muted-foreground">Signing you in...</p>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div className="w-full max-w-sm">

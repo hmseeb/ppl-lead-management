@@ -34,13 +34,13 @@ export async function sendMagicLink(email: string) {
   return { success: true }
 }
 
-export async function verifyMagicLink(token: string) {
+export async function verifyMagicLink(_token: string) {
   console.warn('verifyMagicLink is deprecated. Use Supabase Auth callback flow instead.')
   return { error: 'deprecated' as const }
 }
 
 export async function requestMagicLink(
-  prevState: { error?: string; success?: boolean } | null,
+  _prevState: { error?: string; success?: boolean } | null,
   formData: FormData,
 ) {
   const email = formData.get('email') as string

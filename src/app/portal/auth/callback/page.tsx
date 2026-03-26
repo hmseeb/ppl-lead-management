@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { createBrokerSessionFromEmail } from './actions'
@@ -10,8 +10,6 @@ import { Suspense } from 'react'
 function CallbackHandler() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [error, setError] = useState<string | null>(null)
-
   useEffect(() => {
     async function handleCallback() {
       const code = searchParams.get('code')

@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useEffect } from 'react'
 import { login } from '@/lib/auth/actions'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -8,6 +8,15 @@ import { Button } from '@/components/ui/button'
 
 export default function LoginPage() {
   const [state, formAction, pending] = useActionState(login, null)
+
+  // Supabase magic link implicit flow redirects to root with hash fragment.
+  // Middleware sends it here (/login). Catch it and forward to portal callback.
+  useEffect(() => {
+    const hash = window.location.hash
+    if (hash.includes('access_token') && hash.includes('type=magiclink')) {
+      window.location.href = '/portal/auth/callback' + hash
+    }
+  }, [])
 
   return (
     <div className="w-full max-w-sm">

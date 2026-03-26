@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 Phase: 37 of 37 (Call Reporting Dashboard)
 Plan: 2 of 2 in current phase
 Status: All plans executed, pending verification
-Last activity: 2026-03-26 - Completed quick task 5: Enhance upcoming callbacks with day grouping
+Last activity: 2026-03-26 - Completed quick task 6: Migrate broker auth to Supabase Auth magic links
 
 Progress: [██████████] 100% (6/6 plans)
 
@@ -36,6 +36,7 @@ Recent decisions affecting current work:
 - [v4.0]: callback_reminder fires 15 min before scheduled time
 - [v4.0]: Existing send-alert edge function pattern reusable for callback webhooks
 - [quick-5]: UpcomingCallbacks converted to client component with own data fetching for date range browsing
+- [quick-6]: Broker auth migrated from magic_links table + GHL edge function to Supabase Auth signInWithOtp
 
 ### Pending Todos
 
@@ -51,9 +52,10 @@ None.
 |---|-------------|------|--------|-----------|
 | 4 | Add GET /api/callbacks endpoint with filters | 2026-03-25 | 7076bac | [4-add-get-api-callbacks-endpoint-with-filt](./quick/4-add-get-api-callbacks-endpoint-with-filt/) |
 | 5 | Enhance upcoming callbacks with day grouping and date range | 2026-03-26 | 8602dc5 | [5-enhance-upcoming-callbacks-with-day-grou](./quick/5-enhance-upcoming-callbacks-with-day-grou/) |
+| 6 | Migrate broker auth to Supabase Auth magic links | 2026-03-26 | 59cc5de | [6-migrate-broker-auth-to-supabase-auth-mag](./quick/6-migrate-broker-auth-to-supabase-auth-mag/) |
 
 ## Session Continuity
 
 Last session: 2026-03-26
-Stopped at: Completed quick-5: Enhance upcoming callbacks with day grouping and date range
+Stopped at: Completed quick-6: Migrate broker auth to Supabase Auth magic links
 Resume file: None

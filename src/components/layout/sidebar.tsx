@@ -79,7 +79,7 @@ export function Sidebar() {
           <ThemeToggle />
         </div>
         <form action={logout}>
-          <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground hover:text-red-400 hover:bg-red-500/5">
+          <Button type="submit" variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground hover:text-red-400 hover:bg-red-500/5">
             <LogOut className="size-4" />
             Log out
           </Button>

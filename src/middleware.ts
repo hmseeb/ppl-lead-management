@@ -3,6 +3,14 @@ import { getIronSession } from 'iron-session'
 import { sessionOptions, SessionData } from '@/lib/auth/session'
 
 export async function middleware(request: NextRequest) {
+  // If Supabase redirects to root with a code param, forward to portal auth callback
+  const code = request.nextUrl.searchParams.get('code')
+  if (code && request.nextUrl.pathname === '/') {
+    const callbackUrl = new URL('/portal/auth/callback', request.url)
+    callbackUrl.searchParams.set('code', code)
+    return NextResponse.redirect(callbackUrl)
+  }
+
   const response = NextResponse.next()
   const session = await getIronSession<SessionData>(
     request,

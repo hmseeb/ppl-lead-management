@@ -4,12 +4,16 @@ import { redirect } from 'next/navigation'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { OrderForm } from '@/components/orders/order-form'
 import type { OrderFormData } from '@/lib/schemas/order'
+import { getRole } from '@/lib/auth/role'
 
 export default async function EditOrderPage({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
+  const role = await getRole()
+  if (role !== 'admin') redirect('/')
+
   const { id } = await params
   const supabase = createAdminClient()
 

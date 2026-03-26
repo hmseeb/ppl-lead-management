@@ -1,17 +1,22 @@
 export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { fetchBrokerDetail } from '@/lib/queries/brokers'
 import { BrokerForm } from '@/components/brokers/broker-form'
 import { type BrokerFormData } from '@/lib/schemas/broker'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft } from 'lucide-react'
+import { getRole } from '@/lib/auth/role'
 
 export default async function EditBrokerPage({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
+  const role = await getRole()
+  if (role !== 'admin') redirect('/')
+
   const { id } = await params
   const result = await fetchBrokerDetail(id)
 

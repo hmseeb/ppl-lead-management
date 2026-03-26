@@ -1,12 +1,16 @@
 export const dynamic = 'force-dynamic'
 
+import { redirect } from 'next/navigation'
 import { fetchSettings } from '@/lib/actions/settings'
 import { fetchPrices } from '@/lib/actions/pricing'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { SettingsForm } from '@/components/admin/settings-form'
 import { PricingTable } from '@/components/admin/pricing-table'
+import { getRole } from '@/lib/auth/role'
 
 export default async function SettingsPage() {
+  const role = await getRole()
+  if (role !== 'admin') redirect('/')
   const [settings, prices, brokersResult] = await Promise.all([
     fetchSettings(),
     fetchPrices(),

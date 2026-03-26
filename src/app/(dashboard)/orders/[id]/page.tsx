@@ -1,11 +1,13 @@
 export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { fetchOrderDetail } from '@/lib/queries/orders'
 import { OrderDetail } from '@/components/orders/order-detail'
 import { OrderActions } from '@/components/orders/order-actions'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft } from 'lucide-react'
+import { getRole, getMarketerBrokerIds } from '@/lib/auth/role'
 
 export default async function OrderDetailPage({
   params,
@@ -14,6 +16,13 @@ export default async function OrderDetailPage({
 }) {
   const { id } = await params
   const result = await fetchOrderDetail(id)
+
+  // Verify marketer can only see orders for their brokers
+  const role = await getRole()
+  if (role === 'marketer' && result) {
+    const brokerIds = await getMarketerBrokerIds()
+    if (!brokerIds.includes(result.order.broker_id)) redirect('/')
+  }
 
   if (!result) {
     return (

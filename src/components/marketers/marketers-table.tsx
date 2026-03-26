@@ -14,7 +14,8 @@ import {
 import { MarketerForm } from './marketer-form'
 import { MarketerBrokerAssign } from './marketer-broker-assign'
 import { deleteMarketer } from '@/lib/actions/marketers'
-import { Pencil, Trash2, Users, Plus } from 'lucide-react'
+import { inviteMarketerToPortal } from '@/lib/actions/marketer-magic-link'
+import { Pencil, Trash2, Users, Plus, Mail, Loader2 } from 'lucide-react'
 
 type MarketerRow = {
   id: string
@@ -43,6 +44,23 @@ interface MarketersTableProps {
 export function MarketersTable({ marketers, allBrokers }: MarketersTableProps) {
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
+  const [invitingId, setInvitingId] = useState<string | null>(null)
+
+  async function handleInvite(marketer: MarketerRow) {
+    setInvitingId(marketer.id)
+    try {
+      const result = await inviteMarketerToPortal(marketer.id)
+      if (result && 'error' in result && result.error) {
+        toast.error(typeof result.error === 'string' ? result.error : 'Failed to send invite')
+      } else {
+        toast.success(`Invite sent to ${marketer.email}`)
+      }
+    } catch {
+      toast.error('Failed to send invite')
+    } finally {
+      setInvitingId(null)
+    }
+  }
 
   async function handleDelete() {
     if (!deleteId) return
@@ -143,6 +161,21 @@ export function MarketersTable({ marketers, allBrokers }: MarketersTableProps) {
                         />
                       </DialogContent>
                     </Dialog>
+
+                    {/* Send Invite */}
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      title={`Send invite to ${marketer.email}`}
+                      onClick={() => handleInvite(marketer)}
+                      disabled={invitingId === marketer.id}
+                    >
+                      {invitingId === marketer.id ? (
+                        <Loader2 className="size-3.5 animate-spin" />
+                      ) : (
+                        <Mail className="size-3.5" />
+                      )}
+                    </Button>
 
                     {/* Delete */}
                     <Button

@@ -42,6 +42,22 @@ export async function sendMarketerMagicLink(email: string) {
   return { success: true }
 }
 
+export async function inviteMarketerToPortal(marketerId: string) {
+  const supabase = createAdminClient()
+
+  const { data: marketer, error } = await supabase
+    .from('marketers')
+    .select('email')
+    .eq('id', marketerId)
+    .single()
+
+  if (error || !marketer) {
+    return { error: 'Marketer not found' }
+  }
+
+  return sendMarketerMagicLink(marketer.email)
+}
+
 export async function requestMarketerMagicLink(
   _prevState: { error?: string; success?: boolean } | null,
   formData: FormData,

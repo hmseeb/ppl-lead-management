@@ -15,40 +15,50 @@ function CallbackHandler() {
     async function handleCallback() {
       const supabase = createClient()
 
-      // Try PKCE flow first (code in query params)
-      const code = searchParams.get('code')
-      if (code) {
-        try {
-          const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
-          if (!exchangeError && data.session?.user?.email) {
+      // 1. Try implicit flow: parse hash fragment manually
+      const hash = window.location.hash.substring(1)
+      if (hash) {
+        const params = new URLSearchParams(hash)
+        const accessToken = params.get('access_token')
+        const refreshToken = params.get('refresh_token')
+
+        if (accessToken && refreshToken) {
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          })
+
+          if (!error && data.session?.user?.email) {
             const result = await createBrokerSessionFromEmail(data.session.user.email)
             if (!('error' in result) || !result.error) {
               router.replace('/portal')
               return
             }
           }
-        } catch (err) {
-          console.error('PKCE code exchange failed:', err)
+          console.error('Implicit flow session failed:', error)
         }
       }
 
-      // Try implicit flow (hash fragment with access_token)
-      // Supabase client auto-detects hash fragments on init
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession()
-        if (session?.user?.email) {
-          const result = await createBrokerSessionFromEmail(session.user.email)
-          if (!('error' in result) || !result.error) {
-            router.replace('/portal')
-            return
+      // 2. Try PKCE flow: code in query params
+      const code = searchParams.get('code')
+      if (code) {
+        try {
+          const { data, error } = await supabase.auth.exchangeCodeForSession(code)
+          if (!error && data.session?.user?.email) {
+            const result = await createBrokerSessionFromEmail(data.session.user.email)
+            if (!('error' in result) || !result.error) {
+              router.replace('/portal')
+              return
+            }
           }
+          console.error('PKCE code exchange failed:', error)
+        } catch (err) {
+          console.error('PKCE exchange error:', err)
         }
-      } catch (err) {
-        console.error('Session detection failed:', err)
       }
 
       // Neither flow worked
-      console.error('Auth callback: no valid session found')
+      console.error('Auth callback: no valid session. Hash:', !!hash, 'Code:', !!code)
       router.replace('/portal/login?error=invalid_link')
     }
 
@@ -57,12 +67,9 @@ function CallbackHandler() {
 
   return (
     <div className="min-h-screen flex items-center justify-center relative">
-      {/* Centered glow */}
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-red-600/[0.04] dark:bg-red-600/[0.04] blur-[100px] pointer-events-none" />
-
       <div className="relative z-10 w-full max-w-sm">
         <div className="glass-card rounded-2xl p-8 glow-red">
-          {/* Brand */}
           <div className="flex items-center gap-3 mb-8">
             <div className="size-10 rounded-xl bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center shadow-[0_0_20px_rgba(220,38,38,0.25)]">
               <span className="text-white font-bold text-lg">P</span>
@@ -72,16 +79,13 @@ function CallbackHandler() {
               <p className="text-[10px] uppercase tracking-[0.15em] text-red-700/40 dark:text-red-400/50 font-medium">Broker Access</p>
             </div>
           </div>
-
           <div className="text-center space-y-4">
             <div className="mx-auto size-12 rounded-full bg-red-500/10 flex items-center justify-center">
               <Loader2 className="size-6 text-red-500 animate-spin" />
             </div>
             <div>
               <p className="font-medium">Verifying...</p>
-              <p className="text-sm text-muted-foreground mt-1">
-                Signing you into the portal
-              </p>
+              <p className="text-sm text-muted-foreground mt-1">Signing you into the portal</p>
             </div>
           </div>
         </div>

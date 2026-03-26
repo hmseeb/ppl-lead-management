@@ -21,7 +21,9 @@ export async function getMarketerBrokerIds(): Promise<string[]> {
     .from('marketer_brokers')
     .select('broker_id')
     .eq('marketer_id', marketerSession.marketerId)
-  return (data ?? []).map(r => r.broker_id)
+  const ids = (data ?? []).map(r => r.broker_id)
+  // Return impossible ID if no brokers assigned, so queries return empty instead of all
+  return ids.length > 0 ? ids : ['00000000-0000-0000-0000-000000000000']
 }
 
 // Helper: get marketer ID if role is marketer, null otherwise

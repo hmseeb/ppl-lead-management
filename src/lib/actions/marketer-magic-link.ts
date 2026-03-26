@@ -35,8 +35,8 @@ export async function sendMarketerMagicLink(email: string) {
   })
 
   if (otpError) {
-    console.error('Failed to send marketer magic link:', otpError)
-    return { error: 'email_failed' }
+    console.error('Failed to send marketer magic link:', JSON.stringify(otpError))
+    return { error: 'email_failed', detail: otpError.message }
   }
 
   return { success: true }

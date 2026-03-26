@@ -37,6 +37,7 @@ Recent decisions affecting current work:
 - [v4.0]: Existing send-alert edge function pattern reusable for callback webhooks
 - [quick-5]: UpcomingCallbacks converted to client component with own data fetching for date range browsing
 - [quick-6]: Broker auth migrated from magic_links table + GHL edge function to Supabase Auth signInWithOtp
+- [quick-7]: Marketer role uses filtered admin dashboard (not separate portal), many-to-many broker assignment, magic link auth
 
 ### Pending Todos
 

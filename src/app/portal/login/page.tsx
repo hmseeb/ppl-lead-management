@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { requestMagicLink } from '@/lib/actions/magic-link'
 import { Input } from '@/components/ui/input'
@@ -13,6 +13,7 @@ function LoginForm() {
   const [state, formAction, pending] = useActionState(requestMagicLink, null)
   const searchParams = useSearchParams()
   const error = searchParams.get('error')
+  const emailRef = useRef('')
 
   const errorMessages: Record<string, string> = {
     missing_token: 'Invalid login link. Please request a new one.',
@@ -56,9 +57,9 @@ function LoginForm() {
                 </p>
               </div>
               <form action={formAction}>
-                <input type="hidden" name="email" value="" />
-                <Button type="button" variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={() => window.location.reload()}>
-                  Resend link
+                <input type="hidden" name="email" value={emailRef.current} />
+                <Button type="submit" variant="ghost" size="sm" className="text-xs text-muted-foreground" disabled={pending}>
+                  {pending ? 'Sending...' : 'Resend link'}
                 </Button>
               </form>
             </div>
@@ -66,7 +67,10 @@ function LoginForm() {
             <>
               <p className="text-sm text-muted-foreground mb-6">Enter your email to receive a login link</p>
 
-              <form action={formAction}>
+              <form action={(formData) => {
+                emailRef.current = formData.get('email') as string
+                formAction(formData)
+              }}>
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-xs uppercase tracking-wider text-muted-foreground">

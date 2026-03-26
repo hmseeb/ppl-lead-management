@@ -55,6 +55,12 @@ function LoginForm() {
                   If this email is associated with a broker account, you will receive a login link.
                 </p>
               </div>
+              <form action={formAction}>
+                <input type="hidden" name="email" value="" />
+                <Button type="button" variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={() => window.location.reload()}>
+                  Resend link
+                </Button>
+              </form>
             </div>
           ) : (
             <>

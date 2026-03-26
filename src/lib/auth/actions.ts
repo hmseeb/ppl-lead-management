@@ -2,6 +2,7 @@
 
 import { compare } from 'bcryptjs'
 import { getSession } from './session'
+import { getMarketerSession } from './marketer-session'
 import { redirect } from 'next/navigation'
 
 export async function login(prevState: { error: string } | null, formData: FormData) {
@@ -27,4 +28,10 @@ export async function logout() {
   const session = await getSession()
   session.destroy()
   redirect('/login')
+}
+
+export async function marketerLogout() {
+  const session = await getMarketerSession()
+  session.destroy()
+  redirect('/marketer/login')
 }

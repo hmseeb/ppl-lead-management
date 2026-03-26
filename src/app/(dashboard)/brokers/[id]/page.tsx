@@ -6,6 +6,7 @@ import { BrokerDetail } from '@/components/brokers/broker-detail'
 import { BrokerQuickActions } from '@/components/brokers/broker-quick-actions'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft } from 'lucide-react'
+import { getRole, getMarketerBrokerIds } from '@/lib/auth/role'
 
 export default async function BrokerDetailPage({
   params,
@@ -13,6 +14,21 @@ export default async function BrokerDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
+  const role = await getRole()
+
+  // If marketer, verify they have access to this broker
+  if (role === 'marketer') {
+    const brokerIds = await getMarketerBrokerIds()
+    if (!brokerIds.includes(id)) {
+      return (
+        <div className="space-y-4">
+          <Link href="/brokers"><Button variant="ghost" size="sm"><ChevronLeft className="size-4 mr-1" /> Back to Brokers</Button></Link>
+          <p className="text-muted-foreground">Not authorized to view this broker.</p>
+        </div>
+      )
+    }
+  }
+
   const result = await fetchBrokerDetail(id)
 
   if (!result) {
@@ -34,7 +50,9 @@ export default async function BrokerDetailPage({
           <Link href="/brokers"><Button variant="ghost" size="sm"><ChevronLeft className="size-4 mr-1" /> Brokers</Button></Link>
           <h1 className="text-2xl font-semibold">{result.broker.first_name} {result.broker.last_name}</h1>
         </div>
-        <BrokerQuickActions brokerId={id} brokerName={`${result.broker.first_name} ${result.broker.last_name}`} email={result.broker.email} activeOrdersCount={activeCount} pausedOrdersCount={pausedCount} hasWebhook={!!result.broker.crm_webhook_url} leads={result.leads} orders={result.orders} />
+        {role === 'admin' && (
+          <BrokerQuickActions brokerId={id} brokerName={`${result.broker.first_name} ${result.broker.last_name}`} email={result.broker.email} activeOrdersCount={activeCount} pausedOrdersCount={pausedCount} hasWebhook={!!result.broker.crm_webhook_url} leads={result.leads} orders={result.orders} />
+        )}
       </div>
       <BrokerDetail broker={result.broker} orders={result.orders} leads={result.leads} queuedDeliveries={result.queuedDeliveries} />
     </div>

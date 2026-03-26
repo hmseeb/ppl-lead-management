@@ -9,6 +9,7 @@ import { leadsColumns } from '@/components/leads/leads-columns'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { getRole, getMarketerBrokerIds } from '@/lib/auth/role'
 
 export default async function LeadsPage({
   searchParams,
@@ -18,6 +19,8 @@ export default async function LeadsPage({
   const params = await searchParams
   const page = parseInt(params.page ?? '1')
   const perPage = 50
+  const role = await getRole()
+  const brokerIds = role === 'marketer' ? await getMarketerBrokerIds() : undefined
 
   const [{ data, count }, brokers, brokersWithOrders] = await Promise.all([
     fetchLeads({
@@ -25,6 +28,7 @@ export default async function LeadsPage({
       status: params.status || undefined,
       vertical: params.vertical || undefined,
       broker_id: params.broker_id || undefined,
+      broker_ids: brokerIds,
       credit_score_min: params.credit_min ? parseInt(params.credit_min) : undefined,
       credit_score_max: params.credit_max ? parseInt(params.credit_max) : undefined,
       date_from: params.date_from || undefined,
@@ -32,8 +36,8 @@ export default async function LeadsPage({
       page,
       per_page: perPage,
     }),
-    fetchBrokersForFilter(),
-    fetchActiveBrokersWithOrders(),
+    fetchBrokersForFilter(brokerIds),
+    fetchActiveBrokersWithOrders(brokerIds),
   ])
 
   const totalPages = Math.ceil(count / perPage)

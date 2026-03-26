@@ -2,27 +2,34 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { logout } from '@/lib/auth/actions'
 import { Button } from '@/components/ui/button'
 import {
   LayoutDashboard, Users, ShoppingCart, FileText,
-  AlertCircle, Activity, Phone, Settings, LogOut,
+  AlertCircle, Activity, Phone, Settings, LogOut, UserCog,
 } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
+import type { Role } from '@/lib/auth/role'
 
-const navItems = [
-  { href: '/', label: 'Overview', icon: LayoutDashboard },
-  { href: '/leads', label: 'Leads', icon: FileText },
-  { href: '/brokers', label: 'Brokers', icon: Users },
-  { href: '/orders', label: 'Orders', icon: ShoppingCart },
-  { href: '/unassigned', label: 'Unassigned', icon: AlertCircle },
-  { href: '/activity', label: 'Activity', icon: Activity },
-  { href: '/calls', label: 'Calls', icon: Phone },
-  { href: '/settings', label: 'Settings', icon: Settings },
+const allNavItems = [
+  { href: '/', label: 'Overview', icon: LayoutDashboard, roles: ['admin', 'marketer'] as Role[] },
+  { href: '/leads', label: 'Leads', icon: FileText, roles: ['admin', 'marketer'] as Role[] },
+  { href: '/brokers', label: 'Brokers', icon: Users, roles: ['admin', 'marketer'] as Role[] },
+  { href: '/orders', label: 'Orders', icon: ShoppingCart, roles: ['admin', 'marketer'] as Role[] },
+  { href: '/unassigned', label: 'Unassigned', icon: AlertCircle, roles: ['admin', 'marketer'] as Role[] },
+  { href: '/activity', label: 'Activity', icon: Activity, roles: ['admin', 'marketer'] as Role[] },
+  { href: '/calls', label: 'Calls', icon: Phone, roles: ['admin', 'marketer'] as Role[] },
+  { href: '/marketers', label: 'Marketers', icon: UserCog, roles: ['admin'] as Role[] },
+  { href: '/settings', label: 'Settings', icon: Settings, roles: ['admin'] as Role[] },
 ]
 
-export function Sidebar() {
+interface SidebarProps {
+  role: Role
+  logoutAction: () => Promise<void>
+}
+
+export function Sidebar({ role, logoutAction }: SidebarProps) {
   const pathname = usePathname()
+  const navItems = allNavItems.filter(item => item.roles.includes(role))
 
   return (
     <aside className="w-64 shrink-0 glass-sidebar p-6 flex flex-col sticky top-0 h-screen overflow-y-auto">
@@ -34,7 +41,9 @@ export function Sidebar() {
           </div>
           <div>
             <h1 className="text-sm font-semibold tracking-wide text-foreground">PPL Lead Mgmt</h1>
-            <p className="text-[10px] uppercase tracking-[0.15em] text-red-700/40 dark:text-red-400/50 font-medium">Control Panel</p>
+            <p className="text-[10px] uppercase tracking-[0.15em] text-red-700/40 dark:text-red-400/50 font-medium">
+              {role === 'marketer' ? 'Marketer View' : 'Control Panel'}
+            </p>
           </div>
         </div>
       </div>
@@ -78,7 +87,7 @@ export function Sidebar() {
           <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Theme</span>
           <ThemeToggle />
         </div>
-        <form action={logout}>
+        <form action={logoutAction}>
           <Button type="submit" variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground hover:text-red-400 hover:bg-red-500/5">
             <LogOut className="size-4" />
             Log out

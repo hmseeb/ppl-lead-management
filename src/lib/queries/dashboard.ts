@@ -3,7 +3,7 @@ import { startOfDay, subDays, addDays, format, differenceInDays, min } from 'dat
 import type { DashboardFilters } from '@/lib/types/dashboard-filters'
 import { getDateRange } from '@/lib/types/dashboard-filters'
 
-export async function fetchKpis(filters?: DashboardFilters) {
+export async function fetchKpis(filters?: DashboardFilters, brokerIds?: string[]) {
   const supabase = createAdminClient()
   const { from, to } = getDateRange(filters ?? {})
 
@@ -12,6 +12,7 @@ export async function fetchKpis(filters?: DashboardFilters) {
     let q = supabase.from('leads').select('id', { count: 'exact', head: true })
     if (filters?.broker_id) q = q.eq('assigned_broker_id', filters.broker_id)
     if (filters?.vertical) q = q.eq('vertical', filters.vertical)
+    if (brokerIds?.length) q = q.in('assigned_broker_id', brokerIds)
     return q
   }
 
@@ -21,6 +22,7 @@ export async function fetchKpis(filters?: DashboardFilters) {
     let q = supabase.from('deliveries').select(selectStr, { count: 'exact', head: true })
     if (filters?.broker_id) q = q.eq('broker_id', filters.broker_id)
     if (filters?.vertical) q = q.eq('leads.vertical', filters.vertical)
+    if (brokerIds?.length) q = q.in('broker_id', brokerIds)
     return q
   }
 
@@ -33,12 +35,14 @@ export async function fetchKpis(filters?: DashboardFilters) {
         let q = supabase.from('brokers').select('id', { count: 'exact', head: true }).eq('assignment_status', 'active')
         if (filters?.broker_id) q = q.eq('id', filters.broker_id)
         if (filters?.vertical) q = q.eq('primary_vertical', filters.vertical)
+        if (brokerIds?.length) q = q.in('id', brokerIds)
         return q
       })(),
       (() => {
         let q = supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'active')
         if (filters?.broker_id) q = q.eq('broker_id', filters.broker_id)
         if (filters?.vertical) q = q.contains('verticals', [filters.vertical])
+        if (brokerIds?.length) q = q.in('broker_id', brokerIds)
         return q
       })(),
       deliveryQuery().eq('status', 'queued'),
@@ -74,7 +78,7 @@ export type LeadVolumeResult = {
   totalDays: number
 }
 
-export async function fetchLeadVolume(filters?: DashboardFilters): Promise<LeadVolumeResult> {
+export async function fetchLeadVolume(filters?: DashboardFilters, brokerIds?: string[]): Promise<LeadVolumeResult> {
   const supabase = createAdminClient()
   const { from, to } = getDateRange(filters ?? {})
   const fromDate = startOfDay(new Date(from))
@@ -100,6 +104,7 @@ export async function fetchLeadVolume(filters?: DashboardFilters): Promise<LeadV
 
       if (filters?.broker_id) q = q.eq('assigned_broker_id', filters.broker_id)
       if (filters?.vertical) q = q.eq('vertical', filters.vertical)
+      if (brokerIds?.length) q = q.in('assigned_broker_id', brokerIds)
 
       const { count } = await q
 
@@ -127,6 +132,7 @@ export async function fetchLeadVolume(filters?: DashboardFilters): Promise<LeadV
 
       if (filters?.broker_id) q = q.eq('assigned_broker_id', filters.broker_id)
       if (filters?.vertical) q = q.eq('vertical', filters.vertical)
+      if (brokerIds?.length) q = q.in('assigned_broker_id', brokerIds)
 
       const { count } = await q
 
@@ -158,7 +164,7 @@ export type DeliveryStats = {
   }
 }
 
-export async function fetchDeliveryStats(filters?: DashboardFilters): Promise<DeliveryStats> {
+export async function fetchDeliveryStats(filters?: DashboardFilters, brokerIds?: string[]): Promise<DeliveryStats> {
   const supabase = createAdminClient()
   const { from, to } = getDateRange(filters ?? {})
 
@@ -167,6 +173,7 @@ export async function fetchDeliveryStats(filters?: DashboardFilters): Promise<De
     let q = supabase.from('deliveries').select(selectStr, { count: 'exact', head: true })
     if (filters?.broker_id) q = q.eq('broker_id', filters.broker_id)
     if (filters?.vertical) q = q.eq('leads.vertical', filters.vertical)
+    if (brokerIds?.length) q = q.in('broker_id', brokerIds)
     return q
   }
 
@@ -174,6 +181,7 @@ export async function fetchDeliveryStats(filters?: DashboardFilters): Promise<De
     let q = supabase.from('leads').select('id', { count: 'exact', head: true })
     if (filters?.broker_id) q = q.eq('assigned_broker_id', filters.broker_id)
     if (filters?.vertical) q = q.eq('vertical', filters.vertical)
+    if (brokerIds?.length) q = q.in('assigned_broker_id', brokerIds)
     return q
   }
 
@@ -222,7 +230,7 @@ export async function fetchDeliveryStats(filters?: DashboardFilters): Promise<De
   }
 }
 
-export async function fetchRecentActivity(filters?: DashboardFilters, limit = 20) {
+export async function fetchRecentActivity(filters?: DashboardFilters, limit = 20, brokerIds?: string[]) {
   const supabase = createAdminClient()
 
   let q = supabase
@@ -243,6 +251,7 @@ export async function fetchRecentActivity(filters?: DashboardFilters, limit = 20
     .limit(limit)
 
   if (filters?.broker_id) q = q.eq('broker_id', filters.broker_id)
+  if (brokerIds?.length) q = q.in('broker_id', brokerIds)
 
   const { from, to } = getDateRange(filters ?? {})
   q = q.gte('created_at', from).lte('created_at', to)
@@ -267,25 +276,29 @@ export type RevenueSummary = {
  * Revenue analytics for admin dashboard.
  * Aggregates total_price_cents from all paid orders (excludes pending_payment).
  */
-export async function fetchRevenueSummary(): Promise<RevenueSummary> {
+export async function fetchRevenueSummary(brokerIds?: string[]): Promise<RevenueSummary> {
   const supabase = createAdminClient()
 
   // Get all paid orders with broker + vertical data
-  const { data: orders, error } = await supabase
+  let ordersQuery = supabase
     .from('orders')
     .select('broker_id, verticals, total_price_cents, status')
     .neq('status', 'pending_payment')
+
+  if (brokerIds?.length) ordersQuery = ordersQuery.in('broker_id', brokerIds)
+
+  const { data: orders, error } = await ordersQuery
 
   if (error || !orders) {
     return { totalRevenueCents: 0, byBroker: [], byVertical: [] }
   }
 
   // Get broker names for display
-  const brokerIds = [...new Set(orders.map((o) => o.broker_id))]
+  const brokerIdSet = [...new Set(orders.map((o) => o.broker_id))]
   const { data: brokers } = await supabase
     .from('brokers')
     .select('id, first_name, last_name')
-    .in('id', brokerIds)
+    .in('id', brokerIdSet)
 
   const brokerNameMap = new Map<string, string>()
   for (const b of brokers ?? []) {

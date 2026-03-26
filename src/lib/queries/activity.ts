@@ -4,6 +4,7 @@ interface ActivityFilters {
   search?: string
   event_type?: string
   broker_id?: string
+  broker_ids?: string[]
   date_from?: string
   date_to?: string
   page?: number
@@ -28,6 +29,7 @@ export async function fetchActivityLog(params: ActivityFilters) {
   if (params.search) query = query.ilike('details', `%${params.search}%`)
   if (params.event_type) query = query.eq('event_type', params.event_type)
   if (params.broker_id) query = query.eq('broker_id', params.broker_id)
+  if (params.broker_ids?.length) query = query.in('broker_id', params.broker_ids)
   if (params.date_from) query = query.gte('created_at', params.date_from)
   if (params.date_to) query = query.lte('created_at', `${params.date_to}T23:59:59.999Z`)
 
@@ -49,11 +51,13 @@ export async function fetchEventTypes() {
   return unique.sort()
 }
 
-export async function fetchBrokersForActivityFilter() {
+export async function fetchBrokersForActivityFilter(brokerIds?: string[]) {
   const supabase = createAdminClient()
-  const { data } = await supabase
+  let query = supabase
     .from('brokers')
     .select('id, first_name, last_name')
     .order('first_name')
+  if (brokerIds?.length) query = query.in('id', brokerIds)
+  const { data } = await query
   return data ?? []
 }

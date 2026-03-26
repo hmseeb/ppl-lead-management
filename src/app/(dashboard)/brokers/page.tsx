@@ -7,6 +7,7 @@ import { BrokersTable } from '@/components/brokers/brokers-table'
 import { BrokersFilters } from '@/components/brokers/brokers-filters'
 import { fetchBrokersWithStats } from '@/lib/queries/brokers'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { getRole, getMarketerBrokerIds } from '@/lib/auth/role'
 
 export default async function BrokersPage({
   searchParams,
@@ -16,11 +17,14 @@ export default async function BrokersPage({
   const params = await searchParams
   const page = parseInt(params.page ?? '1')
   const perPage = 50
+  const role = await getRole()
+  const brokerIds = role === 'marketer' ? await getMarketerBrokerIds() : undefined
 
   const { data: brokers, count } = await fetchBrokersWithStats({
     search: params.search || undefined,
     assignment_status: params.assignment_status || undefined,
     onboarding_status: params.onboarding_status || undefined,
+    broker_ids: brokerIds,
     page,
     per_page: perPage,
   })
@@ -40,9 +44,11 @@ export default async function BrokersPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Brokers <span className="text-muted-foreground text-base font-normal">({count})</span></h1>
-        <Link href="/brokers/new">
-          <Button>New Broker</Button>
-        </Link>
+        {role === 'admin' && (
+          <Link href="/brokers/new">
+            <Button>New Broker</Button>
+          </Link>
+        )}
       </div>
       <BrokersFilters />
       <BrokersTable brokers={brokers} />

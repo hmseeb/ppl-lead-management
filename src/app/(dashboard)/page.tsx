@@ -10,6 +10,7 @@ import { LeadVolumeChart } from '@/components/dashboard/lead-volume-chart'
 import { ActivityFeed } from '@/components/dashboard/activity-feed'
 import { DashboardFilters } from '@/components/dashboard/dashboard-filters'
 import { RevenueSummarySection } from '@/components/admin/revenue-summary'
+import { getRole, getMarketerBrokerIds } from '@/lib/auth/role'
 import type { DashboardFilters as DashboardFiltersType } from '@/lib/types/dashboard-filters'
 
 export default async function DashboardPage({
@@ -18,6 +19,8 @@ export default async function DashboardPage({
   searchParams: Promise<Record<string, string | undefined>>
 }) {
   const params = await searchParams
+  const role = await getRole()
+  const brokerIds = role === 'marketer' ? await getMarketerBrokerIds() : undefined
 
   const filters: DashboardFiltersType = {
     date_preset: params.date_preset || undefined,
@@ -31,12 +34,12 @@ export default async function DashboardPage({
   const isCompare = !!filters.compare
 
   const [kpis, activity, volume, deliveryStats, brokers, revenue] = await Promise.all([
-    fetchKpis(filters),
-    fetchRecentActivity(filters),
-    fetchLeadVolume(filters),
-    fetchDeliveryStats(filters),
-    fetchBrokersForFilter(),
-    fetchRevenueSummary(),
+    fetchKpis(filters, brokerIds),
+    fetchRecentActivity(filters, 20, brokerIds),
+    fetchLeadVolume(filters, brokerIds),
+    fetchDeliveryStats(filters, brokerIds),
+    fetchBrokersForFilter(brokerIds),
+    fetchRevenueSummary(brokerIds),
   ])
 
   let previousKpis = null
@@ -49,7 +52,7 @@ export default async function DashboardPage({
       date_preset: undefined,
       compare: undefined,
     }
-    previousKpis = await fetchKpis(previousFilters)
+    previousKpis = await fetchKpis(previousFilters, brokerIds)
   }
 
   return (

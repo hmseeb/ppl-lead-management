@@ -34,9 +34,9 @@ export async function fetchUnassignedQueue(params: UnassignedFilters = {}) {
   return { data: data ?? [], count: count ?? 0 }
 }
 
-export async function fetchActiveBrokersWithOrders() {
+export async function fetchActiveBrokersWithOrders(brokerIds?: string[]) {
   const supabase = createAdminClient()
-  const { data, error } = await supabase
+  let query = supabase
     .from('brokers')
     .select(`
       id, first_name, last_name, company,
@@ -44,6 +44,8 @@ export async function fetchActiveBrokersWithOrders() {
     `)
     .eq('assignment_status', 'active')
     .order('first_name')
+  if (brokerIds?.length) query = query.in('id', brokerIds)
+  const { data, error } = await query
 
   if (error) return []
   return (data ?? []).map((broker) => ({

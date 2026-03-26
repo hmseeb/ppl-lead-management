@@ -5,6 +5,7 @@ interface LeadFilters {
   status?: string
   vertical?: string
   broker_id?: string
+  broker_ids?: string[]
   credit_score_min?: number
   credit_score_max?: number
   date_from?: string
@@ -34,6 +35,7 @@ export async function fetchLeads(params: LeadFilters) {
   if (params.status) query = query.eq('status', params.status)
   if (params.vertical) query = query.eq('vertical', params.vertical)
   if (params.broker_id) query = query.eq('assigned_broker_id', params.broker_id)
+  if (params.broker_ids?.length) query = query.in('assigned_broker_id', params.broker_ids)
   if (params.credit_score_min) query = query.gte('credit_score', params.credit_score_min)
   if (params.credit_score_max) query = query.lte('credit_score', params.credit_score_max)
   if (params.date_from) query = query.gte('created_at', params.date_from)
@@ -46,12 +48,14 @@ export async function fetchLeads(params: LeadFilters) {
   return { data: data ?? [], count: count ?? 0, error }
 }
 
-export async function fetchBrokersForFilter() {
+export async function fetchBrokersForFilter(brokerIds?: string[]) {
   const supabase = createAdminClient()
-  const { data } = await supabase
+  let query = supabase
     .from('brokers')
     .select('id, first_name, last_name')
     .order('first_name')
+  if (brokerIds?.length) query = query.in('id', brokerIds)
+  const { data } = await query
   return data ?? []
 }
 

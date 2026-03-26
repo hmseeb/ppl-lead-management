@@ -4,6 +4,7 @@ interface OrderFilters {
   search?: string
   status?: string
   vertical?: string
+  broker_ids?: string[]
   page?: number
   per_page?: number
 }
@@ -28,6 +29,7 @@ export async function fetchOrdersWithBroker(params: OrderFilters = {}) {
   }
   if (params.status) query = query.eq('status', params.status)
   if (params.vertical) query = query.contains('verticals', [params.vertical])
+  if (params.broker_ids?.length) query = query.in('broker_id', params.broker_ids)
 
   const { data, count, error } = await query
     .order('created_at', { ascending: false })

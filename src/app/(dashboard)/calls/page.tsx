@@ -7,6 +7,7 @@ import { CallReportingFilters } from '@/components/calls/call-reporting-filters'
 import { CallKpiCards } from '@/components/calls/call-kpi-cards'
 import { CallOutcomeChart } from '@/components/calls/call-outcome-chart'
 import { UpcomingCallbacks } from '@/components/calls/upcoming-callbacks'
+import { getRole, getMarketerBrokerIds } from '@/lib/auth/role'
 import type { DashboardFilters } from '@/lib/types/dashboard-filters'
 
 export default async function CallReportingPage({
@@ -15,6 +16,8 @@ export default async function CallReportingPage({
   searchParams: Promise<Record<string, string | undefined>>
 }) {
   const params = await searchParams
+  const role = await getRole()
+  const brokerIds = role === 'marketer' ? await getMarketerBrokerIds() : undefined
 
   const filters: DashboardFilters = {
     date_preset: params.date_preset || undefined,
@@ -24,9 +27,9 @@ export default async function CallReportingPage({
   }
 
   const [kpis, volume, brokers] = await Promise.all([
-    fetchCallKpis(filters),
-    fetchCallOutcomeVolume(filters),
-    fetchBrokersForFilter(),
+    fetchCallKpis(filters, brokerIds),
+    fetchCallOutcomeVolume(filters, brokerIds),
+    fetchBrokersForFilter(brokerIds),
   ])
 
   return (

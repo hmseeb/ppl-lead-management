@@ -4,6 +4,7 @@ interface BrokerFilters {
   search?: string
   assignment_status?: string
   onboarding_status?: string
+  broker_ids?: string[]
   page?: number
   per_page?: number
 }
@@ -27,6 +28,7 @@ export async function fetchBrokersWithStats(params: BrokerFilters = {}) {
   }
   if (params.assignment_status) query = query.eq('assignment_status', params.assignment_status)
   if (params.onboarding_status) query = query.eq('status', params.onboarding_status)
+  if (params.broker_ids?.length) query = query.in('id', params.broker_ids)
 
   const { data: brokers, count, error } = await query
     .order('created_at', { ascending: false })

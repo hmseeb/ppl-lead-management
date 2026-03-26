@@ -11,13 +11,14 @@ export type CallKpis = {
   voicemail: number
 }
 
-export async function fetchCallKpis(filters?: DashboardFilters): Promise<CallKpis> {
+export async function fetchCallKpis(filters?: DashboardFilters, brokerIds?: string[]): Promise<CallKpis> {
   const supabase = createAdminClient()
   const { from, to } = getDateRange(filters ?? {})
 
   function callQuery() {
     let q = supabase.from('call_logs').select('id', { count: 'exact', head: true })
     if (filters?.broker_id) q = q.eq('broker_id', filters.broker_id)
+    if (brokerIds?.length) q = q.in('broker_id', brokerIds)
     return q
   }
 
@@ -45,7 +46,7 @@ export type CallOutcomeVolume = {
   totalDays: number
 }
 
-export async function fetchCallOutcomeVolume(filters?: DashboardFilters): Promise<CallOutcomeVolume> {
+export async function fetchCallOutcomeVolume(filters?: DashboardFilters, brokerIds?: string[]): Promise<CallOutcomeVolume> {
   const supabase = createAdminClient()
   const { from, to } = getDateRange(filters ?? {})
   const fromDate = startOfDay(new Date(from))
@@ -61,6 +62,7 @@ export async function fetchCallOutcomeVolume(filters?: DashboardFilters): Promis
     .lte('created_at', to)
 
   if (filters?.broker_id) q = q.eq('broker_id', filters.broker_id)
+  if (brokerIds?.length) q = q.in('broker_id', brokerIds)
 
   const { data: rows } = await q
 

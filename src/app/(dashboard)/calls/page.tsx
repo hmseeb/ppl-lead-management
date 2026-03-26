@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
-import { fetchCallKpis, fetchCallOutcomeVolume, fetchUpcomingCallbacks } from '@/lib/queries/call-reporting'
+import { fetchCallKpis, fetchCallOutcomeVolume } from '@/lib/queries/call-reporting'
 import { fetchBrokersForFilter } from '@/lib/queries/leads'
 import { CallReportingFilters } from '@/components/calls/call-reporting-filters'
 import { CallKpiCards } from '@/components/calls/call-kpi-cards'
@@ -23,10 +23,9 @@ export default async function CallReportingPage({
     broker_id: params.broker_id || undefined,
   }
 
-  const [kpis, volume, callbacks, brokers] = await Promise.all([
+  const [kpis, volume, brokers] = await Promise.all([
     fetchCallKpis(filters),
     fetchCallOutcomeVolume(filters),
-    fetchUpcomingCallbacks(),
     fetchBrokersForFilter(),
   ])
 
@@ -40,7 +39,7 @@ export default async function CallReportingPage({
         <CallReportingFilters brokers={brokers} />
         <CallKpiCards data={kpis} />
         <CallOutcomeChart data={volume.data} bucketType={volume.bucketType} totalDays={volume.totalDays} />
-        <UpcomingCallbacks callbacks={callbacks} />
+        <UpcomingCallbacks />
       </div>
     </NuqsAdapter>
   )

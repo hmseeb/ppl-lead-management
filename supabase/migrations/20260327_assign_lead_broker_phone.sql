@@ -1,0 +1,3 @@
+-- No-op migration: broker phone enrichment handled in TypeScript via GHL API.
+-- Re-applies assign_lead() identical to 00021 (no SQL-level changes needed).
+-- Kept as a placeholder so migration history stays clean if already referenced.

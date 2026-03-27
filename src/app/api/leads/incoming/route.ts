@@ -3,6 +3,7 @@ import { incomingLeadSchema } from '@/lib/webhooks/schemas'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { assignLead } from '@/lib/assignment/assign'
 import { dispatchDelivery } from '@/lib/delivery/dispatcher'
+import { getContact } from '@/lib/ghl/client'
 import type { Json } from '@/lib/types/database'
 
 export async function POST(request: Request) {
@@ -234,6 +235,32 @@ export async function POST(request: Request) {
     ).catch(console.error)
   }
 
-  // 7. Return fast
-  return NextResponse.json({ lead_id: lead.id, assignment }, { status: 200 })
+  // 7. Enrich with GHL broker contact for live transfer (Retell)
+  let broker: { id: string; phone: string | null; name: string | null; ghl_contact_id: string | null } | null = null
+  if (assignment.status === 'assigned' && assignment.broker_id) {
+    const { data: brokerRow } = await supabase
+      .from('brokers')
+      .select('first_name, last_name, phone, ghl_contact_id')
+      .eq('id', assignment.broker_id)
+      .single()
+
+    if (brokerRow) {
+      let phone = brokerRow.phone
+      if (brokerRow.ghl_contact_id) {
+        const ghl = await getContact(brokerRow.ghl_contact_id)
+        if (ghl.success && ghl.contact?.phone) {
+          phone = ghl.contact.phone
+        }
+      }
+      broker = {
+        id: assignment.broker_id,
+        phone,
+        name: [brokerRow.first_name, brokerRow.last_name].filter(Boolean).join(' ') || null,
+        ghl_contact_id: brokerRow.ghl_contact_id,
+      }
+    }
+  }
+
+  // 8. Return
+  return NextResponse.json({ lead_id: lead.id, assignment, broker }, { status: 200 })
 }

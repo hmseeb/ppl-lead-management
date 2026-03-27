@@ -311,14 +311,21 @@ Content-Type: application/json
           <div className="space-y-2 text-sm text-foreground/80">
             <p className="font-medium text-foreground">Sample responses:</p>
           </div>
-          <Code>{`// assigned
+          <Code>{`// assigned (includes broker contact for live transfer)
 {
   "lead_id": "a1b2c3d4-...",
   "assignment": {
     "status": "assigned",
     "broker_id": "f5e6d7c8-...",
     "order_id": "b9a8c7d6-...",
-    "delivery_ids": ["d1e2f3a4-..."]
+    "delivery_ids": ["d1e2f3a4-..."],
+    "delivery_status": "pending"
+  },
+  "broker": {
+    "id": "f5e6d7c8-...",
+    "name": "John Smith",
+    "phone": "+15551234567",
+    "ghl_contact_id": "ghl_broker_abc"
   }
 }
 
@@ -336,13 +343,14 @@ Content-Type: application/json
   "reason": "credit_too_low"
 }
 
-// unassigned (no matching order)
+// unassigned (no matching order, broker is null)
 {
   "lead_id": "a1b2c3d4-...",
   "assignment": {
     "status": "unassigned",
     "reason": "no matching orders"
-  }
+  },
+  "broker": null
 }`}</Code>
         </div>
 

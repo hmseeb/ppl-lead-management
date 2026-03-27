@@ -100,6 +100,15 @@ async function test1_validPayload() {
     'assigned|unassigned|error',
     data?.assignment?.status
   )
+  // broker object should be present when assigned, null otherwise
+  if (data?.assignment?.status === 'assigned') {
+    assert('broker object present', !!data?.broker, 'truthy', JSON.stringify(data?.broker))
+    assert('broker has phone', 'phone' in (data?.broker ?? {}), 'true', 'false')
+    assert('broker has name', 'name' in (data?.broker ?? {}), 'true', 'false')
+    assert('broker has ghl_contact_id', 'ghl_contact_id' in (data?.broker ?? {}), 'true', 'false')
+  } else {
+    assert('broker is null when not assigned', data?.broker === null, 'null', String(data?.broker))
+  }
 }
 
 // =====================================================================

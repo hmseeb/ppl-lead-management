@@ -14,15 +14,17 @@ import {
 } from '@/components/ui/table'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ReassignDialog } from '@/components/leads/reassign-dialog'
+import { MarketerReassignDialog } from '@/components/leads/marketer-reassign-dialog'
 
 interface DataTableProps<T> {
   data: T[]
   columns: ColumnDef<T, unknown>[]
   totalCount: number
   brokersWithOrders?: any[]
+  role?: 'admin' | 'marketer'
 }
 
-export function LeadsDataTable<T extends { id: string; assigned_broker_id: string | null }>({ data, columns, totalCount, brokersWithOrders }: DataTableProps<T>) {
+export function LeadsDataTable<T extends { id: string; assigned_broker_id: string | null }>({ data, columns, totalCount, brokersWithOrders, role }: DataTableProps<T>) {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
 
   const selectColumn: ColumnDef<T, unknown> = {
@@ -64,10 +66,18 @@ export function LeadsDataTable<T extends { id: string; assigned_broker_id: strin
       {selectedLeadIds.length > 0 && (
         <div className="flex items-center gap-3 mb-3 p-3 bg-muted/50 rounded-lg">
           <span className="text-sm text-muted-foreground">{selectedLeadIds.length} selected</span>
-          <ReassignDialog
-            selectedLeadIds={selectedLeadIds}
-            onComplete={() => setRowSelection({})}
-          />
+          {role === 'marketer' ? (
+            <MarketerReassignDialog
+              selectedLeadIds={selectedLeadIds}
+              onComplete={() => setRowSelection({})}
+              brokersWithOrders={brokersWithOrders ?? []}
+            />
+          ) : (
+            <ReassignDialog
+              selectedLeadIds={selectedLeadIds}
+              onComplete={() => setRowSelection({})}
+            />
+          )}
         </div>
       )}
       <Table>

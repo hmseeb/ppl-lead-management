@@ -59,7 +59,7 @@ export default async function LeadsPage({
           <h1 className="text-2xl font-semibold">Leads <span className="text-muted-foreground text-base font-normal">({count})</span></h1>
         </div>
         <LeadsFilters brokers={brokers} />
-        <LeadsDataTable data={data as any} columns={leadsColumns as any} totalCount={count} brokersWithOrders={brokersWithOrders as any} />
+        <LeadsDataTable data={data as any} columns={leadsColumns as any} totalCount={count} brokersWithOrders={brokersWithOrders as any} role={role} />
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2">
             {page > 1 ? (

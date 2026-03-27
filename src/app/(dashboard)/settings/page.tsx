@@ -1,16 +1,31 @@
 export const dynamic = 'force-dynamic'
 
-import { redirect } from 'next/navigation'
 import { fetchSettings } from '@/lib/actions/settings'
 import { fetchPrices } from '@/lib/actions/pricing'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { SettingsForm } from '@/components/admin/settings-form'
 import { PricingTable } from '@/components/admin/pricing-table'
-import { getRole } from '@/lib/auth/role'
+import { getRole, getMarketerId } from '@/lib/auth/role'
+import { fetchMarketerToken } from '@/lib/queries/marketers'
+import { MarketerTokenDisplay } from '@/components/marketers/marketer-token-display'
 
 export default async function SettingsPage() {
   const role = await getRole()
-  if (role !== 'admin') redirect('/')
+
+  // Marketer settings: show API token
+  if (role === 'marketer') {
+    const marketerId = await getMarketerId()
+    const token = marketerId ? await fetchMarketerToken(marketerId) : null
+
+    return (
+      <div className="space-y-6">
+        <h1 className="text-2xl font-semibold">Settings</h1>
+        {token && <MarketerTokenDisplay token={token} />}
+      </div>
+    )
+  }
+
+  // Admin settings: full config
   const [settings, prices, brokersResult] = await Promise.all([
     fetchSettings(),
     fetchPrices(),

@@ -67,7 +67,6 @@ export default async function DashboardPage({
           <div className="h-px flex-1 bg-gradient-to-r from-red-500/10 to-transparent" />
         </div>
         <DashboardFilters brokers={brokers} />
-        {marketerToken && <MarketerTokenDisplay token={marketerToken} />}
         <KpiCards data={kpis} previousData={previousKpis} />
         <DeliveryStatsCards data={deliveryStats} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

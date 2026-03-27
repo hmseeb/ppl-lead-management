@@ -19,7 +19,7 @@ const allNavItems = [
   { href: '/activity', label: 'Activity', icon: Activity, roles: ['admin', 'marketer'] as Role[] },
   { href: '/calls', label: 'Calls', icon: Phone, roles: ['admin', 'marketer'] as Role[] },
   { href: '/marketers', label: 'Marketers', icon: UserCog, roles: ['admin'] as Role[] },
-  { href: '/settings', label: 'Settings', icon: Settings, roles: ['admin'] as Role[] },
+  { href: '/settings', label: 'Settings', icon: Settings, roles: ['admin', 'marketer'] as Role[] },
 ]
 
 interface SidebarProps {

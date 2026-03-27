@@ -246,7 +246,7 @@ Content-Type: application/json
         <p className="text-sm text-foreground/80">
           When a marketer sends leads using their Bearer token, the scoring engine only considers orders belonging to that marketer&apos;s assigned brokers. The lead is tagged with the marketer&apos;s ID for attribution.
         </p>
-        <Code>{`POST /api/leads/incoming
+        <Code>{`POST https://ppl-leadr-mgmt.vercel.app/api/leads/incoming
 Authorization: Bearer <marketer_token>
 Content-Type: application/json
 
@@ -264,9 +264,9 @@ Content-Type: application/json
 
       {/* API Reference */}
       <Section title="API Reference">
-        {/* POST /api/leads/incoming */}
+        {/* POST https://ppl-leadr-mgmt.vercel.app/api/leads/incoming */}
         <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-foreground font-mono">POST /api/leads/incoming</h3>
+          <h3 className="text-sm font-semibold text-foreground font-mono">POST https://ppl-leadr-mgmt.vercel.app/api/leads/incoming</h3>
           <p className="text-sm text-foreground/80">
             Create a new lead and run it through the scoring engine. Accepts an optional <code className="text-xs font-mono bg-black/[0.04] dark:bg-white/[0.06] px-1 rounded">Authorization: Bearer</code> header for marketer-scoped routing.
           </p>
@@ -312,9 +312,9 @@ Content-Type: application/json
 
         <div className="h-px bg-gradient-to-r from-transparent via-red-500/10 to-transparent my-4" />
 
-        {/* PATCH /api/leads/update */}
+        {/* PATCH https://ppl-leadr-mgmt.vercel.app/api/leads/update */}
         <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-foreground font-mono">PATCH /api/leads/update</h3>
+          <h3 className="text-sm font-semibold text-foreground font-mono">PATCH https://ppl-leadr-mgmt.vercel.app/api/leads/update</h3>
           <p className="text-sm text-foreground/80">
             Update an existing lead by <code className="text-xs font-mono bg-black/[0.04] dark:bg-white/[0.06] px-1 rounded">ghl_contact_id</code>. Use this to push AI call results or updated info back from GHL.
           </p>
@@ -345,9 +345,9 @@ Content-Type: application/json
 
         <div className="h-px bg-gradient-to-r from-transparent via-red-500/10 to-transparent my-4" />
 
-        {/* GET /api/leads/lookup */}
+        {/* GET https://ppl-leadr-mgmt.vercel.app/api/leads/lookup */}
         <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-foreground font-mono">GET /api/leads/lookup</h3>
+          <h3 className="text-sm font-semibold text-foreground font-mono">GET https://ppl-leadr-mgmt.vercel.app/api/leads/lookup</h3>
           <p className="text-sm text-foreground/80">
             Look up a lead by phone number. Returns assignment status and broker contact details if assigned.
           </p>

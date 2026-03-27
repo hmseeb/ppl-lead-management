@@ -308,6 +308,42 @@ Content-Type: application/json
               <li><span className="font-medium">duplicate</span> - matching ghl_contact_id or email+phone already exists</li>
             </ul>
           </div>
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">Sample responses:</p>
+          </div>
+          <Code>{`// assigned
+{
+  "lead_id": "a1b2c3d4-...",
+  "assignment": {
+    "status": "assigned",
+    "broker_id": "f5e6d7c8-...",
+    "order_id": "b9a8c7d6-...",
+    "delivery_ids": ["d1e2f3a4-..."]
+  }
+}
+
+// duplicate
+{
+  "lead_id": "a1b2c3d4-...",
+  "status": "duplicate",
+  "message": "lead already exists"
+}
+
+// rejected
+{
+  "lead_id": "a1b2c3d4-...",
+  "status": "rejected",
+  "reason": "credit_too_low"
+}
+
+// unassigned (no matching order)
+{
+  "lead_id": "a1b2c3d4-...",
+  "assignment": {
+    "status": "unassigned",
+    "reason": "no matching orders"
+  }
+}`}</Code>
         </div>
 
         <div className="h-px bg-gradient-to-r from-transparent via-red-500/10 to-transparent my-4" />
@@ -341,6 +377,20 @@ Content-Type: application/json
     "ai_call_status": "completed",
     "ai_call_notes": "Qualified. Wants $50k MCA."
   }'`}</Code>
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">Sample responses:</p>
+          </div>
+          <Code>{`// 200 - success
+{
+  "lead_id": "a1b2c3d4-...",
+  "updated_fields": ["ai_call_status", "ai_call_notes", "raw_payload"]
+}
+
+// 404 - lead not found
+{
+  "error": "lead_not_found",
+  "ghl_contact_id": "ghl_test_001"
+}`}</Code>
         </div>
 
         <div className="h-px bg-gradient-to-r from-transparent via-red-500/10 to-transparent my-4" />
@@ -363,6 +413,46 @@ Content-Type: application/json
               <li><span className="font-medium">400</span> - missing phone parameter</li>
             </ul>
           </div>
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">Sample responses:</p>
+          </div>
+          <Code>{`// 200 - assigned lead
+{
+  "lead_id": "a1b2c3d4-...",
+  "lead_name": "Jane Doe",
+  "status": "assigned",
+  "assigned": true,
+  "broker": {
+    "id": "f5e6d7c8-...",
+    "name": "John Smith",
+    "email": "john@smithfunding.com",
+    "phone": "+17025551234",
+    "company": "Smith Funding LLC",
+    "ghl_contact_id": "ghl_abc123",
+    "availability": {
+      "contact_hours": "custom",
+      "timezone": "America/New_York",
+      "weekend_pause": false,
+      "custom_hours_start": "09:00",
+      "custom_hours_end": "17:00"
+    }
+  }
+}
+
+// 200 - unassigned lead
+{
+  "lead_id": "a1b2c3d4-...",
+  "lead_name": "Jane Doe",
+  "status": "unassigned",
+  "assigned": false,
+  "broker": null
+}
+
+// 404
+{
+  "error": "not_found",
+  "message": "no lead found with this phone number"
+}`}</Code>
         </div>
       </Section>
 

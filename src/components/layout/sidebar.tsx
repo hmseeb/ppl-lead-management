@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import {
   LayoutDashboard, Users, ShoppingCart, FileText,
-  AlertCircle, Activity, Phone, Settings, LogOut, UserCog,
+  AlertCircle, Activity, Phone, Settings, LogOut, UserCog, BookOpen,
 } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
 import type { Role } from '@/lib/auth/role'
@@ -19,6 +19,7 @@ const allNavItems = [
   { href: '/activity', label: 'Activity', icon: Activity, roles: ['admin', 'marketer'] as Role[] },
   { href: '/calls', label: 'Calls', icon: Phone, roles: ['admin', 'marketer'] as Role[] },
   { href: '/marketers', label: 'Marketers', icon: UserCog, roles: ['admin'] as Role[] },
+  { href: '/docs', label: 'Docs', icon: BookOpen, roles: ['admin', 'marketer'] as Role[] },
   { href: '/settings', label: 'Settings', icon: Settings, roles: ['admin', 'marketer'] as Role[] },
 ]
 

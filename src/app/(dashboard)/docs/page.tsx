@@ -113,6 +113,51 @@ function AdminDocs() {
         <Tip>Leads arriving outside a broker&apos;s contact hours are queued and delivered when the window opens.</Tip>
       </Section>
 
+      {/* Broker Onboarding Webhook */}
+      <Section title="Broker Onboarding Webhook">
+        <p className="text-sm text-foreground/80">
+          Create brokers automatically from GHL via webhook. The broker gets an onboarding URL to complete their setup.
+        </p>
+        <Code>{`POST https://ppl-onboarding.vercel.app/api/webhooks/ghl
+Content-Type: application/json
+
+{
+  "ghl_contact_id": "ghl_abc123",
+  "first_name": "John",
+  "last_name": "Smith",
+  "email": "john@example.com",
+  "phone": "+17025551234",
+  "company_name": "Smith Funding LLC",
+  "primary_vertical": "MCA",
+  "secondary_vertical": "Equipment",
+  "batch_size": 25,
+  "deal_amount": 1500,
+  "create_order": true
+}`}</Code>
+        <FieldTable rows={[
+          ['ghl_contact_id', 'string', 'Required. Unique per broker, used for idempotency.'],
+          ['first_name', 'string', 'Required. Auto title-cased.'],
+          ['last_name', 'string', 'Required. Auto title-cased.'],
+          ['email', 'string', 'Required. Valid email, auto lowercased.'],
+          ['phone', 'string', 'Optional.'],
+          ['company_name', 'string', 'Optional. Used for onboarding URL slug.'],
+          ['primary_vertical', 'string', 'Optional. Pre-populated in onboarding if sent.'],
+          ['secondary_vertical', 'string', 'Optional. Same options as primary.'],
+          ['batch_size', 'number', 'Required. Number of referrals. Max 10,000.'],
+          ['deal_amount', 'number', 'Required. Total deal amount in USD. Max 10,000,000.'],
+          ['create_order', 'boolean', 'Optional (default false). Auto-creates an active lead order.'],
+        ]} />
+        <div className="space-y-2 text-sm text-foreground/80">
+          <p className="font-medium text-foreground">Response:</p>
+          <ul className="list-disc list-inside space-y-1 pl-1">
+            <li><span className="font-medium">created</span> - new broker + onboarding URL returned</li>
+            <li><span className="font-medium">exists</span> - broker already exists, returns existing onboarding URL (idempotent)</li>
+            <li>If <code className="text-xs font-mono bg-black/[0.04] dark:bg-white/[0.06] px-1 rounded">create_order: true</code>, an order is auto-created using batch_size and verticals</li>
+          </ul>
+        </div>
+        <Tip>The onboarding URL is sent to the broker via your GHL workflow. They complete a 7-step setup flow including delivery preferences, contact hours, and policy acceptance.</Tip>
+      </Section>
+
       {/* Lead Routing Engine */}
       <Section title="Lead Routing Engine">
         <p className="text-sm text-foreground/80">

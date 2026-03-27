@@ -10,7 +10,9 @@ import { LeadVolumeChart } from '@/components/dashboard/lead-volume-chart'
 import { ActivityFeed } from '@/components/dashboard/activity-feed'
 import { DashboardFilters } from '@/components/dashboard/dashboard-filters'
 import { RevenueSummarySection } from '@/components/admin/revenue-summary'
-import { getRole, getMarketerBrokerIds } from '@/lib/auth/role'
+import { getRole, getMarketerBrokerIds, getMarketerId } from '@/lib/auth/role'
+import { fetchMarketerToken } from '@/lib/queries/marketers'
+import { MarketerTokenDisplay } from '@/components/marketers/marketer-token-display'
 import type { DashboardFilters as DashboardFiltersType } from '@/lib/types/dashboard-filters'
 
 export default async function DashboardPage({
@@ -21,6 +23,8 @@ export default async function DashboardPage({
   const params = await searchParams
   const role = await getRole()
   const brokerIds = role === 'marketer' ? await getMarketerBrokerIds() : undefined
+  const marketerId = role === 'marketer' ? await getMarketerId() : null
+  const marketerToken = marketerId ? await fetchMarketerToken(marketerId) : null
 
   const filters: DashboardFiltersType = {
     date_preset: params.date_preset || undefined,
@@ -63,6 +67,7 @@ export default async function DashboardPage({
           <div className="h-px flex-1 bg-gradient-to-r from-red-500/10 to-transparent" />
         </div>
         <DashboardFilters brokers={brokers} />
+        {marketerToken && <MarketerTokenDisplay token={marketerToken} />}
         <KpiCards data={kpis} previousData={previousKpis} />
         <DeliveryStatsCards data={deliveryStats} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -15,7 +15,7 @@ import { MarketerForm } from './marketer-form'
 import { MarketerBrokerAssign } from './marketer-broker-assign'
 import { deleteMarketer } from '@/lib/actions/marketers'
 import { inviteMarketerToPortal } from '@/lib/actions/marketer-magic-link'
-import { Pencil, Trash2, Users, Plus, Mail, Loader2 } from 'lucide-react'
+import { Pencil, Trash2, Users, Plus, Mail, Loader2, Copy } from 'lucide-react'
 
 type MarketerRow = {
   id: string
@@ -24,6 +24,7 @@ type MarketerRow = {
   last_name: string
   phone: string | null
   status: string
+  token: string
   created_at: string
   broker_count: number
   marketer_brokers: { broker_id: string }[]
@@ -102,6 +103,7 @@ export function MarketersTable({ marketers, allBrokers }: MarketersTableProps) {
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
+              <TableHead>API Token</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Brokers</TableHead>
               <TableHead>Created</TableHead>
@@ -116,6 +118,22 @@ export function MarketersTable({ marketers, allBrokers }: MarketersTableProps) {
                 </TableCell>
                 <TableCell>{marketer.email}</TableCell>
                 <TableCell>{marketer.phone || '-'}</TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-1">
+                    <code className="font-mono text-xs">{marketer.token.slice(0, 12)}...</code>
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      title="Copy token"
+                      onClick={() => {
+                        navigator.clipboard.writeText(marketer.token)
+                        toast.success('Token copied')
+                      }}
+                    >
+                      <Copy className="size-3" />
+                    </Button>
+                  </div>
+                </TableCell>
                 <TableCell>
                   <Badge variant={marketer.status === 'active' ? 'default' : 'secondary'}>
                     {marketer.status}

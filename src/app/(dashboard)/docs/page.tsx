@@ -540,7 +540,7 @@ function MarketerDocs() {
         <div className="space-y-2 text-sm text-foreground/80">
           <p className="font-medium text-foreground">Required fields:</p>
           <ul className="list-disc list-inside space-y-1 pl-1">
-            <li><code className="text-xs font-mono bg-black/[0.04] dark:bg-white/[0.06] px-1 rounded">ghl_contact_id</code> - a unique ID for each lead (used for dedup)</li>
+            <li>Either <code className="text-xs font-mono bg-black/[0.04] dark:bg-white/[0.06] px-1 rounded">ghl_contact_id</code> or <code className="text-xs font-mono bg-black/[0.04] dark:bg-white/[0.06] px-1 rounded">phone</code> - at least one is needed for dedup</li>
           </ul>
         </div>
         <div className="space-y-2 text-sm text-foreground/80">
@@ -556,7 +556,7 @@ function MarketerDocs() {
       {/* Field Reference */}
       <Section title="Field Reference">
         <FieldTable rows={[
-          ['ghl_contact_id', 'string', 'Required. Unique per lead.'],
+          ['ghl_contact_id', 'string', 'Optional. Unique per lead. Either this or phone is required.'],
           ['vertical', 'string', '"MCA", "SBA", "Equipment", etc.'],
           ['first_name', 'string', 'Optional.'],
           ['last_name', 'string', 'Optional.'],

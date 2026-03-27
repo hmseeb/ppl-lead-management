@@ -26,6 +26,43 @@ export async function POST(request: Request) {
   const data = result.data
   const supabase = createAdminClient()
 
+  // 2b. Check for marketer Bearer token
+  let marketerId: string | null = null
+  let scopedBrokerIds: string[] | undefined = undefined
+
+  const authHeader = request.headers.get('authorization')
+  if (authHeader && authHeader.toLowerCase().startsWith('bearer ')) {
+    const token = authHeader.slice(7).trim()
+    const { data: marketer } = await supabase
+      .from('marketers')
+      .select('id, status')
+      .eq('token', token)
+      .single()
+
+    if (!marketer) {
+      return NextResponse.json({ error: 'invalid_token' }, { status: 401 })
+    }
+    if (marketer.status !== 'active') {
+      return NextResponse.json({ error: 'marketer_inactive' }, { status: 403 })
+    }
+
+    marketerId = marketer.id
+
+    const { data: assignments } = await supabase
+      .from('marketer_brokers')
+      .select('broker_id')
+      .eq('marketer_id', marketer.id)
+
+    scopedBrokerIds = (assignments ?? []).map(a => a.broker_id)
+
+    if (scopedBrokerIds.length === 0) {
+      return NextResponse.json(
+        { error: 'no_brokers_assigned', message: 'Marketer has no brokers assigned' },
+        { status: 400 }
+      )
+    }
+  }
+
   // 3. Idempotency check: SELECT first by ghl_contact_id
   const { data: existing } = await supabase
     .from('leads')
@@ -74,6 +111,7 @@ export async function POST(request: Request) {
       ai_call_notes: data.ai_call_notes ?? null,
       ai_call_status: data.ai_call_status ?? null,
       ghl_contact_id: data.ghl_contact_id,
+      marketer_id: marketerId,
       raw_payload: body as Json,
       status: 'pending',
     })
@@ -151,7 +189,7 @@ export async function POST(request: Request) {
   // 6. Trigger assignment engine
   let assignment
   try {
-    assignment = await assignLead(lead.id)
+    assignment = await assignLead(lead.id, scopedBrokerIds)
   } catch (err) {
     const reason = err instanceof Error ? err.message : 'unknown error'
     console.error(`assignLead failed for ${lead.id}:`, reason)

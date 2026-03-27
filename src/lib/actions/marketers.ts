@@ -22,6 +22,8 @@ export async function createMarketer(data: {
     return { error: 'A marketer with this email already exists' }
   }
 
+  const token = 'mkt_' + crypto.randomUUID()
+
   const { error } = await supabase
     .from('marketers')
     .insert({
@@ -29,6 +31,7 @@ export async function createMarketer(data: {
       first_name: data.first_name.trim(),
       last_name: data.last_name.trim(),
       phone: data.phone?.trim() || null,
+      token,
     })
 
   if (error) {

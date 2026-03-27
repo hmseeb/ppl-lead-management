@@ -9,7 +9,7 @@ export interface AssignmentResult {
   reason?: string
 }
 
-export async function assignLead(leadId: string): Promise<AssignmentResult> {
+export async function assignLead(leadId: string, brokerIds?: string[]): Promise<AssignmentResult> {
   const supabase = createAdminClient()
 
   // 1. Fetch lead data for scoring
@@ -38,8 +38,13 @@ export async function assignLead(leadId: string): Promise<AssignmentResult> {
     throw new Error(`Failed to fetch orders: ${ordersError.message}`)
   }
 
+  // 2b. Scope to marketer's brokers if provided
+  const candidateOrders = brokerIds && brokerIds.length > 0
+    ? (rawOrders ?? []).filter((o: any) => brokerIds.includes(o.broker_id))
+    : (rawOrders ?? [])
+
   // 3. Transform to scoring input format
-  const orders: OrderForScoring[] = (rawOrders ?? []).map((o: any) => ({
+  const orders: OrderForScoring[] = candidateOrders.map((o: any) => ({
     id: o.id,
     broker_id: o.broker_id,
     status: o.status,

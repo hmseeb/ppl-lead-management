@@ -16,7 +16,7 @@ export async function fetchMarketers(params: MarketerFilters = {}) {
   let query = supabase
     .from('marketers')
     .select(`
-      id, email, first_name, last_name, phone, status, created_at,
+      id, email, first_name, last_name, phone, status, created_at, token,
       marketer_brokers ( broker_id )
     `, { count: 'exact' })
 
@@ -59,6 +59,16 @@ export async function fetchMarketerDetail(id: string) {
     marketer,
     assignedBrokers: (assignments ?? []).map((a: any) => a.brokers),
   }
+}
+
+export async function fetchMarketerToken(marketerId: string): Promise<string | null> {
+  const supabase = createAdminClient()
+  const { data } = await supabase
+    .from('marketers')
+    .select('token')
+    .eq('id', marketerId)
+    .single()
+  return data?.token ?? null
 }
 
 export async function fetchAllBrokersForAssignment() {

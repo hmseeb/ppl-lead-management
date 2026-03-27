@@ -488,6 +488,7 @@ export type Database = {
           ghl_contact_id: string | null
           id: string
           last_name: string | null
+          marketer_id: string | null
           phone: string | null
           raw_payload: Json | null
           rejection_reason: string | null
@@ -512,6 +513,7 @@ export type Database = {
           ghl_contact_id?: string | null
           id?: string
           last_name?: string | null
+          marketer_id?: string | null
           phone?: string | null
           raw_payload?: Json | null
           rejection_reason?: string | null
@@ -536,6 +538,7 @@ export type Database = {
           ghl_contact_id?: string | null
           id?: string
           last_name?: string | null
+          marketer_id?: string | null
           phone?: string | null
           raw_payload?: Json | null
           rejection_reason?: string | null
@@ -559,6 +562,13 @@ export type Database = {
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "leads_marketer_id_fkey"
+            columns: ["marketer_id"]
+            isOneToOne: false
+            referencedRelation: "marketers"
+            referencedColumns: ["id"]
+          },
         ]
       }
       marketers: {
@@ -569,6 +579,7 @@ export type Database = {
           last_name: string
           phone: string | null
           status: string
+          token: string
           created_at: string
           updated_at: string
         }
@@ -579,6 +590,7 @@ export type Database = {
           last_name: string
           phone?: string | null
           status?: string
+          token?: string
           created_at?: string
           updated_at?: string
         }
@@ -589,6 +601,7 @@ export type Database = {
           last_name?: string
           phone?: string | null
           status?: string
+          token?: string
           created_at?: string
           updated_at?: string
         }

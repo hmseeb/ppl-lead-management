@@ -8,7 +8,7 @@ import { UnassignedFilters } from '@/components/unassigned/unassigned-filters'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { getRole, getMarketerBrokerIds } from '@/lib/auth/role'
+import { getRole } from '@/lib/auth/role'
 
 export default async function UnassignedPage({
   searchParams,
@@ -20,7 +20,6 @@ export default async function UnassignedPage({
   const perPage = 50
   const role = await getRole()
   if (role !== 'admin') redirect('/')
-  const brokerIds = role === 'marketer' ? await getMarketerBrokerIds() : undefined
 
   const [{ data: queue, count }, brokers] = await Promise.all([
     fetchUnassignedQueue({
@@ -29,7 +28,7 @@ export default async function UnassignedPage({
       page,
       per_page: perPage,
     }),
-    fetchActiveBrokersWithOrders(brokerIds),
+    fetchActiveBrokersWithOrders(),
   ])
 
   const totalPages = Math.ceil(count / perPage)

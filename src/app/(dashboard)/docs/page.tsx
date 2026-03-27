@@ -271,7 +271,7 @@ Content-Type: application/json
             Create a new lead and run it through the scoring engine. Accepts an optional <code className="text-xs font-mono bg-black/[0.04] dark:bg-white/[0.06] px-1 rounded">Authorization: Bearer</code> header for marketer-scoped routing.
           </p>
           <FieldTable rows={[
-            ['ghl_contact_id', 'string', 'Required. Unique per lead, used for dedup.'],
+            ['ghl_contact_id', 'string', 'Optional. Unique per lead, used for dedup. Either this or phone is required.'],
             ['vertical', 'string', 'e.g. "MCA", "SBA", "Equipment". Defaults to matching "All" orders.'],
             ['first_name', 'string', 'Optional.'],
             ['last_name', 'string', 'Optional.'],

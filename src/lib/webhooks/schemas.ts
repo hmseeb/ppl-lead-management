@@ -13,7 +13,10 @@ export const incomingLeadSchema = z.object({
   state: z.string().optional(),
   ai_call_notes: z.string().optional(),
   ai_call_status: z.string().optional(),
-  ghl_contact_id: z.string().min(1),
-})
+  ghl_contact_id: z.string().min(1).optional(),
+}).refine(
+  (data) => data.ghl_contact_id || data.phone,
+  { message: 'Either ghl_contact_id or phone is required', path: ['ghl_contact_id'] }
+)
 
 export type IncomingLeadPayload = z.infer<typeof incomingLeadSchema>

@@ -64,21 +64,39 @@ export async function POST(request: Request) {
     }
   }
 
-  // 3. Idempotency check: SELECT first by ghl_contact_id
-  const { data: existing } = await supabase
-    .from('leads')
-    .select('id')
-    .eq('ghl_contact_id', data.ghl_contact_id)
-    .maybeSingle()
+  // 3. Idempotency check: ghl_contact_id (if provided)
+  if (data.ghl_contact_id) {
+    const { data: existing } = await supabase
+      .from('leads')
+      .select('id')
+      .eq('ghl_contact_id', data.ghl_contact_id)
+      .maybeSingle()
 
-  if (existing) {
-    return NextResponse.json(
-      { lead_id: existing.id, status: 'duplicate', message: 'lead already exists' },
-      { status: 200 }
-    )
+    if (existing) {
+      return NextResponse.json(
+        { lead_id: existing.id, status: 'duplicate', message: 'lead already exists' },
+        { status: 200 }
+      )
+    }
   }
 
-  // 3a. Email + phone dedup (VALID-04)
+  // 3a. Phone-only dedup (covers Retell leads without ghl_contact_id)
+  if (!data.ghl_contact_id && data.phone) {
+    const { data: phoneDup } = await supabase
+      .from('leads')
+      .select('id')
+      .eq('phone', data.phone)
+      .maybeSingle()
+
+    if (phoneDup) {
+      return NextResponse.json(
+        { lead_id: phoneDup.id, status: 'duplicate', message: 'lead already exists' },
+        { status: 200 }
+      )
+    }
+  }
+
+  // 3b. Email + phone dedup (VALID-04)
   if (data.email && data.phone) {
     const { data: emailPhoneDup } = await supabase
       .from('leads')
@@ -111,7 +129,7 @@ export async function POST(request: Request) {
       state: data.state ?? null,
       ai_call_notes: data.ai_call_notes ?? null,
       ai_call_status: data.ai_call_status ?? null,
-      ghl_contact_id: data.ghl_contact_id,
+      ghl_contact_id: data.ghl_contact_id ?? null,
       marketer_id: marketerId,
       raw_payload: body as Json,
       status: 'pending',

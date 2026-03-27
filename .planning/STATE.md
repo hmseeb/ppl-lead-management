@@ -38,6 +38,7 @@ Recent decisions affecting current work:
 - [quick-5]: UpcomingCallbacks converted to client component with own data fetching for date range browsing
 - [quick-6]: Broker auth migrated from magic_links table + GHL edge function to Supabase Auth signInWithOtp
 - [quick-7]: Marketer role uses filtered admin dashboard (not separate portal), many-to-many broker assignment, magic link auth
+- [quick-8]: Marketer reassignment is direct broker-to-broker transfer (not unassign+re-route like admin), validates against marketer_brokers scope
 - [quick-8]: Marketer reassignment targets specific broker+order (not routing engine), distinct activity log event_type
 
 ### Pending Todos

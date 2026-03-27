@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 Phase: 37 of 37 (Call Reporting Dashboard)
 Plan: 2 of 2 in current phase
 Status: All plans executed, pending verification
-Last activity: 2026-03-26 - Completed quick task 7: Build marketer role system with auth + admin management
+Last activity: 2026-03-27 - Completed quick task 8: Allow marketers to reassign leads between brokers
 
 Progress: [██████████] 100% (6/6 plans)
 
@@ -38,6 +38,7 @@ Recent decisions affecting current work:
 - [quick-5]: UpcomingCallbacks converted to client component with own data fetching for date range browsing
 - [quick-6]: Broker auth migrated from magic_links table + GHL edge function to Supabase Auth signInWithOtp
 - [quick-7]: Marketer role uses filtered admin dashboard (not separate portal), many-to-many broker assignment, magic link auth
+- [quick-8]: Marketer reassignment targets specific broker+order (not routing engine), distinct activity log event_type
 
 ### Pending Todos
 
@@ -55,9 +56,10 @@ None.
 | 5 | Enhance upcoming callbacks with day grouping and date range | 2026-03-26 | 8602dc5 | [5-enhance-upcoming-callbacks-with-day-grou](./quick/5-enhance-upcoming-callbacks-with-day-grou/) |
 | 6 | Migrate broker auth to Supabase Auth magic links | 2026-03-26 | 59cc5de | [6-migrate-broker-auth-to-supabase-auth-mag](./quick/6-migrate-broker-auth-to-supabase-auth-mag/) |
 | 7 | Build marketer role system with auth + admin management | 2026-03-26 | 5c68840 | [7-build-marketer-role-system-with-auth-adm](./quick/7-build-marketer-role-system-with-auth-adm/) |
+| 8 | Allow marketers to reassign leads between brokers | 2026-03-27 | dbf3659 | [8-allow-marketers-to-reassign-leads-betwee](./quick/8-allow-marketers-to-reassign-leads-betwee/) |
 
 ## Session Continuity
 
-Last session: 2026-03-26
-Stopped at: Completed quick-7: Build marketer role system with auth + admin management
+Last session: 2026-03-27
+Stopped at: Completed quick-8: Allow marketers to reassign leads between brokers
 Resume file: None

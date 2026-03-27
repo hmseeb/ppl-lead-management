@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 Phase: 37 of 37 (Call Reporting Dashboard)
 Plan: 2 of 2 in current phase
 Status: All plans executed, pending verification
-Last activity: 2026-03-27 - Completed quick task 8: Allow marketers to reassign leads between brokers
+Last activity: 2026-03-27 - Completed quick task 9: Marketer-scoped lead routing via API tokens
 
 Progress: [██████████] 100% (6/6 plans)
 
@@ -40,6 +40,8 @@ Recent decisions affecting current work:
 - [quick-7]: Marketer role uses filtered admin dashboard (not separate portal), many-to-many broker assignment, magic link auth
 - [quick-8]: Marketer reassignment is direct broker-to-broker transfer (not unassign+re-route like admin), validates against marketer_brokers scope
 - [quick-8]: Marketer reassignment targets specific broker+order (not routing engine), distinct activity log event_type
+- [quick-9]: Bearer token auth on /api/leads/incoming is additive, no-token requests flow unchanged
+- [quick-9]: assignLead brokerIds param is optional for full backward compatibility
 
 ### Pending Todos
 
@@ -58,9 +60,10 @@ None.
 | 6 | Migrate broker auth to Supabase Auth magic links | 2026-03-26 | 59cc5de | [6-migrate-broker-auth-to-supabase-auth-mag](./quick/6-migrate-broker-auth-to-supabase-auth-mag/) |
 | 7 | Build marketer role system with auth + admin management | 2026-03-26 | 5c68840 | [7-build-marketer-role-system-with-auth-adm](./quick/7-build-marketer-role-system-with-auth-adm/) |
 | 8 | Allow marketers to reassign leads between brokers | 2026-03-27 | dbf3659 | [8-allow-marketers-to-reassign-leads-betwee](./quick/8-allow-marketers-to-reassign-leads-betwee/) |
+| 9 | Marketer-scoped lead routing via API tokens | 2026-03-27 | 81d2eaf | [9-marketer-scoped-lead-routing-via-api-tok](./quick/9-marketer-scoped-lead-routing-via-api-tok/) |
 
 ## Session Continuity
 
 Last session: 2026-03-27
-Stopped at: Completed quick-8: Allow marketers to reassign leads between brokers
+Stopped at: Completed quick-9: Marketer-scoped lead routing via API tokens
 Resume file: None

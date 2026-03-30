@@ -3,7 +3,7 @@
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { LogOut, LayoutDashboard, Phone, BarChart3, Package, Users, Receipt, Settings } from 'lucide-react'
+import { LogOut, LayoutDashboard, Phone, BarChart3, Package, Users, Receipt, Settings, HelpCircle } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { brokerLogout } from '@/lib/actions/portal'
 
@@ -15,6 +15,7 @@ const NAV_ITEMS = [
   { href: '/portal/orders', label: 'Orders', icon: Package },
   { href: '/portal/billing', label: 'Billing', icon: Receipt },
   { href: '/portal/settings', label: 'Settings', icon: Settings },
+  { href: '/portal/help', label: 'Help', icon: HelpCircle },
 ] as const
 
 export function PortalHeader({ brokerName }: { brokerName: string }) {

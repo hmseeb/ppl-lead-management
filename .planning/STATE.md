@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-03-30)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** v5.0 Broker Portal Analytics -- Phase 38: Portal Date Range Filters
+**Current focus:** v5.0 Broker Portal Analytics -- Phase 40: Dashboard Enrichment
 
 ## Current Position
 
-Phase: 39 (2 of 5 in v5.0)
-Plan: 2 of 2 in current phase (all plans complete)
+Phase: 40 (3 of 5 in v5.0)
+Plan: 1 of 1 in current phase (all plans complete)
 Status: Phase execution complete, pending verification
-Last activity: 2026-03-30 -- Executed plan 39-02 (upcoming callbacks component + /portal/calls page assembly)
+Last activity: 2026-03-30 -- Executed plan 40-01 (dashboard enrichment queries, components, and layout reorganization)
 
 Progress: 68 plans completed across 37 phases (8 milestones shipped)
 

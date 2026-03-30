@@ -339,7 +339,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 40-01-PLAN.md -- Dashboard queries, enrichment components, and page layout reorganization
+- [x] 40-01-PLAN.md -- Dashboard queries, enrichment components, and page layout reorganization
 
 ### Phase 41: Lead Quality Analytics
 **Goal**: Brokers can understand the quality profile of their leads through credit score distribution and vertical mix breakdowns, available as a dashboard summary and a dedicated analytics page
@@ -381,7 +381,7 @@ Phases execute in numeric order: 38 -> 39 -> 40 -> 41 -> 42
 | 34-37 | v4.0 Callbacks | 6/6 | Complete | 2026-03-25 |
 | 38. Portal Date Range Filters | 1/1 | Complete    | 2026-03-30 | - |
 | 39. Call Reporting Page | 2/2 | Complete    | 2026-03-30 | - |
-| 40. Dashboard Enrichment | v5.0 Analytics | 0/1 | Not started | - |
+| 40. Dashboard Enrichment | v5.0 Analytics | 1/1 | Complete | 2026-03-30 |
 | 41. Lead Quality Analytics | v5.0 Analytics | 0/TBD | Not started | - |
 | 42. Portal Navigation + Polish | v5.0 Analytics | 0/TBD | Not started | - |
 

@@ -16,6 +16,7 @@ interface CallbackRow {
     credit_score: number | null
     funding_amount: number | null
     state: string | null
+    ghl_contact_id: string | null
   }
   broker: {
     id: string
@@ -25,6 +26,7 @@ interface CallbackRow {
     phone: string | null
     company_name: string | null
     crm_webhook_url: string | null
+    ghl_contact_id: string | null
   }
 }
 
@@ -53,6 +55,7 @@ function buildPayload(
       credit_score: row.lead.credit_score,
       funding_amount: row.lead.funding_amount,
       state: row.lead.state,
+      ghl_contact_id: row.lead.ghl_contact_id,
     },
     broker: {
       id: row.broker.id,
@@ -62,6 +65,7 @@ function buildPayload(
       email: row.broker.email,
       phone: row.broker.phone,
       company: row.broker.company_name,
+      ghl_contact_id: row.broker.ghl_contact_id,
     },
   }
 }
@@ -119,11 +123,11 @@ Deno.serve(async (req) => {
       id, scheduled_time, status, notes, created_at,
       lead:leads!callbacks_lead_id_fkey (
         id, first_name, last_name, email, phone,
-        vertical, credit_score, funding_amount, state
+        vertical, credit_score, funding_amount, state, ghl_contact_id
       ),
       broker:brokers!callbacks_broker_id_fkey (
         id, first_name, last_name, email, phone,
-        company_name, crm_webhook_url
+        company_name, crm_webhook_url, ghl_contact_id
       )
     `,
     )

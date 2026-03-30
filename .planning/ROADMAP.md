@@ -372,7 +372,7 @@ Phases execute in numeric order: 38 -> 39 -> 40 -> 41 -> 42
 | 22-29 | v3.0 Portal | 14/14 | Complete | 2026-03-17 |
 | 30-33 | v3.1 Enhancements | 5/5 | Complete | 2026-03-18 |
 | 34-37 | v4.0 Callbacks | 6/6 | Complete | 2026-03-25 |
-| 38. Portal Date Range Filters | 1/1 | Complete   | 2026-03-30 | - |
+| 38. Portal Date Range Filters | 1/1 | Complete    | 2026-03-30 | - |
 | 39. Call Reporting Page | v5.0 Analytics | 0/TBD | Not started | - |
 | 40. Dashboard Enrichment | v5.0 Analytics | 0/TBD | Not started | - |
 | 41. Lead Quality Analytics | v5.0 Analytics | 0/TBD | Not started | - |

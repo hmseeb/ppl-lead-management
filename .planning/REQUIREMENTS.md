@@ -9,12 +9,12 @@ Requirements for Broker Portal Analytics milestone. Each maps to roadmap phases.
 
 ### Call Reporting
 
-- [ ] **CALL-01**: Broker can view total calls, transferred, callbacks booked, no answer, and voicemail counts on a dedicated /portal/calls page
-- [ ] **CALL-02**: Broker can see percentage of total for each call outcome
-- [ ] **CALL-03**: Broker can view a stacked bar chart showing call outcome volume over time (daily/weekly bucketing)
-- [ ] **CALL-04**: Broker can see a list of their upcoming pending callbacks with lead name and scheduled time
-- [ ] **CALL-05**: Broker can filter call reporting data by date range using pill presets (Today, 7d, 30d, 90d)
-- [ ] **CALL-06**: Broker can filter call reporting data by custom date range picker
+- [x] **CALL-01**: Broker can view total calls, transferred, callbacks booked, no answer, and voicemail counts on a dedicated /portal/calls page
+- [x] **CALL-02**: Broker can see percentage of total for each call outcome
+- [x] **CALL-03**: Broker can view a stacked bar chart showing call outcome volume over time (daily/weekly bucketing)
+- [x] **CALL-04**: Broker can see a list of their upcoming pending callbacks with lead name and scheduled time
+- [x] **CALL-05**: Broker can filter call reporting data by date range using pill presets (Today, 7d, 30d, 90d)
+- [x] **CALL-06**: Broker can filter call reporting data by custom date range picker
 
 ### Dashboard Enrichment
 
@@ -76,12 +76,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | UX-01 | Phase 38, Phase 42 | Pending |
 | UX-02 | Phase 38 | Pending |
-| CALL-01 | Phase 39 | Pending |
-| CALL-02 | Phase 39 | Pending |
-| CALL-03 | Phase 39 | Pending |
-| CALL-04 | Phase 39 | Pending |
-| CALL-05 | Phase 39 | Pending |
-| CALL-06 | Phase 39 | Pending |
+| CALL-01 | Phase 39 | Complete |
+| CALL-02 | Phase 39 | Complete |
+| CALL-03 | Phase 39 | Complete |
+| CALL-04 | Phase 39 | Complete |
+| CALL-05 | Phase 39 | Complete |
+| CALL-06 | Phase 39 | Complete |
 | DASH-01 | Phase 40 | Pending |
 | DASH-02 | Phase 40 | Pending |
 | DASH-03 | Phase 40 | Pending |
@@ -103,4 +103,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-03-30*
-*Last updated: 2026-03-30 after roadmap creation*
+*Last updated: 2026-03-30 after Phase 39 completion*

@@ -71,7 +71,7 @@ export function PortalCallKpiCards({ data }: { data: PortalCallKpis }) {
             : null
 
         return (
-          <Card key={card.key} className={`h-full ${card.bgTint}`}>
+          <Card key={card.key} className={`h-full ${card.bgTint} transition-shadow duration-200 hover:shadow-md hover:ring-foreground/15`}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                 {card.title}

@@ -40,7 +40,7 @@ export function PortalCallOutcomeChart({
   )
 
   return (
-    <Card>
+    <Card className="transition-shadow duration-200 hover:shadow-md hover:ring-foreground/15">
       <CardHeader className="flex flex-row items-center gap-2">
         <BarChart3 className="size-4 text-blue-400" />
         <CardTitle className="text-sm font-medium">
@@ -49,7 +49,10 @@ export function PortalCallOutcomeChart({
       </CardHeader>
       <CardContent>
         {!hasData ? (
-          <p className="text-sm text-muted-foreground">No call data yet.</p>
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <BarChart3 className="size-8 text-muted-foreground/30 mb-2" />
+            <p className="text-sm text-muted-foreground">No call data in this period</p>
+          </div>
         ) : (
           <div className="h-[250px]">
             <ResponsiveContainer width="100%" height="100%">

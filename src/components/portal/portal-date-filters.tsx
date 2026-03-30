@@ -49,7 +49,7 @@ export function PortalDateFilters() {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-3 pb-2 border-b border-border/30">
       {/* Pill-style segmented control */}
       <div className="inline-flex items-center rounded-full bg-muted/50 p-0.5">
         {PORTAL_DATE_PRESETS.map((preset) => (

@@ -26,7 +26,7 @@ import type {
 
 export function ActiveOrdersCard({ orders }: { orders: ActiveOrder[] }) {
   return (
-    <Card className="col-span-full">
+    <Card className="col-span-full transition-shadow duration-200 hover:shadow-md hover:ring-foreground/15">
       <CardHeader className="flex flex-row items-center gap-2">
         <Package className="size-4 text-blue-400" />
         <CardTitle className="text-sm font-medium">Active Orders</CardTitle>
@@ -102,7 +102,7 @@ export function ActiveOrdersCard({ orders }: { orders: ActiveOrder[] }) {
 
 export function RecentLeadsCard({ leads }: { leads: RecentLead[] }) {
   return (
-    <Card className="col-span-full">
+    <Card className="col-span-full transition-shadow duration-200 hover:shadow-md hover:ring-foreground/15">
       <CardHeader className="flex flex-row items-center gap-2">
         <Users className="size-4 text-emerald-400" />
         <CardTitle className="text-sm font-medium">Recent Leads</CardTitle>
@@ -201,7 +201,7 @@ export function SpendSummaryCard({ spend }: { spend: SpendSummary }) {
   ]
 
   return (
-    <Card>
+    <Card className="transition-shadow duration-200 hover:shadow-md hover:ring-foreground/15">
       <CardHeader className="flex flex-row items-center gap-2">
         <DollarSign className="size-4 text-emerald-400" />
         <CardTitle className="text-sm font-medium">Spend Summary</CardTitle>
@@ -254,7 +254,7 @@ export function DeliveryHealthCard({ health }: { health: DeliveryHealth[] }) {
     totalDeliveries > 0 ? Math.round((totalSent / totalDeliveries) * 100) : 0
 
   return (
-    <Card>
+    <Card className="transition-shadow duration-200 hover:shadow-md hover:ring-foreground/15">
       <CardHeader className="flex flex-row items-center gap-2">
         <Activity className="size-4 text-violet-400" />
         <CardTitle className="text-sm font-medium">Delivery Health</CardTitle>

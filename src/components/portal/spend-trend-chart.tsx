@@ -13,14 +13,17 @@ export function SpendTrendChart({ data }: { data: MonthlySpend[] }) {
   const hasData = data.length > 0 && data.some((d) => d.totalCents > 0)
 
   return (
-    <Card>
+    <Card className="transition-shadow duration-200 hover:shadow-md hover:ring-foreground/15">
       <CardHeader className="flex flex-row items-center gap-2">
         <TrendingUp className="size-4 text-emerald-400" />
         <CardTitle className="text-sm font-medium">Monthly Spend</CardTitle>
       </CardHeader>
       <CardContent>
         {!hasData ? (
-          <p className="text-sm text-muted-foreground">No spend data yet.</p>
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <TrendingUp className="size-8 text-muted-foreground/30 mb-2" />
+            <p className="text-sm text-muted-foreground">No spend data in this period</p>
+          </div>
         ) : (
           <div className="h-[200px]">
             <ResponsiveContainer width="100%" height="100%">

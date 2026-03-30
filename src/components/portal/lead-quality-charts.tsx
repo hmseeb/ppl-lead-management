@@ -27,14 +27,17 @@ export function CreditScoreHistogram({ data }: { data: CreditTierDistribution })
   const hasData = data.total > 0
 
   return (
-    <Card>
+    <Card className="transition-shadow duration-200 hover:shadow-md hover:ring-foreground/15">
       <CardHeader className="flex flex-row items-center gap-2">
         <BarChart3 className="size-4 text-amber-400" />
         <CardTitle className="text-sm font-medium">Credit Score Distribution</CardTitle>
       </CardHeader>
       <CardContent>
         {!hasData ? (
-          <p className="text-sm text-muted-foreground">No scored leads in this period.</p>
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <BarChart3 className="size-8 text-muted-foreground/30 mb-2" />
+            <p className="text-sm text-muted-foreground">No scored leads in this period</p>
+          </div>
         ) : (
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -101,14 +104,17 @@ export function VerticalMixChart({ data }: { data: VerticalMixData }) {
   const chartHeight = Math.max(200, data.verticals.length * 50)
 
   return (
-    <Card>
+    <Card className="transition-shadow duration-200 hover:shadow-md hover:ring-foreground/15">
       <CardHeader className="flex flex-row items-center gap-2">
         <PieChart className="size-4 text-blue-400" />
         <CardTitle className="text-sm font-medium">Vertical Mix</CardTitle>
       </CardHeader>
       <CardContent>
         {!hasData ? (
-          <p className="text-sm text-muted-foreground">No lead data in this period.</p>
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <PieChart className="size-8 text-muted-foreground/30 mb-2" />
+            <p className="text-sm text-muted-foreground">No lead data in this period</p>
+          </div>
         ) : (
           <div style={{ height: chartHeight }}>
             <ResponsiveContainer width="100%" height="100%">
@@ -177,7 +183,7 @@ export function VerticalMixChart({ data }: { data: VerticalMixData }) {
 
 export function CompactCreditTiers({ data }: { data: CreditTierDistribution }) {
   return (
-    <Card>
+    <Card className="transition-shadow duration-200 hover:shadow-md hover:ring-foreground/15">
       <CardHeader className="flex flex-row items-center gap-2">
         <BarChart3 className="size-4 text-amber-400" />
         <CardTitle className="text-sm font-medium">Credit Score Tiers</CardTitle>
@@ -212,7 +218,7 @@ export function CompactCreditTiers({ data }: { data: CreditTierDistribution }) {
 
 export function CompactVerticalMix({ data }: { data: VerticalMixData }) {
   return (
-    <Card>
+    <Card className="transition-shadow duration-200 hover:shadow-md hover:ring-foreground/15">
       <CardHeader className="flex flex-row items-center gap-2">
         <PieChart className="size-4 text-blue-400" />
         <CardTitle className="text-sm font-medium">Vertical Mix</CardTitle>

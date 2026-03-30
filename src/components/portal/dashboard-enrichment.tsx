@@ -40,14 +40,17 @@ export function LeadVolumeTrendChart({
   const hasData = data.length > 0 && data.some((d) => d.count > 0)
 
   return (
-    <Card>
+    <Card className="transition-shadow duration-200 hover:shadow-md hover:ring-foreground/15">
       <CardHeader className="flex flex-row items-center gap-2">
         <TrendingUp className="size-4 text-blue-400" />
         <CardTitle className="text-sm font-medium">Lead Volume</CardTitle>
       </CardHeader>
       <CardContent>
         {!hasData ? (
-          <p className="text-sm text-muted-foreground">No lead data yet.</p>
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <TrendingUp className="size-8 text-muted-foreground/30 mb-2" />
+            <p className="text-sm text-muted-foreground">No lead data in this period</p>
+          </div>
         ) : (
           <div className="h-[200px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -138,7 +141,7 @@ export function CallSummaryCard({
   ]
 
   return (
-    <Card>
+    <Card className="transition-shadow duration-200 hover:shadow-md hover:ring-foreground/15">
       <CardHeader className="flex flex-row items-center gap-2">
         <Phone className="size-4 text-blue-400" />
         <CardTitle className="text-sm font-medium">Call Summary</CardTitle>
@@ -182,7 +185,7 @@ function scoreColor(avg: number): string {
 
 export function AvgCreditScoreCard({ data }: { data: AvgCreditScoreData }) {
   return (
-    <Card>
+    <Card className="transition-shadow duration-200 hover:shadow-md hover:ring-foreground/15">
       <CardHeader className="flex flex-row items-center gap-2">
         <BarChart3 className="size-4 text-amber-400" />
         <CardTitle className="text-sm font-medium">Avg. Credit Score</CardTitle>
@@ -217,14 +220,17 @@ export function NextCallbackCard({
     : null
 
   return (
-    <Card className={callback ? 'bg-violet-500/5' : ''}>
+    <Card className={`transition-shadow duration-200 hover:shadow-md hover:ring-foreground/15 ${callback ? 'bg-violet-500/5' : ''}`}>
       <CardHeader className="flex flex-row items-center gap-2">
         <CalendarClock className="size-4 text-violet-500" />
         <CardTitle className="text-sm font-medium">Next Callback</CardTitle>
       </CardHeader>
       <CardContent>
         {!callback ? (
-          <p className="text-sm text-muted-foreground">No upcoming callbacks</p>
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <CalendarClock className="size-8 text-muted-foreground/30 mb-2" />
+            <p className="text-sm text-muted-foreground">No upcoming callbacks</p>
+          </div>
         ) : (
           <div>
             <p className="text-base font-semibold">{leadName}</p>

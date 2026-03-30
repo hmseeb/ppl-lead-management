@@ -10,7 +10,7 @@ export function UpcomingCallbacks({
   callbacks: PortalUpcomingCallback[]
 }) {
   return (
-    <Card>
+    <Card className="transition-shadow duration-200 hover:shadow-md hover:ring-foreground/15">
       <CardHeader className="flex flex-row items-center gap-2">
         <CalendarClock className="size-4 text-violet-500" />
         <CardTitle className="text-sm font-medium">
@@ -22,9 +22,10 @@ export function UpcomingCallbacks({
       </CardHeader>
       <CardContent>
         {callbacks.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            No upcoming callbacks.
-          </p>
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <CalendarClock className="size-8 text-muted-foreground/30 mb-2" />
+            <p className="text-sm text-muted-foreground">No upcoming callbacks</p>
+          </div>
         ) : (
           <div className="divide-y divide-border/50">
             {callbacks.map((cb) => {

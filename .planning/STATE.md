@@ -5,19 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-03-30)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** v5.0 Broker Portal Analytics
+**Current focus:** v5.0 Broker Portal Analytics -- Phase 38: Portal Date Range Filters
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-03-30 — Milestone v5.0 started
+Phase: 38 (1 of 5 in v5.0)
+Plan: 0 of TBD in current phase
+Status: Ready to plan
+Last activity: 2026-03-30 -- Roadmap created for v5.0 milestone (phases 38-42)
+
+Progress: 68 plans completed across 37 phases (8 milestones shipped)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 66 (v1.0: 13, v1.1: 6, v1.2: 4, v2.0: 9, v2.1: 5, v3.0: 14, v3.1: 5, v4.0: 6)
+- Total plans completed: 68 (v1.0: 13, v1.1: 6, v1.2: 4, v2.0: 9, v2.1: 5, v3.0: 14, v3.1: 5, v4.0: 6, plus 6 quick tasks)
 - Phases completed: 37
 - Codebase: ~13,200 LOC TypeScript
 
@@ -28,14 +30,14 @@ Last activity: 2026-03-30 — Milestone v5.0 started
 All decisions logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- [v4.0]: Callbacks use pg_cron (not GHL calendars) for scheduling reminders
-- [v4.0]: Webhook-only notifications to broker CRM (no email/SMS fallback for callbacks)
-- [v4.0]: Four webhook types: callback_created, callback_reminder, callback_due, callback_cancelled
-- [v4.0]: callback_reminder fires 15 min before scheduled time
-- [quick-5]: UpcomingCallbacks converted to client component with own data fetching for date range browsing
-- [quick-6]: Broker auth migrated from magic_links table + GHL edge function to Supabase Auth signInWithOtp
-- [quick-7]: Marketer role uses filtered admin dashboard (not separate portal), many-to-many broker assignment, magic link auth
-- [quick-9]: Bearer token auth on /api/leads/incoming is additive, no-token requests flow unchanged
+- [v5.0]: Client-facing design for all portal analytics (not admin copy-paste)
+- [v5.0]: Shared date range filter bar built first (Phase 38) so all analytics pages consume it
+- [v5.0]: nuqs for URL-persisted date filters (consistent with admin dashboard pattern)
+- [v5.0]: recharts for all charts (already installed, used for admin + portal spend trend)
+- [v5.0]: Reuse admin call-reporting query patterns but build broker-scoped portal versions
+- [v4.0]: Callbacks use pg_cron for scheduling reminders, webhook-only notifications
+- [quick-6]: Broker auth migrated from magic_links to Supabase Auth signInWithOtp
+- [quick-7]: Marketer role uses filtered admin dashboard, many-to-many broker assignment
 
 ### Pending Todos
 
@@ -59,5 +61,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-30
-Stopped at: Milestone v5.0 initialized
+Stopped at: v5.0 roadmap created (phases 38-42)
 Resume file: None

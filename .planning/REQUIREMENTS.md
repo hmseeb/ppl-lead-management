@@ -74,13 +74,33 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| | | |
+| UX-01 | Phase 38, Phase 42 | Pending |
+| UX-02 | Phase 38 | Pending |
+| CALL-01 | Phase 39 | Pending |
+| CALL-02 | Phase 39 | Pending |
+| CALL-03 | Phase 39 | Pending |
+| CALL-04 | Phase 39 | Pending |
+| CALL-05 | Phase 39 | Pending |
+| CALL-06 | Phase 39 | Pending |
+| DASH-01 | Phase 40 | Pending |
+| DASH-02 | Phase 40 | Pending |
+| DASH-03 | Phase 40 | Pending |
+| DASH-04 | Phase 40 | Pending |
+| DASH-05 | Phase 40 | Pending |
+| QUAL-01 | Phase 41 | Pending |
+| QUAL-02 | Phase 41 | Pending |
+| QUAL-03 | Phase 41 | Pending |
+| QUAL-04 | Phase 41 | Pending |
+| QUAL-05 | Phase 41 | Pending |
+| UX-03 | Phase 42 | Pending |
 
 **Coverage:**
-- v5.0 requirements: 20 total
-- Mapped to phases: 0
-- Unmapped: 20
+- v5.0 requirements: 19 total
+- Mapped to phases: 19
+- Unmapped: 0
+
+**Note:** UX-01 spans two phases. Phase 38 establishes the client-facing design system for the filter bar and shared components. Phase 42 applies the final polish pass across all v5.0 components for consistency.
 
 ---
 *Requirements defined: 2026-03-30*
-*Last updated: 2026-03-30 after initial definition*
+*Last updated: 2026-03-30 after roadmap creation*

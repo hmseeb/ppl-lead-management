@@ -9,7 +9,8 @@
 - ✅ **v2.1 Dashboard Analytics** -- Phases 18-21 (shipped 2026-03-17)
 - ✅ **v3.0 Broker Portal** -- Phases 22-29 (shipped 2026-03-17)
 - ✅ **v3.1 Broker Portal Enhancements** -- Phases 30-33 (shipped 2026-03-18)
-- **v4.0 Callback System + Call Reporting** -- Phases 34-37 (in progress)
+- ✅ **v4.0 Callback System + Call Reporting** -- Phases 34-37 (shipped 2026-03-25)
+- **v5.0 Broker Portal Analytics** -- Phases 38-42 (in progress)
 
 ## Phases
 
@@ -88,14 +89,25 @@
 
 </details>
 
-### v4.0 Callback System + Call Reporting
+<details>
+<summary>v4.0 Callback System + Call Reporting (Phases 34-37) -- SHIPPED 2026-03-25</summary>
 
-**Milestone Goal:** Enable callback scheduling when brokers are unavailable during Retell call transfers, with full call outcome logging and a reporting dashboard.
+- [x] Phase 34: Callback API + Broker Availability (2/2 plans)
+- [x] Phase 35: Call Logging (1/1 plan)
+- [x] Phase 36: Callback Scheduling (1/1 plan)
+- [x] Phase 37: Call Reporting Dashboard (2/2 plans)
 
-- [x] **Phase 34: Callback API + Broker Availability** - Callbacks table, booking/cancellation API, immediate webhook notifications, and broker availability in leads lookup (completed 2026-03-25)
-- [x] **Phase 35: Call Logging** - Call logs table and API for Retell to log every call outcome (completed 2026-03-25)
-- [x] **Phase 36: Callback Scheduling** - pg_cron job firing reminder and due-time webhooks for upcoming callbacks (completed 2026-03-25)
-- [x] **Phase 37: Call Reporting Dashboard** - Admin dashboard page with call outcome KPIs, charts, filters, and upcoming callbacks list (completed 2026-03-25)
+</details>
+
+### v5.0 Broker Portal Analytics
+
+**Milestone Goal:** Give brokers a polished, client-facing analytics experience with call reporting, lead quality insights, and enriched dashboard KPIs, all with date range filtering.
+
+- [ ] **Phase 38: Portal Date Range Filters** - Shared date range filter bar and portal query infrastructure for broker-scoped analytics
+- [ ] **Phase 39: Call Reporting Page** - Dedicated /portal/calls page with KPI cards, outcome chart, and upcoming callbacks
+- [ ] **Phase 40: Dashboard Enrichment** - New dashboard cards for lead volume trend, credit score, call summary, and next callback
+- [ ] **Phase 41: Lead Quality Analytics** - Credit score distribution, vertical mix breakdown on dashboard and dedicated /portal/analytics page
+- [ ] **Phase 42: Portal Navigation + Polish** - Updated nav with Calls and Analytics links, final design polish pass across all new components
 
 ## Phase Details
 
@@ -235,6 +247,9 @@
 
 </details>
 
+<details>
+<summary>v4.0 Phase Details (Shipped)</summary>
+
 ### Phase 34: Callback API + Broker Availability
 **Goal**: Retell can book and cancel callbacks for unavailable brokers, with immediate webhook notification to the broker's CRM
 **Depends on**: Nothing (first phase of v4.0, builds on existing brokers + leads tables and webhook infrastructure)
@@ -245,11 +260,7 @@
   3. DELETE /api/callbacks/[id] marks the callback as cancelled and immediately fires a callback_cancelled webhook to the broker's crm_webhook_url
   4. GET /api/leads/lookup response includes the matched broker's contact_hours, timezone, and weekend_pause fields
   5. All callback webhooks include the type field (callback_created, callback_cancelled) plus full lead and broker details in the payload
-**Plans**: 2 plans
-
-Plans:
-- [x] 34-01-PLAN.md -- Callbacks table, booking API, cancellation API, and immediate webhook notifications
-- [x] 34-02-PLAN.md -- Broker availability extension to leads lookup endpoint
+**Plans**: 2 plans (complete)
 
 ### Phase 35: Call Logging
 **Goal**: Retell can log every call outcome so the system has a complete record of all calls for reporting
@@ -259,10 +270,7 @@ Plans:
   1. POST /api/call-logs with lead_id, broker_id, outcome, duration, and retell_call_id creates a call log record and returns 201
   2. The outcome field only accepts the four valid values: transferred, callback_booked, no_answer, voicemail
   3. Call logs are queryable by broker_id and date range (needed by Phase 37 reporting)
-**Plans**: 1 plan
-
-Plans:
-- [x] 35-01-PLAN.md -- Call logs table, API endpoint, and input validation
+**Plans**: 1 plan (complete)
 
 ### Phase 36: Callback Scheduling
 **Goal**: Brokers receive automated reminder and due-time webhook notifications for upcoming callbacks without any manual intervention
@@ -273,10 +281,7 @@ Plans:
   2. A pg_cron job fires a callback_due webhook to the broker's crm_webhook_url at the callback's scheduled time
   3. Only pending (non-cancelled, non-completed) callbacks receive reminder and due webhooks
   4. Webhooks include the same full lead + broker payload format as callback_created (type discriminator: callback_reminder, callback_due)
-**Plans**: 1 plan
-
-Plans:
-- [x] 36-01-PLAN.md -- pg_cron scheduler and edge function for callback reminder and due-time webhooks
+**Plans**: 1 plan (complete)
 
 ### Phase 37: Call Reporting Dashboard
 **Goal**: Admin can see a complete picture of call activity and upcoming callbacks from a dedicated reporting page
@@ -287,16 +292,72 @@ Plans:
   2. A call outcome chart (bar or area) shows outcome distribution over time, adapting to the selected date range
   3. A broker dropdown filter scopes all KPIs and charts to a single broker's data
   4. An upcoming callbacks section lists scheduled callbacks with lead name, broker name, scheduled time, and status
-**Plans**: 2 plans
+**Plans**: 2 plans (complete)
 
-Plans:
-- [ ] 37-01-PLAN.md -- Call reporting page with KPI cards and broker/date filters
-- [ ] 37-02-PLAN.md -- Call outcome chart and upcoming callbacks list
+</details>
+
+### Phase 38: Portal Date Range Filters
+**Goal**: Brokers can filter all portal analytics by date range using pill presets and a custom date picker, with a shared component and query infrastructure reusable across portal pages
+**Depends on**: Nothing (first phase of v5.0, builds on existing portal layout and admin date filter patterns)
+**Requirements**: UX-01, UX-02
+**Success Criteria** (what must be TRUE):
+  1. A portal-specific date range filter bar renders pill-style preset buttons (Today, 7d, 30d, 90d) and a custom date range picker with a polished, client-facing design distinct from the admin filter bar
+  2. Selecting a date range preset or custom range persists the selection in the URL via nuqs so the filter survives page refresh and is shareable
+  3. Portal query helpers in src/lib/portal/queries.ts accept date range parameters and correctly scope data by both broker_id and the selected date range
+  4. The filter bar component is designed as a reusable shared component importable by /portal/calls, /portal/analytics, and the dashboard page
+**Plans**: TBD
+
+### Phase 39: Call Reporting Page
+**Goal**: Brokers can view their call activity on a dedicated /portal/calls page with KPI cards, an outcome trend chart, and a list of upcoming callbacks
+**Depends on**: Phase 38 (date range filter bar and query infrastructure)
+**Requirements**: CALL-01, CALL-02, CALL-03, CALL-04, CALL-05, CALL-06
+**Success Criteria** (what must be TRUE):
+  1. Broker sees /portal/calls with KPI cards showing their total calls, transferred count, callbacks booked, no answer count, and voicemail count, each with a percentage-of-total indicator
+  2. A stacked bar chart shows the broker's call outcome volume over time with daily or weekly bucketing depending on the selected date range
+  3. An upcoming callbacks section lists the broker's pending callbacks with lead name and scheduled time, sorted by soonest first
+  4. The date range filter bar (from Phase 38) controls all KPIs, the chart, and the callbacks list on this page
+  5. All components use client-facing design (polished cards, clean typography, professional color palette, not copied from admin)
+**Plans**: TBD
+
+### Phase 40: Dashboard Enrichment
+**Goal**: Brokers see richer insights on their portal home with lead volume trends, credit score averages, call summaries, and next callback awareness
+**Depends on**: Phase 38 (date range filtering for trend data), Phase 39 (call query helpers established)
+**Requirements**: DASH-01, DASH-02, DASH-03, DASH-04, DASH-05
+**Success Criteria** (what must be TRUE):
+  1. Broker's portal dashboard shows a lead volume trend chart displaying leads received over the selected date range with appropriate time bucketing
+  2. A compact call summary card on the dashboard shows total calls, transfer rate percentage, and the next upcoming callback (if any)
+  3. Broker can see their average credit score across all assigned leads within the selected date range
+  4. A prominent next callback card appears when the broker has pending callbacks, showing lead name and scheduled time
+  5. Changing the dashboard date range filter updates the lead volume trend chart, call summary card, and average credit score in response
+**Plans**: TBD
+
+### Phase 41: Lead Quality Analytics
+**Goal**: Brokers can understand the quality profile of their leads through credit score distribution and vertical mix breakdowns, available as a dashboard summary and a dedicated analytics page
+**Depends on**: Phase 38 (date range filtering), Phase 40 (dashboard structure with new cards)
+**Requirements**: QUAL-01, QUAL-02, QUAL-03, QUAL-04, QUAL-05
+**Success Criteria** (what must be TRUE):
+  1. Broker can see a credit score tier distribution histogram (500-599, 600-679, 680+) showing the count of leads in each tier
+  2. Broker can see a vertical mix breakdown chart showing lead distribution by vertical (e.g., pie or horizontal bar chart)
+  3. A compact lead quality summary (credit score distribution + vertical mix) is displayed on the main dashboard page
+  4. A dedicated /portal/analytics page shows the full lead quality analytics with larger, more detailed charts
+  5. The /portal/analytics page has its own date range filter bar (pill presets + custom picker) that controls all analytics on the page
+**Plans**: TBD
+
+### Phase 42: Portal Navigation + Polish
+**Goal**: Portal navigation is updated with new page links and all v5.0 components receive a final design polish pass for a cohesive client-facing experience
+**Depends on**: Phase 39 (calls page exists), Phase 41 (analytics page exists)
+**Requirements**: UX-03, UX-01
+**Success Criteria** (what must be TRUE):
+  1. Portal sidebar/navigation includes Calls and Analytics links that route to /portal/calls and /portal/analytics respectively
+  2. Navigation highlights the active page correctly when on Calls or Analytics routes
+  3. All v5.0 analytics components (KPI cards, charts, filter bars, callback lists) have consistent spacing, typography, color palette, and hover states across all portal pages
+  4. The overall portal analytics experience feels cohesive and professional, distinct from the admin dashboard aesthetic
+**Plans**: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 34 -> 35 -> 36 -> 37
+Phases execute in numeric order: 38 -> 39 -> 40 -> 41 -> 42
 
 | Phase | Milestone | Plans | Status | Completed |
 |-------|-----------|-------|--------|-----------|
@@ -307,9 +368,11 @@ Phases execute in numeric order: 34 -> 35 -> 36 -> 37
 | 18-21 | v2.1 Analytics | 5/5 | Complete | 2026-03-17 |
 | 22-29 | v3.0 Portal | 14/14 | Complete | 2026-03-17 |
 | 30-33 | v3.1 Enhancements | 5/5 | Complete | 2026-03-18 |
-| 34. Callback API + Broker Availability | 2/2 | Complete    | 2026-03-25 | - |
-| 35. Call Logging | 1/1 | Complete    | 2026-03-25 | - |
-| 36. Callback Scheduling | 1/1 | Complete    | 2026-03-25 | - |
-| 37. Call Reporting Dashboard | 2/2 | Complete    | 2026-03-25 | - |
+| 34-37 | v4.0 Callbacks | 6/6 | Complete | 2026-03-25 |
+| 38. Portal Date Range Filters | v5.0 Analytics | 0/TBD | Not started | - |
+| 39. Call Reporting Page | v5.0 Analytics | 0/TBD | Not started | - |
+| 40. Dashboard Enrichment | v5.0 Analytics | 0/TBD | Not started | - |
+| 41. Lead Quality Analytics | v5.0 Analytics | 0/TBD | Not started | - |
+| 42. Portal Navigation + Polish | v5.0 Analytics | 0/TBD | Not started | - |
 
-**Total: 37 phases, 68 plans across 8 milestones**
+**Total: 42 phases, 68+ plans across 9 milestones**

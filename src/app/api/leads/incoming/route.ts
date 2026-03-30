@@ -3,7 +3,7 @@ import { incomingLeadSchema } from '@/lib/webhooks/schemas'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { assignLead } from '@/lib/assignment/assign'
 import { dispatchDelivery } from '@/lib/delivery/dispatcher'
-import { getContact } from '@/lib/ghl/client'
+import { getContact, searchContactByPhone } from '@/lib/ghl/client'
 import type { Json } from '@/lib/types/database'
 
 export async function POST(request: Request) {
@@ -61,6 +61,14 @@ export async function POST(request: Request) {
         { error: 'no_brokers_assigned', message: 'Marketer has no brokers assigned' },
         { status: 400 }
       )
+    }
+  }
+
+  // 2c. Auto-resolve ghl_contact_id from phone via GHL lookup
+  if (!data.ghl_contact_id && data.phone) {
+    const ghlResult = await searchContactByPhone(data.phone)
+    if (ghlResult.success && ghlResult.contact?.id) {
+      data.ghl_contact_id = ghlResult.contact.id
     }
   }
 

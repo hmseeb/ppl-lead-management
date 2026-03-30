@@ -7,6 +7,12 @@ function getApiToken(): string {
   return token
 }
 
+function getLocationId(): string {
+  const id = process.env.GHL_LOCATION_ID
+  if (!id) throw new Error('GHL_LOCATION_ID environment variable is not set')
+  return id
+}
+
 export interface GhlMessageResult {
   success: boolean
   messageId?: string
@@ -162,6 +168,57 @@ export async function getContact(contactId: string): Promise<GhlContactResult> {
   } catch (err) {
     if (err instanceof Error && err.name === 'TimeoutError') {
       return { success: false, error: 'GHL API request timed out (15s)', statusCode: 0 }
+    }
+    return { success: false, error: err instanceof Error ? err.message : 'unknown_error', statusCode: 0 }
+  }
+}
+
+/** Search GHL contacts by phone number. Returns the first match or null. */
+export async function searchContactByPhone(phone: string): Promise<GhlContactResult> {
+  if (!phone) {
+    return { success: false, error: 'Missing phone number', statusCode: 0 }
+  }
+
+  try {
+    const locationId = getLocationId()
+    const url = `${GHL_BASE_URL}/contacts/?locationId=${locationId}&query=${encodeURIComponent(phone)}&limit=1`
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${getApiToken()}`,
+        'Version': GHL_API_VERSION,
+      },
+      signal: AbortSignal.timeout(10_000),
+    })
+
+    if (!response.ok) {
+      const body = await response.text().catch(() => '')
+      const err = parseGhlError(response.status, body)
+      return { success: false, error: err.error, statusCode: err.statusCode }
+    }
+
+    const data = await response.json()
+    const contacts = data.contacts ?? []
+    if (contacts.length === 0) {
+      return { success: true, contact: undefined }
+    }
+
+    const c = contacts[0]
+    return {
+      success: true,
+      contact: {
+        id: c.id,
+        firstName: c.firstName,
+        lastName: c.lastName,
+        email: c.email,
+        phone: c.phone,
+        companyName: c.companyName,
+        tags: c.tags,
+      },
+    }
+  } catch (err) {
+    if (err instanceof Error && err.name === 'TimeoutError') {
+      return { success: false, error: 'GHL API request timed out (10s)', statusCode: 0 }
     }
     return { success: false, error: err instanceof Error ? err.message : 'unknown_error', statusCode: 0 }
   }

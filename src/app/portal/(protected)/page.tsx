@@ -11,6 +11,8 @@ import {
   fetchBrokerMonthlySpend,
   fetchBrokerLeadVolumeTrend,
   fetchBrokerAvgCreditScore,
+  fetchBrokerCreditTierDistribution,
+  fetchBrokerVerticalMix,
 } from '@/lib/portal/queries'
 import {
   fetchPortalCallKpis,
@@ -29,6 +31,10 @@ import {
   AvgCreditScoreCard,
   NextCallbackCard,
 } from '@/components/portal/dashboard-enrichment'
+import {
+  CompactCreditTiers,
+  CompactVerticalMix,
+} from '@/components/portal/lead-quality-charts'
 import { PortalDateFilters } from '@/components/portal/portal-date-filters'
 import type { PortalDateFilters as PortalDateFiltersType } from '@/lib/types/portal-filters'
 
@@ -57,6 +63,8 @@ export default async function PortalHomePage({
     avgCredit,
     callKpis,
     upcomingCallbacks,
+    creditTiers,
+    verticalMix,
   ] = await Promise.all([
     getPortalBroker(brokerId),
     fetchBrokerActiveOrders(brokerId),
@@ -68,6 +76,8 @@ export default async function PortalHomePage({
     fetchBrokerAvgCreditScore(brokerId, dateFilters),
     fetchPortalCallKpis(brokerId, dateFilters),
     fetchPortalUpcomingCallbacks(brokerId),
+    fetchBrokerCreditTierDistribution(brokerId, dateFilters),
+    fetchBrokerVerticalMix(brokerId, dateFilters),
   ])
 
   return (
@@ -95,6 +105,12 @@ export default async function PortalHomePage({
             kpis={callKpis}
             nextCallback={upcomingCallbacks[0] ?? null}
           />
+        </div>
+
+        {/* Lead Quality Summary */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CompactCreditTiers data={creditTiers} />
+          <CompactVerticalMix data={verticalMix} />
         </div>
 
         {/* Spend + Delivery Health - side by side */}

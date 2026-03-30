@@ -107,7 +107,7 @@
 - [x] **Phase 39: Call Reporting Page** - Dedicated /portal/calls page with KPI cards, outcome chart, and upcoming callbacks (completed 2026-03-30)
 - [x] **Phase 40: Dashboard Enrichment** - New dashboard cards for lead volume trend, credit score, call summary, and next callback (completed 2026-03-30)
 - [x] **Phase 41: Lead Quality Analytics** - Credit score distribution, vertical mix breakdown on dashboard and dedicated /portal/analytics page (completed 2026-03-30)
-- [ ] **Phase 42: Portal Navigation + Polish** - Updated nav with Calls and Analytics links, final design polish pass across all new components
+- [x] **Phase 42: Portal Navigation + Polish** - Updated nav with Calls and Analytics links, final design polish pass across all new components (completed 2026-03-30)
 
 ## Phase Details
 
@@ -390,6 +390,6 @@ Phases execute in numeric order: 38 -> 39 -> 40 -> 41 -> 42
 | 39. Call Reporting Page | 2/2 | Complete    | 2026-03-30 | - |
 | 40. Dashboard Enrichment | v5.0 Analytics | 1/1 | Complete | 2026-03-30 |
 | 41. Lead Quality Analytics | 2/2 | Complete    | 2026-03-30 | - |
-| 42. Portal Navigation + Polish | v5.0 Analytics | 0/1 | Not started | - |
+| 42. Portal Navigation + Polish | 1/1 | Complete   | 2026-03-30 | - |
 
 **Total: 42 phases, 75 plans across 9 milestones**

@@ -1,4 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin'
+import { getPortalDateRange } from '@/lib/types/portal-filters'
+import type { PortalDateFilters } from '@/lib/types/portal-filters'
 
 /**
  * Broker-scoped query helpers for the portal.
@@ -129,18 +131,27 @@ export type RecentLead = {
 
 /**
  * Most recent leads assigned to this broker.
+ * When dateFilters is provided, scopes results to the selected date range.
  */
 export async function fetchBrokerRecentLeads(
   brokerId: string,
-  limit = 20
+  limit = 20,
+  dateFilters?: PortalDateFilters
 ): Promise<RecentLead[]> {
   const supabase = createAdminClient()
-  const { data, error } = await supabase
+  let query = supabase
     .from('leads')
     .select('id, first_name, last_name, vertical, credit_score, assigned_at')
     .eq('assigned_broker_id', brokerId)
     .order('assigned_at', { ascending: false })
     .limit(limit)
+
+  if (dateFilters) {
+    const { from, to } = getPortalDateRange(dateFilters)
+    query = query.gte('assigned_at', from).lte('assigned_at', to)
+  }
+
+  const { data, error } = await query
 
   if (error) return []
   return (data ?? []) as RecentLead[]
@@ -149,6 +160,7 @@ export async function fetchBrokerRecentLeads(
 export type SpendSummary = {
   totalAllTimeCents: number
   totalThisMonthCents: number
+  totalInRangeCents: number
   activeOrderValueCents: number
 }
 
@@ -157,8 +169,12 @@ export type SpendSummary = {
  *
  * Calculates spend from lead_prices table joined against delivered leads.
  * If no prices are configured, returns zeroes.
+ * When dateFilters is provided, totalInRangeCents reflects spend within that range.
  */
-export async function fetchBrokerSpendSummary(brokerId: string): Promise<SpendSummary> {
+export async function fetchBrokerSpendSummary(
+  brokerId: string,
+  dateFilters?: PortalDateFilters
+): Promise<SpendSummary> {
   const supabase = createAdminClient()
 
   // Get all prices (broker-specific + defaults)
@@ -185,8 +201,11 @@ export async function fetchBrokerSpendSummary(brokerId: string): Promise<SpendSu
 
   // If no prices configured, short-circuit
   if (priceMap.size === 0) {
-    return { totalAllTimeCents: 0, totalThisMonthCents: 0, activeOrderValueCents: 0 }
+    return { totalAllTimeCents: 0, totalThisMonthCents: 0, totalInRangeCents: 0, activeOrderValueCents: 0 }
   }
+
+  // Resolve date range for in-range calculation
+  const dateRange = dateFilters ? getPortalDateRange(dateFilters) : null
 
   // Get delivered leads for this broker with vertical + credit_score
   const { data: deliveredLeads } = await supabase
@@ -200,6 +219,7 @@ export async function fetchBrokerSpendSummary(brokerId: string): Promise<SpendSu
 
   let totalAllTime = 0
   let totalThisMonth = 0
+  let totalInRange = 0
 
   for (const lead of deliveredLeads ?? []) {
     const price = lookupPrice(priceMap, lead.vertical, lead.credit_score)
@@ -207,6 +227,9 @@ export async function fetchBrokerSpendSummary(brokerId: string): Promise<SpendSu
       totalAllTime += price
       if (lead.assigned_at && lead.assigned_at >= monthStart) {
         totalThisMonth += price
+      }
+      if (dateRange && lead.assigned_at && lead.assigned_at >= dateRange.from && lead.assigned_at <= dateRange.to) {
+        totalInRange += price
       }
     }
   }
@@ -229,6 +252,7 @@ export async function fetchBrokerSpendSummary(brokerId: string): Promise<SpendSu
   return {
     totalAllTimeCents: totalAllTime,
     totalThisMonthCents: totalThisMonth,
+    totalInRangeCents: totalInRange,
     activeOrderValueCents: activeOrderValue,
   }
 }
@@ -295,13 +319,24 @@ export type DeliveryHealth = {
 
 /**
  * Delivery health grouped by channel for this broker.
+ * When dateFilters is provided, scopes to deliveries within the selected date range.
  */
-export async function fetchBrokerDeliveryHealth(brokerId: string): Promise<DeliveryHealth[]> {
+export async function fetchBrokerDeliveryHealth(
+  brokerId: string,
+  dateFilters?: PortalDateFilters
+): Promise<DeliveryHealth[]> {
   const supabase = createAdminClient()
-  const { data, error } = await supabase
+  let query = supabase
     .from('deliveries')
     .select('channel, status')
     .eq('broker_id', brokerId)
+
+  if (dateFilters) {
+    const { from, to } = getPortalDateRange(dateFilters)
+    query = query.gte('created_at', from).lte('created_at', to)
+  }
+
+  const { data, error } = await query
 
   if (error || !data) return []
 
@@ -549,16 +584,27 @@ export type MonthlySpend = {
  * Monthly spend aggregation for the last N months.
  * Returns one entry per month (zero-filled for months with no orders).
  * Sorted chronologically, oldest first.
+ * When dateFilters is provided, uses the date range instead of "last N months" cutoff.
  */
 export async function fetchBrokerMonthlySpend(
   brokerId: string,
-  months = 12
+  months = 12,
+  dateFilters?: PortalDateFilters
 ): Promise<MonthlySpend[]> {
   const supabase = createAdminClient()
 
-  // Calculate cutoff date
   const now = new Date()
-  const cutoff = new Date(now.getFullYear(), now.getMonth() - months + 1, 1)
+  let cutoff: Date
+
+  if (dateFilters) {
+    const { from } = getPortalDateRange(dateFilters)
+    cutoff = new Date(from)
+    // Align to start of month
+    cutoff.setDate(1)
+    cutoff.setHours(0, 0, 0, 0)
+  } else {
+    cutoff = new Date(now.getFullYear(), now.getMonth() - months + 1, 1)
+  }
 
   const { data, error } = await supabase
     .from('orders')

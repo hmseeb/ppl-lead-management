@@ -26,17 +26,17 @@ Requirements for Broker Portal Analytics milestone. Each maps to roadmap phases.
 
 ### Lead Quality Analytics
 
-- [ ] **QUAL-01**: Broker can see credit score tier distribution (500-599, 600-679, 680+) as a visual histogram
-- [ ] **QUAL-02**: Broker can see vertical mix breakdown as a chart showing lead distribution by vertical
-- [ ] **QUAL-03**: Compact lead quality summary displayed on the main dashboard page
-- [ ] **QUAL-04**: Full lead quality analytics available on a dedicated /portal/analytics page
-- [ ] **QUAL-05**: Analytics page includes date range filtering (pill presets + custom picker)
+- [x] **QUAL-01**: Broker can see credit score tier distribution (500-599, 600-679, 680+) as a visual histogram
+- [x] **QUAL-02**: Broker can see vertical mix breakdown as a chart showing lead distribution by vertical
+- [x] **QUAL-03**: Compact lead quality summary displayed on the main dashboard page
+- [x] **QUAL-04**: Full lead quality analytics available on a dedicated /portal/analytics page
+- [x] **QUAL-05**: Analytics page includes date range filtering (pill presets + custom picker)
 
 ### Portal UX
 
-- [ ] **UX-01**: All new analytics components use client-facing design (polished, clean, not admin copy)
-- [ ] **UX-02**: Date range filter bar uses pill-style selector consistent across calls and analytics pages
-- [ ] **UX-03**: Portal navigation updated with Calls and Analytics links
+- [x] **UX-01**: All new analytics components use client-facing design (polished, clean, not admin copy)
+- [x] **UX-02**: Date range filter bar uses pill-style selector consistent across calls and analytics pages
+- [x] **UX-03**: Portal navigation updated with Calls and Analytics links
 
 ## Future Requirements
 
@@ -74,8 +74,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| UX-01 | Phase 38, Phase 42 | Pending |
-| UX-02 | Phase 38 | Pending |
+| UX-01 | Phase 38, Phase 42 | Complete |
+| UX-02 | Phase 38 | Complete |
 | CALL-01 | Phase 39 | Complete |
 | CALL-02 | Phase 39 | Complete |
 | CALL-03 | Phase 39 | Complete |
@@ -87,12 +87,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DASH-03 | Phase 40 | Complete |
 | DASH-04 | Phase 40 | Complete |
 | DASH-05 | Phase 40 | Complete |
-| QUAL-01 | Phase 41 | Pending |
-| QUAL-02 | Phase 41 | Pending |
-| QUAL-03 | Phase 41 | Pending |
-| QUAL-04 | Phase 41 | Pending |
-| QUAL-05 | Phase 41 | Pending |
-| UX-03 | Phase 42 | Pending |
+| QUAL-01 | Phase 41 | Complete |
+| QUAL-02 | Phase 41 | Complete |
+| QUAL-03 | Phase 41 | Complete |
+| QUAL-04 | Phase 41 | Complete |
+| QUAL-05 | Phase 41 | Complete |
+| UX-03 | Phase 42 | Complete |
 
 **Coverage:**
 - v5.0 requirements: 19 total
@@ -103,4 +103,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-03-30*
-*Last updated: 2026-03-30 after Phase 40 completion*
+*Last updated: 2026-03-30 after Phase 42 completion*

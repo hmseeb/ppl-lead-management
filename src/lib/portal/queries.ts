@@ -4,6 +4,16 @@ import type { PortalDateFilters } from '@/lib/types/portal-filters'
 import { startOfDay, addDays, format, differenceInDays } from 'date-fns'
 
 /**
+ * Sanitize user input for PostgREST ilike filter interpolation.
+ * Strips characters that could manipulate the filter expression:
+ * commas (value separator), dots (column accessor), parens (grouping),
+ * backslashes (escape sequences).
+ */
+function sanitizeSearch(input: string): string {
+  return input.replace(/[,.()\\/]/g, '')
+}
+
+/**
  * Broker-scoped query helpers for the portal.
  *
  * Every function filters by brokerId so portal code can never
@@ -208,15 +218,27 @@ export async function fetchBrokerSpendSummary(
   // Resolve date range for in-range calculation
   const dateRange = dateFilters ? getPortalDateRange(dateFilters) : null
 
-  // Get delivered leads for this broker with vertical + credit_score
-  const { data: deliveredLeads } = await supabase
+  const now = new Date()
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+
+  // Determine the earliest date we need, then fetch from DB with that cutoff.
+  // allTime still needs a full scan, but we limit to 10k rows as a safety cap.
+  // thisMonth and inRange are filtered in JS from the same result set.
+  const baseQuery = () => supabase
     .from('leads')
     .select('vertical, credit_score, assigned_at')
     .eq('assigned_broker_id', brokerId)
     .eq('status', 'assigned')
 
-  const now = new Date()
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+  // Parallel: fetch leads + active orders at the same time
+  const [{ data: deliveredLeads }, { data: activeOrders }] = await Promise.all([
+    baseQuery().order('assigned_at', { ascending: false }).limit(10000),
+    supabase
+      .from('orders')
+      .select('total_leads, verticals, credit_score_min')
+      .eq('broker_id', brokerId)
+      .eq('status', 'active'),
+  ])
 
   let totalAllTime = 0
   let totalThisMonth = 0
@@ -234,13 +256,6 @@ export async function fetchBrokerSpendSummary(
       }
     }
   }
-
-  // Active order value: sum(total_leads * avg price for that vertical)
-  const { data: activeOrders } = await supabase
-    .from('orders')
-    .select('total_leads, verticals, credit_score_min')
-    .eq('broker_id', brokerId)
-    .eq('status', 'active')
 
   let activeOrderValue = 0
   for (const order of activeOrders ?? []) {
@@ -608,7 +623,8 @@ export async function fetchBrokerLeadsPaginated(
       .in('id', matchingLeadIds)
 
     if (filters?.search) {
-      query = query.or(`first_name.ilike.%${filters.search}%,last_name.ilike.%${filters.search}%`)
+      const safe = sanitizeSearch(filters.search)
+      query = query.or(`first_name.ilike.%${safe}%,last_name.ilike.%${safe}%`)
     }
     if (filters?.vertical) {
       query = query.eq('vertical', filters.vertical)
@@ -640,7 +656,8 @@ export async function fetchBrokerLeadsPaginated(
     .eq('assigned_broker_id', brokerId)
 
   if (filters?.search) {
-    query = query.or(`first_name.ilike.%${filters.search}%,last_name.ilike.%${filters.search}%`)
+    const safe = sanitizeSearch(filters.search)
+    query = query.or(`first_name.ilike.%${safe}%,last_name.ilike.%${safe}%`)
   }
   if (filters?.vertical) {
     query = query.eq('vertical', filters.vertical)

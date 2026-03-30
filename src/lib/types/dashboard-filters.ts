@@ -28,16 +28,25 @@ export function getDateRange(filters: DashboardFilters): { from: string; to: str
   const now = new Date()
 
   if (filters.date_from && filters.date_to) {
+    const from = filters.date_from.includes('T') ? filters.date_from : filters.date_from + 'T00:00:00.000Z'
     return {
-      from: new Date(filters.date_from).toISOString(),
+      from: new Date(from).toISOString(),
       to: new Date(filters.date_to + 'T23:59:59.999Z').toISOString(),
     }
   }
 
   if (filters.date_from && !filters.date_to) {
+    const from = filters.date_from.includes('T') ? filters.date_from : filters.date_from + 'T00:00:00.000Z'
     return {
-      from: new Date(filters.date_from).toISOString(),
+      from: new Date(from).toISOString(),
       to: now.toISOString(),
+    }
+  }
+
+  if (!filters.date_from && filters.date_to) {
+    return {
+      from: new Date(0).toISOString(),
+      to: new Date(filters.date_to + 'T23:59:59.999Z').toISOString(),
     }
   }
 

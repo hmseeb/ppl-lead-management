@@ -14,6 +14,14 @@ export const PORTAL_DATE_PRESETS = [
 ] as const
 
 /**
+ * Parse a date-only string (YYYY-MM-DD) into a UTC Date safely.
+ * Appends T00:00:00.000Z to avoid browser-specific timezone interpretation.
+ */
+function parseDate(dateStr: string): Date {
+  return dateStr.includes('T') ? new Date(dateStr) : new Date(dateStr + 'T00:00:00.000Z')
+}
+
+/**
  * Resolve a PortalDateFilters object into concrete from/to ISO strings.
  * Default preset is '30d' (brokers care about trends more than today's snapshot).
  */
@@ -22,15 +30,22 @@ export function getPortalDateRange(filters: PortalDateFilters): { from: string; 
 
   if (filters.date_from && filters.date_to) {
     return {
-      from: new Date(filters.date_from).toISOString(),
+      from: parseDate(filters.date_from).toISOString(),
       to: new Date(filters.date_to + 'T23:59:59.999Z').toISOString(),
     }
   }
 
   if (filters.date_from && !filters.date_to) {
     return {
-      from: new Date(filters.date_from).toISOString(),
+      from: parseDate(filters.date_from).toISOString(),
       to: now.toISOString(),
+    }
+  }
+
+  if (!filters.date_from && filters.date_to) {
+    return {
+      from: new Date(0).toISOString(),
+      to: new Date(filters.date_to + 'T23:59:59.999Z').toISOString(),
     }
   }
 

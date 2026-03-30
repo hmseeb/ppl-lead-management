@@ -1,38 +1,42 @@
 # Requirements: PPL Lead Management
 
-**Defined:** 2026-03-25
+**Defined:** 2026-03-30
 **Core Value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
 
-## v4.0 Requirements
+## v5.0 Requirements
 
-Requirements for Callback System + Call Reporting milestone. Each maps to roadmap phases.
+Requirements for Broker Portal Analytics milestone. Each maps to roadmap phases.
 
-### Callbacks
+### Call Reporting
 
-- [x] **CALL-01**: Retell can book a callback via POST /api/callbacks with lead_id, broker_id, and scheduled time
-- [x] **CALL-02**: Callback booking immediately fires callback_created webhook to broker's crm_webhook_url
-- [x] **CALL-03**: pg_cron fires callback_reminder webhook 15 minutes before scheduled time
-- [x] **CALL-04**: pg_cron fires callback_due webhook at the scheduled callback time
-- [x] **CALL-05**: Admin or Retell can cancel a callback via DELETE /api/callbacks/[id]
-- [x] **CALL-06**: Cancellation fires callback_cancelled webhook to broker's crm_webhook_url
-- [x] **CALL-07**: All webhooks include full lead + broker payload with type discriminator
+- [ ] **CALL-01**: Broker can view total calls, transferred, callbacks booked, no answer, and voicemail counts on a dedicated /portal/calls page
+- [ ] **CALL-02**: Broker can see percentage of total for each call outcome
+- [ ] **CALL-03**: Broker can view a stacked bar chart showing call outcome volume over time (daily/weekly bucketing)
+- [ ] **CALL-04**: Broker can see a list of their upcoming pending callbacks with lead name and scheduled time
+- [ ] **CALL-05**: Broker can filter call reporting data by date range using pill presets (Today, 7d, 30d, 90d)
+- [ ] **CALL-06**: Broker can filter call reporting data by custom date range picker
 
-### Call Logging
+### Dashboard Enrichment
 
-- [x] **LOG-01**: Retell can log call outcomes via POST /api/call-logs
-- [x] **LOG-02**: Call log captures: lead_id, broker_id, outcome, duration, retell_call_id
-- [x] **LOG-03**: Supported outcomes: transferred, callback_booked, no_answer, voicemail
+- [ ] **DASH-01**: Broker can see a lead volume trend chart on the dashboard showing leads received over time
+- [ ] **DASH-02**: Broker can see a compact call summary card with total calls, transfer rate, and next upcoming callback
+- [ ] **DASH-03**: Broker can see their average credit score across all assigned leads
+- [ ] **DASH-04**: Broker can see a prominent next callback card with lead name and scheduled time when callbacks are pending
+- [ ] **DASH-05**: Dashboard date range filter affects lead volume trend and call summary cards
 
-### Broker Availability
+### Lead Quality Analytics
 
-- [x] **AVAIL-01**: GET /api/leads/lookup returns broker contact_hours, timezone, and weekend_pause in response
+- [ ] **QUAL-01**: Broker can see credit score tier distribution (500-599, 600-679, 680+) as a visual histogram
+- [ ] **QUAL-02**: Broker can see vertical mix breakdown as a chart showing lead distribution by vertical
+- [ ] **QUAL-03**: Compact lead quality summary displayed on the main dashboard page
+- [ ] **QUAL-04**: Full lead quality analytics available on a dedicated /portal/analytics page
+- [ ] **QUAL-05**: Analytics page includes date range filtering (pill presets + custom picker)
 
-### Reporting
+### Portal UX
 
-- [x] **RPT-01**: Admin dashboard page showing call outcome KPI cards (total calls, transferred, callbacks booked, no answer, voicemail)
-- [x] **RPT-02**: Call outcome chart with date range filtering
-- [x] **RPT-03**: Broker filter scoping all reporting KPIs to a single broker
-- [x] **RPT-04**: Upcoming callbacks list showing scheduled callbacks with lead/broker details
+- [ ] **UX-01**: All new analytics components use client-facing design (polished, clean, not admin copy)
+- [ ] **UX-02**: Date range filter bar uses pill-style selector consistent across calls and analytics pages
+- [ ] **UX-03**: Portal navigation updated with Calls and Analytics links
 
 ## Future Requirements
 
@@ -40,25 +44,29 @@ Deferred to future release.
 
 ### Callback Enhancements
 
-- **CALL-08**: Callback rescheduling (change time without cancel+rebook)
-- **CALL-09**: Max callback attempts before marking lead as unreachable
-- **CALL-10**: Email/SMS fallback notification to broker (in addition to webhook)
+- **CALL-07**: Callback rescheduling (change time without cancel+rebook)
+- **CALL-08**: Max callback attempts before marking lead as unreachable
+- **CALL-09**: Email/SMS fallback notification to broker (in addition to webhook)
 
 ### Reporting Enhancements
 
-- **RPT-05**: Broker-facing call history in portal
-- **RPT-06**: Call outcome CSV export
-- **RPT-07**: Conversion tracking (callback -> deal closed)
+- **RPT-01**: Call outcome CSV export
+- **RPT-02**: Conversion tracking (callback -> deal closed)
+
+### Portal Enhancements
+
+- **PORT-01**: Broker can mark callbacks as completed from portal
+- **PORT-02**: Real-time updates on portal analytics via Supabase Realtime
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| GHL calendar integration | pg_cron handles scheduling, brokers can't see GHL calendars in main sub-account |
-| Lead self-service booking UI | Retell handles conversation, no web form needed |
-| Real-time call monitoring | Out of scope for callback scheduling |
-| Call recording storage | Retell handles this natively |
-| Priority callbacks | All callbacks treated equally, no queue jumping |
+| Admin-style drill-down tables on KPI cards | Not appropriate for client-facing portal |
+| Broker column in call data | Portal data is already broker-scoped |
+| Callback completion from portal | Deferred, handled through Retell/admin for now |
+| Real-time portal updates | Polling/refresh sufficient for broker use case |
+| Call recording playback | Retell handles this natively |
 
 ## Traceability
 
@@ -66,27 +74,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CALL-01 | Phase 34 | Complete |
-| CALL-02 | Phase 34 | Complete |
-| CALL-03 | Phase 36 | Complete |
-| CALL-04 | Phase 36 | Complete |
-| CALL-05 | Phase 34 | Complete |
-| CALL-06 | Phase 34 | Complete |
-| CALL-07 | Phase 34 | Complete |
-| LOG-01 | Phase 35 | Complete |
-| LOG-02 | Phase 35 | Complete |
-| LOG-03 | Phase 35 | Complete |
-| AVAIL-01 | Phase 34 | Complete |
-| RPT-01 | Phase 37 | Complete |
-| RPT-02 | Phase 37 | Complete |
-| RPT-03 | Phase 37 | Complete |
-| RPT-04 | Phase 37 | Complete |
+| | | |
 
 **Coverage:**
-- v4.0 requirements: 15 total
-- Mapped to phases: 15
-- Unmapped: 0
+- v5.0 requirements: 20 total
+- Mapped to phases: 0
+- Unmapped: 20
 
 ---
-*Requirements defined: 2026-03-25*
-*Last updated: 2026-03-25 after roadmap creation*
+*Requirements defined: 2026-03-30*
+*Last updated: 2026-03-30 after initial definition*

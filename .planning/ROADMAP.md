@@ -305,7 +305,10 @@
   2. Selecting a date range preset or custom range persists the selection in the URL via nuqs so the filter survives page refresh and is shareable
   3. Portal query helpers in src/lib/portal/queries.ts accept date range parameters and correctly scope data by both broker_id and the selected date range
   4. The filter bar component is designed as a reusable shared component importable by /portal/calls, /portal/analytics, and the dashboard page
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 38-01-PLAN.md -- Portal date filter types, reusable filter bar component, date-range-aware portal queries, and dashboard integration
 
 ### Phase 39: Call Reporting Page
 **Goal**: Brokers can view their call activity on a dedicated /portal/calls page with KPI cards, an outcome trend chart, and a list of upcoming callbacks
@@ -369,10 +372,10 @@ Phases execute in numeric order: 38 -> 39 -> 40 -> 41 -> 42
 | 22-29 | v3.0 Portal | 14/14 | Complete | 2026-03-17 |
 | 30-33 | v3.1 Enhancements | 5/5 | Complete | 2026-03-18 |
 | 34-37 | v4.0 Callbacks | 6/6 | Complete | 2026-03-25 |
-| 38. Portal Date Range Filters | v5.0 Analytics | 0/TBD | Not started | - |
+| 38. Portal Date Range Filters | v5.0 Analytics | 0/1 | Not started | - |
 | 39. Call Reporting Page | v5.0 Analytics | 0/TBD | Not started | - |
 | 40. Dashboard Enrichment | v5.0 Analytics | 0/TBD | Not started | - |
 | 41. Lead Quality Analytics | v5.0 Analytics | 0/TBD | Not started | - |
 | 42. Portal Navigation + Polish | v5.0 Analytics | 0/TBD | Not started | - |
 
-**Total: 42 phases, 68+ plans across 9 milestones**
+**Total: 42 phases, 69+ plans across 9 milestones**

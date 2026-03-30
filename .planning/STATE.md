@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-03-30)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** v5.0 Broker Portal Analytics -- Phase 40: Dashboard Enrichment
+**Current focus:** v5.0 Broker Portal Analytics -- Phase 41: Lead Quality Analytics
 
 ## Current Position
 
-Phase: 40 (3 of 5 in v5.0)
-Plan: 1 of 1 in current phase (all plans complete)
-Status: Phase execution complete, pending verification
-Last activity: 2026-03-30 -- Executed plan 40-01 (dashboard enrichment queries, components, and layout reorganization)
+Phase: 41 (4 of 5 in v5.0)
+Plan: 1 of 2 in current phase (plan 41-01 complete)
+Status: Executing phase 41
+Last activity: 2026-03-30 -- Executed plan 41-01 (credit tier + vertical mix queries and chart components)
 
 Progress: 69 plans completed across 38 phases (8 milestones shipped)
 

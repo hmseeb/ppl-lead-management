@@ -351,7 +351,11 @@ Plans:
   3. A compact lead quality summary (credit score distribution + vertical mix) is displayed on the main dashboard page
   4. A dedicated /portal/analytics page shows the full lead quality analytics with larger, more detailed charts
   5. The /portal/analytics page has its own date range filter bar (pill presets + custom picker) that controls all analytics on the page
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 41-01-PLAN.md -- Credit tier + vertical mix query functions, full-size and compact chart components
+- [ ] 41-02-PLAN.md -- /portal/analytics page assembly and dashboard compact lead quality section
 
 ### Phase 42: Portal Navigation + Polish
 **Goal**: Portal navigation is updated with new page links and all v5.0 components receive a final design polish pass for a cohesive client-facing experience
@@ -382,7 +386,7 @@ Phases execute in numeric order: 38 -> 39 -> 40 -> 41 -> 42
 | 38. Portal Date Range Filters | 1/1 | Complete    | 2026-03-30 | - |
 | 39. Call Reporting Page | 2/2 | Complete    | 2026-03-30 | - |
 | 40. Dashboard Enrichment | v5.0 Analytics | 1/1 | Complete | 2026-03-30 |
-| 41. Lead Quality Analytics | v5.0 Analytics | 0/TBD | Not started | - |
+| 41. Lead Quality Analytics | v5.0 Analytics | 0/2 | Not started | - |
 | 42. Portal Navigation + Polish | v5.0 Analytics | 0/TBD | Not started | - |
 
-**Total: 42 phases, 72+ plans across 9 milestones**
+**Total: 42 phases, 74+ plans across 9 milestones**

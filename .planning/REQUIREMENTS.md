@@ -18,11 +18,11 @@ Requirements for Broker Portal Analytics milestone. Each maps to roadmap phases.
 
 ### Dashboard Enrichment
 
-- [ ] **DASH-01**: Broker can see a lead volume trend chart on the dashboard showing leads received over time
-- [ ] **DASH-02**: Broker can see a compact call summary card with total calls, transfer rate, and next upcoming callback
-- [ ] **DASH-03**: Broker can see their average credit score across all assigned leads
-- [ ] **DASH-04**: Broker can see a prominent next callback card with lead name and scheduled time when callbacks are pending
-- [ ] **DASH-05**: Dashboard date range filter affects lead volume trend and call summary cards
+- [x] **DASH-01**: Broker can see a lead volume trend chart on the dashboard showing leads received over time
+- [x] **DASH-02**: Broker can see a compact call summary card with total calls, transfer rate, and next upcoming callback
+- [x] **DASH-03**: Broker can see their average credit score across all assigned leads
+- [x] **DASH-04**: Broker can see a prominent next callback card with lead name and scheduled time when callbacks are pending
+- [x] **DASH-05**: Dashboard date range filter affects lead volume trend and call summary cards
 
 ### Lead Quality Analytics
 
@@ -82,11 +82,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CALL-04 | Phase 39 | Complete |
 | CALL-05 | Phase 39 | Complete |
 | CALL-06 | Phase 39 | Complete |
-| DASH-01 | Phase 40 | Pending |
-| DASH-02 | Phase 40 | Pending |
-| DASH-03 | Phase 40 | Pending |
-| DASH-04 | Phase 40 | Pending |
-| DASH-05 | Phase 40 | Pending |
+| DASH-01 | Phase 40 | Complete |
+| DASH-02 | Phase 40 | Complete |
+| DASH-03 | Phase 40 | Complete |
+| DASH-04 | Phase 40 | Complete |
+| DASH-05 | Phase 40 | Complete |
 | QUAL-01 | Phase 41 | Pending |
 | QUAL-02 | Phase 41 | Pending |
 | QUAL-03 | Phase 41 | Pending |
@@ -103,4 +103,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-03-30*
-*Last updated: 2026-03-30 after Phase 39 completion*
+*Last updated: 2026-03-30 after Phase 40 completion*

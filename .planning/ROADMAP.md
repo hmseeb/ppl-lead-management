@@ -105,7 +105,7 @@
 
 - [x] **Phase 38: Portal Date Range Filters** - Shared date range filter bar and portal query infrastructure for broker-scoped analytics (completed 2026-03-30)
 - [x] **Phase 39: Call Reporting Page** - Dedicated /portal/calls page with KPI cards, outcome chart, and upcoming callbacks (completed 2026-03-30)
-- [ ] **Phase 40: Dashboard Enrichment** - New dashboard cards for lead volume trend, credit score, call summary, and next callback
+- [x] **Phase 40: Dashboard Enrichment** - New dashboard cards for lead volume trend, credit score, call summary, and next callback (completed 2026-03-30)
 - [ ] **Phase 41: Lead Quality Analytics** - Credit score distribution, vertical mix breakdown on dashboard and dedicated /portal/analytics page
 - [ ] **Phase 42: Portal Navigation + Polish** - Updated nav with Calls and Analytics links, final design polish pass across all new components
 

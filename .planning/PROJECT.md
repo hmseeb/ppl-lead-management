@@ -69,15 +69,21 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 - ✓ Broker delivery transparency (per-lead attempt history with timestamps) — v3.1
 - ✓ Broker CSV export for leads and spend trend charts — v3.1
 
+- ✓ Callback booking API for Retell when broker is unavailable — v4.0
+- ✓ Broker availability in leads lookup response — v4.0
+- ✓ Call logs table + API for Retell call outcome logging — v4.0
+- ✓ Webhook notifications to broker CRM (callback_created, callback_reminder, callback_due, callback_cancelled) — v4.0
+- ✓ pg_cron scheduler for callback reminder and due-time webhooks — v4.0
+- ✓ Callback cancellation API — v4.0
+- ✓ Call reporting dashboard with outcome totals and charts (admin) — v4.0
+
 ### Active
 
-- [ ] Callback booking API for Retell when broker is unavailable
-- [ ] Extend leads lookup endpoint to return broker availability/contact hours
-- [ ] Call logs table + API for Retell to log every call outcome
-- [ ] Webhook notifications to broker CRM: callback_created, callback_reminder, callback_due, callback_cancelled
-- [ ] pg_cron scheduler firing reminder (15 min before) and due (at time) webhooks
-- [ ] Callback cancellation API
-- [ ] Call reporting dashboard with totals and charts (transferred, booked, no answer, voicemail)
+- [ ] Broker-facing call reporting page with KPI cards, outcome chart, upcoming callbacks
+- [ ] Broker dashboard enrichment: lead volume trend, credit score average, call summary, next callback
+- [ ] Lead quality analytics: credit score tier distribution, vertical mix breakdown
+- [ ] Date range filters on broker portal (pill presets + custom date picker)
+- [ ] Client-facing redesign of all analytics components (not admin copy-paste)
 
 ### Out of Scope
 
@@ -95,7 +101,7 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 
 ## Context
 
-- **Current state:** v2.1 shipped. 21 phases, 37 plans, ~12,700 LOC TypeScript.
+- **Current state:** v4.0 shipped. 37 phases, 66 plans, ~13,200 LOC TypeScript.
 - **Tech stack:** Next.js 16, React 19, Supabase (Postgres, Realtime, Edge Functions, Vault, pg_cron, pg_net), Vercel, ShadCN, GHL Conversations API, nuqs, recharts.
 - **Ecosystem:** Second app in PPL suite. PPL Onboarding handles broker onboarding with 7-step wizard and GHL sync.
 - **Lead flow:** Meta/Google ads → landing page → opt-in + soft credit pull → GHL main account → webhook to THIS app → pre-flight validation → score against eligible orders → assign to best-fit → delivery to broker's GHL sub-account → broker automations.
@@ -137,17 +143,16 @@ Leads are matched and delivered to the right broker within seconds of arriving, 
 | Inner join for delivery vertical filtering | Deliveries lack vertical column, join through leads table | ✓ Good |
 
 ---
-## Current Milestone: v4.0 Callback System + Call Reporting
+## Current Milestone: v5.0 Broker Portal Analytics
 
-**Goal:** Enable callback scheduling when brokers are unavailable during Retell call transfers, with full call outcome logging and a reporting dashboard.
+**Goal:** Give brokers a polished, client-facing analytics experience with call reporting, lead quality insights, and enriched dashboard KPIs, all with date range filtering.
 
 **Target features:**
-- Callback booking + cancellation API for Retell integration
-- Broker availability in leads lookup response
-- Call outcome logging from Retell (transferred, callback_booked, no_answer, voicemail)
-- Webhook notifications to broker CRM at callback lifecycle events
-- pg_cron scheduler for reminder and due-time webhook delivery
-- Call reporting dashboard with outcome totals and charts
+- New `/portal/calls` page: call KPI cards, outcome trend chart, upcoming callbacks (read-only)
+- Dashboard enrichment: lead volume trend, average credit score, call summary card, next callback nudge
+- Lead quality section: credit score tier distribution histogram, vertical mix breakdown
+- Date range filters (pill presets + custom date picker) across portal analytics
+- Client-facing redesign of all analytics components (clean, polished, not admin copy)
 
 ---
-*Last updated: 2026-03-25 after v4.0 milestone start*
+*Last updated: 2026-03-30 after v5.0 milestone start*

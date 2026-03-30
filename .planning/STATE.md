@@ -2,25 +2,23 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-25)
+See: .planning/PROJECT.md (updated 2026-03-30)
 
 **Core value:** Leads are matched and delivered to the right broker within seconds of arriving, every time, with full audit trail.
-**Current focus:** v4.0 Callback System + Call Reporting - Phase 37
+**Current focus:** v5.0 Broker Portal Analytics
 
 ## Current Position
 
-Phase: 37 of 37 (Call Reporting Dashboard)
-Plan: 2 of 2 in current phase
-Status: All plans executed, pending verification
-Last activity: 2026-03-27 - Completed quick task 9: Marketer-scoped lead routing via API tokens
-
-Progress: [██████████] 100% (6/6 plans)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-30 — Milestone v5.0 started
 
 ## Performance Metrics
 
 **Velocity:**
 - Total plans completed: 66 (v1.0: 13, v1.1: 6, v1.2: 4, v2.0: 9, v2.1: 5, v3.0: 14, v3.1: 5, v4.0: 6)
-- Phases completed: 35
+- Phases completed: 37
 - Codebase: ~13,200 LOC TypeScript
 
 ## Accumulated Context
@@ -34,14 +32,10 @@ Recent decisions affecting current work:
 - [v4.0]: Webhook-only notifications to broker CRM (no email/SMS fallback for callbacks)
 - [v4.0]: Four webhook types: callback_created, callback_reminder, callback_due, callback_cancelled
 - [v4.0]: callback_reminder fires 15 min before scheduled time
-- [v4.0]: Existing send-alert edge function pattern reusable for callback webhooks
 - [quick-5]: UpcomingCallbacks converted to client component with own data fetching for date range browsing
 - [quick-6]: Broker auth migrated from magic_links table + GHL edge function to Supabase Auth signInWithOtp
 - [quick-7]: Marketer role uses filtered admin dashboard (not separate portal), many-to-many broker assignment, magic link auth
-- [quick-8]: Marketer reassignment is direct broker-to-broker transfer (not unassign+re-route like admin), validates against marketer_brokers scope
-- [quick-8]: Marketer reassignment targets specific broker+order (not routing engine), distinct activity log event_type
 - [quick-9]: Bearer token auth on /api/leads/incoming is additive, no-token requests flow unchanged
-- [quick-9]: assignLead brokerIds param is optional for full backward compatibility
 
 ### Pending Todos
 
@@ -64,6 +58,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27
-Stopped at: Completed quick-9: Marketer-scoped lead routing via API tokens
+Last session: 2026-03-30
+Stopped at: Milestone v5.0 initialized
 Resume file: None

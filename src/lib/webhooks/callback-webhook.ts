@@ -17,6 +17,7 @@ export interface CallbackWebhookParams {
     credit_score: number | null
     funding_amount: number | null
     state: string | null
+    ghl_contact_id: string | null
   }
   broker: {
     id: string
@@ -26,6 +27,7 @@ export interface CallbackWebhookParams {
     phone: string | null
     company_name: string | null
     crm_webhook_url: string | null
+    ghl_contact_id: string | null
   }
 }
 
@@ -49,6 +51,7 @@ export async function fireCallbackWebhook(params: CallbackWebhookParams): Promis
       email: broker.email,
       phone: broker.phone,
       company: broker.company_name,
+      ghl_contact_id: broker.ghl_contact_id,
     },
   }
 

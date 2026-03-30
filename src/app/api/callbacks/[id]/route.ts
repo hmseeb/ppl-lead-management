@@ -48,13 +48,13 @@ export async function DELETE(
   // Fetch lead and broker for webhook payload
   const { data: lead } = await supabase
     .from('leads')
-    .select('id, first_name, last_name, email, phone, vertical, credit_score, funding_amount, state')
+    .select('id, first_name, last_name, email, phone, vertical, credit_score, funding_amount, state, ghl_contact_id')
     .eq('id', callback.lead_id)
     .single()
 
   const { data: broker } = await supabase
     .from('brokers')
-    .select('id, first_name, last_name, email, phone, company_name, crm_webhook_url')
+    .select('id, first_name, last_name, email, phone, company_name, crm_webhook_url, ghl_contact_id')
     .eq('id', callback.broker_id)
     .single()
 
@@ -79,6 +79,7 @@ export async function DELETE(
         credit_score: lead.credit_score,
         funding_amount: lead.funding_amount,
         state: lead.state,
+        ghl_contact_id: lead.ghl_contact_id,
       },
       broker: {
         id: broker.id,
@@ -88,6 +89,7 @@ export async function DELETE(
         phone: broker.phone,
         company_name: broker.company_name,
         crm_webhook_url: broker.crm_webhook_url,
+        ghl_contact_id: broker.ghl_contact_id,
       },
     }).catch(console.error)
   }

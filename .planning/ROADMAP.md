@@ -277,10 +277,12 @@
 **Depends on**: Phase 34 (callbacks table must exist with scheduled_time and status fields)
 **Requirements**: CALL-03, CALL-04
 **Success Criteria** (what must be TRUE):
-  1. A pg_cron job fires a callback_reminder webhook to the broker's crm_webhook_url approximately 15 minutes before the callback's scheduled time
-  2. A pg_cron job fires a callback_due webhook to the broker's crm_webhook_url at the callback's scheduled time
+  1. A pg_cron job fires callback_reminder webhooks at 3 tiers: 24 hours, 2 hours, and 15 minutes before the callback's scheduled time
+  2. A pg_cron job fires a callback_due webhook at the callback's scheduled time
   3. Only pending (non-cancelled, non-completed) callbacks receive reminder and due webhooks
-  4. Webhooks include the same full lead + broker payload format as callback_created (type discriminator: callback_reminder, callback_due)
+  4. Each reminder tier has its own dedup column (reminder_24h_sent_at, reminder_2h_sent_at, reminder_sent_at) preventing duplicate sends
+  5. Webhooks include full lead + broker payload with ghl_contact_id, type discriminator (callback_reminder, callback_due), and reminder_interval (24h, 2h, 15m)
+  6. n8n workflow routes callback_reminder to GHL: email for 24h tier, SMS for 2h/15m tiers, to both lead and broker
 **Plans**: 1 plan (complete)
 
 ### Phase 37: Call Reporting Dashboard

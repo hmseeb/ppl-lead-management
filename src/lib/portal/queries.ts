@@ -704,6 +704,113 @@ export type MonthlySpend = {
  * Sorted chronologically, oldest first.
  * When dateFilters is provided, uses the date range instead of "last N months" cutoff.
  */
+/* ------------------------------------------------------------------ */
+/*  Credit tier distribution                                           */
+/* ------------------------------------------------------------------ */
+
+export type CreditTierDistribution = {
+  tiers: { tier: string; min: number; max: number | null; count: number; color: string }[]
+  total: number
+}
+
+/**
+ * Credit score tier distribution for this broker's leads.
+ * Returns fixed tiers (500-599, 600-679, 680+) with optional Under 500.
+ */
+export async function fetchBrokerCreditTierDistribution(
+  brokerId: string,
+  dateFilters?: PortalDateFilters
+): Promise<CreditTierDistribution> {
+  const supabase = createAdminClient()
+  const { from, to } = getPortalDateRange(dateFilters ?? {})
+
+  const { data: rows } = await supabase
+    .from('leads')
+    .select('credit_score')
+    .eq('assigned_broker_id', brokerId)
+    .not('credit_score', 'is', null)
+    .gte('assigned_at', from)
+    .lte('assigned_at', to)
+
+  const scores = (rows ?? []).map((r) => r.credit_score as number)
+
+  const mainTiers: CreditTierDistribution['tiers'] = [
+    { tier: '500-599', min: 500, max: 599, count: 0, color: '#f43f5e' },
+    { tier: '600-679', min: 600, max: 679, count: 0, color: '#f59e0b' },
+    { tier: '680+', min: 680, max: null, count: 0, color: '#10b981' },
+  ]
+
+  let under500Count = 0
+
+  for (const score of scores) {
+    if (score < 500) {
+      under500Count++
+    } else if (score <= 599) {
+      mainTiers[0].count++
+    } else if (score <= 679) {
+      mainTiers[1].count++
+    } else {
+      mainTiers[2].count++
+    }
+  }
+
+  const tiers: CreditTierDistribution['tiers'] = under500Count > 0
+    ? [{ tier: 'Under 500', min: 0, max: 499, count: under500Count, color: '#6b7280' }, ...mainTiers]
+    : mainTiers
+
+  return { tiers, total: scores.length }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Vertical mix                                                       */
+/* ------------------------------------------------------------------ */
+
+export type VerticalMixData = {
+  verticals: { vertical: string; count: number; percent: number }[]
+  total: number
+}
+
+/**
+ * Vertical distribution for this broker's leads.
+ * Sorted by count descending with percentages.
+ */
+export async function fetchBrokerVerticalMix(
+  brokerId: string,
+  dateFilters?: PortalDateFilters
+): Promise<VerticalMixData> {
+  const supabase = createAdminClient()
+  const { from, to } = getPortalDateRange(dateFilters ?? {})
+
+  const { data: rows } = await supabase
+    .from('leads')
+    .select('vertical')
+    .eq('assigned_broker_id', brokerId)
+    .not('vertical', 'is', null)
+    .gte('assigned_at', from)
+    .lte('assigned_at', to)
+
+  const verticalMap = new Map<string, number>()
+  for (const row of rows ?? []) {
+    const v = row.vertical as string
+    verticalMap.set(v, (verticalMap.get(v) ?? 0) + 1)
+  }
+
+  const total = (rows ?? []).length
+  const verticals = [...verticalMap.entries()]
+    .map(([vertical, count]) => ({
+      vertical,
+      count,
+      percent: total > 0 ? Math.round((count / total) * 100) : 0,
+    }))
+    .sort((a, b) => b.count - a.count)
+
+  return { verticals, total }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Monthly spend trend                                                */
+/* ------------------------------------------------------------------ */
+
 export async function fetchBrokerMonthlySpend(
   brokerId: string,
   months = 12,

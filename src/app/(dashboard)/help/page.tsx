@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { HelpCircle } from 'lucide-react'
+import { getRole } from '@/lib/auth/role'
 
 /* ─────────────────────────── shared components ─────────────────────────── */
 
@@ -10,6 +11,14 @@ function Section({ title, id, children }: { title: string; id?: string; children
       <h2 className="text-lg font-semibold text-foreground">{title}</h2>
       {children}
     </section>
+  )
+}
+
+function Code({ children }: { children: React.ReactNode }) {
+  return (
+    <pre className="rounded-lg bg-black/[0.04] dark:bg-white/[0.04] border border-red-500/10 p-4 text-xs font-mono overflow-x-auto whitespace-pre leading-relaxed text-foreground/80">
+      {children}
+    </pre>
   )
 }
 
@@ -84,9 +93,9 @@ const tocItems = [
   { id: 'scoring-engine', label: 'Scoring Engine' },
 ]
 
-/* ─────────────────────────── page ─────────────────────────── */
+/* ─────────────────────────── admin help ─────────────────────────── */
 
-export default function HelpPage() {
+function AdminHelp() {
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -629,4 +638,417 @@ export default function HelpPage() {
       </Section>
     </div>
   )
+}
+
+/* ─────────────────────────── marketer help ─────────────────────────── */
+
+const marketerTocItems = [
+  { id: 'getting-started', label: 'Getting Started' },
+  { id: 'your-dashboard', label: 'Your Dashboard' },
+  { id: 'sending-leads', label: 'Sending Leads' },
+  { id: 'viewing-leads', label: 'Viewing Leads' },
+  { id: 'managing-brokers', label: 'Managing Brokers' },
+  { id: 'reassigning-leads', label: 'Reassigning Leads' },
+  { id: 'call-reporting', label: 'Call Reporting' },
+  { id: 'settings', label: 'Settings' },
+  { id: 'permissions', label: 'What You Can\'t Do' },
+]
+
+function MarketerHelp() {
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <div className="size-10 rounded-xl bg-red-500/10 border border-red-500/15 flex items-center justify-center">
+          <HelpCircle className="size-5 text-red-700 dark:text-red-400" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-semibold">Marketer Manual</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            Your guide to submitting leads and tracking performance.
+          </p>
+        </div>
+      </div>
+
+      {/* Table of Contents */}
+      <nav className="glass-card rounded-2xl p-5">
+        <p className="text-xs uppercase tracking-wider text-muted-foreground mb-3 font-medium">Quick Navigation</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {marketerTocItems.map((item) => (
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              className="text-sm text-foreground/70 hover:text-red-700 dark:hover:text-red-400 transition-colors"
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
+      </nav>
+
+      {/* ──────────── Getting Started ──────────── */}
+      <Section title="Getting Started" id="getting-started">
+        <div className="space-y-3">
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">Logging in</p>
+            <StepList steps={[
+              'Go to /marketer/login and enter your email address.',
+              'Check your inbox for a magic link. Click it to log in.',
+              'No password needed. The link is single-use and expires after a short time.',
+            ]} />
+          </div>
+
+          <Divider />
+
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">What you can see</p>
+            <p>
+              Everything in your dashboard is scoped to your assigned brokers only.
+              You will never see data from other marketers or brokers that haven&apos;t been assigned to you.
+              All KPIs, charts, leads, and activity are filtered automatically.
+            </p>
+          </div>
+
+          <Divider />
+
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">Dashboard overview</p>
+            <p>
+              The Overview page is your home base. It shows KPIs, charts, and recent activity
+              for your assigned brokers. Use this as your daily snapshot of how things are going.
+            </p>
+          </div>
+        </div>
+      </Section>
+
+      {/* ──────────── Your Dashboard ──────────── */}
+      <Section title="Your Dashboard" id="your-dashboard">
+        <div className="space-y-3">
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p>All KPIs and charts are scoped to your assigned brokers. Here&apos;s what you see:</p>
+          </div>
+          <SimpleTable
+            headers={['KPI', 'What it means']}
+            rows={[
+              ['Total Leads', 'All leads from your brokers in the selected period.'],
+              ['Assigned', 'Leads successfully matched to one of your broker\'s orders.'],
+              ['Unassigned', 'Leads that came in but had no matching order.'],
+              ['Rejected', 'Leads that failed validation (credit too low, missing funding amount).'],
+            ]}
+          />
+
+          <Divider />
+
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">Date range filters</p>
+            <BulletList items={[
+              'Use the date picker at the top to filter all dashboard data by time range.',
+              'Toggle comparison mode to see period-over-period changes (this week vs. last week).',
+              'Date filters apply across Overview, Leads, and Activity pages.',
+            ]} />
+          </div>
+
+          <Divider />
+
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">Understanding the metrics</p>
+            <BulletList items={[
+              'Assignment rate = assigned / total leads. Higher is better.',
+              'If your assignment rate is low, your brokers may need more orders or broader order criteria.',
+              'Charts update in real time. Refresh the page after sending leads to see changes.',
+            ]} />
+          </div>
+        </div>
+      </Section>
+
+      {/* ──────────── Sending Leads ──────────── */}
+      <Section title="Sending Leads" id="sending-leads">
+        <div className="space-y-3">
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">Finding your API token</p>
+            <StepList steps={[
+              'Go to Settings in the sidebar.',
+              'Your API token is displayed there. Click to copy it.',
+              'Keep it safe. Anyone with your token can send leads to your broker pool.',
+            ]} />
+          </div>
+
+          <Divider />
+
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">Making the API call</p>
+          </div>
+          <Code>{`POST https://ppl-leadr-mgmt.vercel.app/api/leads/incoming
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "first_name": "Jane",
+  "last_name": "Doe",
+  "phone": "+15551234567",
+  "vertical": "MCA",
+  "credit_score": 680,
+  "funding_amount": 35000
+}`}</Code>
+
+          <Divider />
+
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">Required fields</p>
+          </div>
+          <SimpleTable
+            headers={['Field', 'Type', 'Notes']}
+            rows={[
+              ['first_name', 'string', 'Lead\'s first name.'],
+              ['last_name', 'string', 'Lead\'s last name.'],
+              ['phone', 'string', 'Phone number, min 7 characters.'],
+              ['vertical', 'string', '"MCA", "SBA", "Equipment", etc.'],
+              ['credit_score', 'number', '300-850. Below 600 is auto-rejected.'],
+              ['funding_amount', 'number', 'Positive number. Missing = rejected.'],
+            ]}
+          />
+
+          <Divider />
+
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">Optional fields</p>
+          </div>
+          <SimpleTable
+            headers={['Field', 'Type', 'Notes']}
+            rows={[
+              ['email', 'string', 'Valid email. Used for deduplication with phone.'],
+              ['business_name', 'string', 'The lead\'s business name.'],
+              ['state', 'string', 'US state code (e.g. "TX") or full name.'],
+              ['ghl_contact_id', 'string', 'GoHighLevel contact ID. Used for dedup if provided.'],
+            ]}
+          />
+
+          <Divider />
+
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">Lead routing</p>
+            <p>
+              When you send a lead with your Bearer token, the system only considers orders
+              from your assigned brokers. The lead is scored against those orders and assigned
+              to the best match. If no order matches, the lead goes to your unassigned queue.
+            </p>
+          </div>
+
+          <Divider />
+
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">Response statuses</p>
+          </div>
+          <SimpleTable
+            headers={['Status', 'What it means']}
+            rows={[
+              ['assigned', 'Lead created and routed to one of your brokers.'],
+              ['unassigned', 'Lead created but no matching order found.'],
+              ['rejected', 'Failed validation (credit below 600, missing funding amount).'],
+              ['duplicate', 'A lead with that phone or contact ID already exists.'],
+            ]}
+          />
+
+          <Divider />
+
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">Sample response (assigned)</p>
+          </div>
+          <Code>{`{
+  "lead_id": "a1b2c3d4-...",
+  "assignment": {
+    "status": "assigned",
+    "broker_id": "f5e6d7c8-...",
+    "order_id": "b9a8c7d6-...",
+    "delivery_ids": ["d1e2f3a4-..."],
+    "delivery_status": "pending"
+  },
+  "broker": {
+    "id": "f5e6d7c8-...",
+    "name": "John Smith",
+    "phone": "+15551234567",
+    "ghl_contact_id": "ghl_broker_abc"
+  }
+}`}</Code>
+          <Tip>A 401 response means your token is invalid or expired. Check Settings for your current token. A specific error about &quot;no brokers assigned&quot; means the admin needs to assign brokers to your account.</Tip>
+        </div>
+      </Section>
+
+      {/* ──────────── Viewing Leads ──────────── */}
+      <Section title="Viewing Leads" id="viewing-leads">
+        <div className="space-y-3">
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p>
+              The Leads page shows all leads from your brokers. This includes leads you sent
+              via the API and any leads routed to your brokers from other sources.
+            </p>
+          </div>
+
+          <Divider />
+
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">Filtering leads</p>
+            <BulletList items={[
+              <><span className="font-medium text-foreground">Status</span> - assigned, unassigned, rejected, duplicate</>,
+              <><span className="font-medium text-foreground">Vertical</span> - MCA, SBA, Equipment, etc.</>,
+              <><span className="font-medium text-foreground">Broker</span> - filter to a specific broker from your pool</>,
+              <><span className="font-medium text-foreground">Date range</span> - narrow down by when the lead was created</>,
+            ]} />
+          </div>
+
+          <Divider />
+
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">Lead detail page</p>
+            <p>
+              Click any lead to see its full details. You&apos;ll see delivery status
+              (pending, delivered, failed), routing audit trail (why it was assigned to
+              that broker), and a timeline of events.
+            </p>
+          </div>
+        </div>
+      </Section>
+
+      {/* ──────────── Managing Brokers ──────────── */}
+      <Section title="Managing Brokers" id="managing-brokers">
+        <div className="space-y-3">
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p>
+              You can view your assigned brokers on the Brokers page. This is read-only.
+              You cannot edit broker settings. That&apos;s admin only.
+            </p>
+          </div>
+
+          <Divider />
+
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">What you can see</p>
+            <BulletList items={[
+              'Broker name, contact info, and company',
+              'Their active orders and remaining order capacity',
+              'Leads delivered to them and delivery success stats',
+              'Contact hours and delivery method configuration',
+            ]} />
+          </div>
+
+          <Tip>If a broker needs changes to their settings, delivery methods, or contact hours, reach out to the admin. You can view but not edit.</Tip>
+        </div>
+      </Section>
+
+      {/* ──────────── Reassigning Leads ──────────── */}
+      <Section title="Reassigning Leads" id="reassigning-leads">
+        <div className="space-y-3">
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">How to reassign</p>
+            <StepList steps={[
+              'Go to Leads in the sidebar.',
+              'Find the lead you want to move.',
+              'Use the reassign action to pick a different broker from your pool.',
+            ]} />
+          </div>
+
+          <Divider />
+
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">Rules</p>
+            <BulletList items={[
+              'You can only reassign to brokers assigned to you.',
+              'You won\'t see brokers outside your assignment in the dropdown.',
+              'The lead\'s routing audit will show the reassignment with a timestamp.',
+            ]} />
+          </div>
+
+          <Divider />
+
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">When to reassign</p>
+            <BulletList items={[
+              'Wrong vertical match (e.g. SBA lead went to an MCA-only broker)',
+              'Broker at capacity or unavailable',
+              'Better fit with another broker based on lead details',
+            ]} />
+          </div>
+        </div>
+      </Section>
+
+      {/* ──────────── Call Reporting ──────────── */}
+      <Section title="Call Reporting" id="call-reporting">
+        <div className="space-y-3">
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p>
+              The Calls page shows call outcomes for your brokers. This tracks what happens
+              after a lead is delivered.
+            </p>
+          </div>
+
+          <Divider />
+
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p className="font-medium text-foreground">What you can do</p>
+            <BulletList items={[
+              'View call outcomes (completed, no answer, voicemail, etc.) for each broker',
+              'Filter by specific broker to see their individual performance',
+              'Track upcoming callbacks so nothing falls through the cracks',
+            ]} />
+          </div>
+
+          <Tip>Callbacks that are overdue are highlighted. Use this to follow up with brokers who haven&apos;t made their scheduled calls.</Tip>
+        </div>
+      </Section>
+
+      {/* ──────────── Settings ──────────── */}
+      <Section title="Settings" id="settings">
+        <div className="space-y-3">
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p>
+              The Settings page shows your API token. This is the only setting you need to manage.
+            </p>
+          </div>
+
+          <Divider />
+
+          <div className="space-y-2 text-sm text-foreground/80">
+            <BulletList items={[
+              'Your API token is used for authenticated lead submission via the API.',
+              'Copy the token and use it as a Bearer token in your API calls.',
+              'Do not share your token. It grants access to send leads to all your assigned brokers.',
+            ]} />
+          </div>
+        </div>
+      </Section>
+
+      {/* ──────────── What You Can't Do ──────────── */}
+      <Section title="What You Can't Do" id="permissions">
+        <div className="space-y-3">
+          <div className="space-y-2 text-sm text-foreground/80">
+            <p>As a marketer, some actions are restricted to admins:</p>
+          </div>
+          <SimpleTable
+            headers={['Action', 'Why it\'s restricted']}
+            rows={[
+              ['Create or edit orders', 'Only admins can create lead orders and set their parameters.'],
+              ['Edit broker settings', 'Delivery methods, contact hours, and broker config are admin-only.'],
+              ['See unassigned queue', 'The global unassigned queue is admin-only.'],
+              ['Manage other marketers', 'You can\'t create, edit, or view other marketer accounts.'],
+              ['See other brokers', 'Your view is strictly scoped to your assigned broker pool.'],
+            ]}
+          />
+
+          <Tip>If you need something outside your access level, contact the admin. They can make changes on your behalf or adjust your broker assignments.</Tip>
+        </div>
+      </Section>
+    </div>
+  )
+}
+
+/* ─────────────────────────── page ─────────────────────────── */
+
+export default async function HelpPage() {
+  const role = await getRole()
+
+  if (role === 'marketer') {
+    return <MarketerHelp />
+  }
+
+  return <AdminHelp />
 }

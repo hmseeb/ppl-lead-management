@@ -149,7 +149,7 @@ export function VerticalMixChart({ data }: { data: VerticalMixData }) {
                       : '0 8px 32px rgba(0, 0, 0, 0.08)',
                     color: isDark ? '#e4e4ec' : '#0c0c12',
                   }}
-                  formatter={(value, _name, props) => {
+                  formatter={(value: any, _name: any, props: any) => {
                     const payload = props?.payload as { vertical: string; percent: number } | undefined
                     return [
                       `${value} (${payload?.percent ?? 0}%)`,

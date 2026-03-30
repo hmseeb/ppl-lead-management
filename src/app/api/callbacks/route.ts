@@ -41,7 +41,7 @@ export async function GET(request: Request) {
   let query = supabase
     .from('callbacks')
     .select(
-      'id, lead_id, broker_id, scheduled_time, status, notes, created_at, updated_at, leads!inner(first_name, last_name), brokers!inner(first_name, last_name)',
+      'id, lead_id, broker_id, scheduled_time, status, notes, created_at, updated_at, leads!inner(first_name, last_name, phone, vertical, credit_score), brokers!inner(first_name, last_name, company_name)',
       { count: 'exact' }
     )
 
@@ -64,8 +64,8 @@ export async function GET(request: Request) {
   }
 
   const callbacks = (data ?? []).map((row: Record<string, unknown>) => {
-    const leads = row.leads as { first_name: string | null; last_name: string | null } | null
-    const brokers = row.brokers as { first_name: string | null; last_name: string | null } | null
+    const leads = row.leads as { first_name: string | null; last_name: string | null; phone: string | null; vertical: string | null; credit_score: number | null } | null
+    const brokers = row.brokers as { first_name: string | null; last_name: string | null; company_name: string | null } | null
     return {
       id: row.id,
       lead_id: row.lead_id,
@@ -78,9 +78,13 @@ export async function GET(request: Request) {
       lead_name: leads
         ? [leads.first_name, leads.last_name].filter(Boolean).join(' ') || null
         : null,
+      lead_phone: leads?.phone ?? null,
+      lead_vertical: leads?.vertical ?? null,
+      lead_credit_score: leads?.credit_score ?? null,
       broker_name: brokers
         ? [brokers.first_name, brokers.last_name].filter(Boolean).join(' ') || null
         : null,
+      broker_company: brokers?.company_name ?? null,
     }
   })
 

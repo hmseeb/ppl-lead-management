@@ -308,7 +308,7 @@
 **Plans**: 1 plan
 
 Plans:
-- [ ] 38-01-PLAN.md -- Portal date filter types, reusable filter bar component, date-range-aware portal queries, and dashboard integration
+- [x] 38-01-PLAN.md -- Portal date filter types, reusable filter bar component, date-range-aware portal queries, and dashboard integration
 
 ### Phase 39: Call Reporting Page
 **Goal**: Brokers can view their call activity on a dedicated /portal/calls page with KPI cards, an outcome trend chart, and a list of upcoming callbacks
@@ -320,7 +320,11 @@ Plans:
   3. An upcoming callbacks section lists the broker's pending callbacks with lead name and scheduled time, sorted by soonest first
   4. The date range filter bar (from Phase 38) controls all KPIs, the chart, and the callbacks list on this page
   5. All components use client-facing design (polished cards, clean typography, professional color palette, not copied from admin)
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 39-01-PLAN.md -- Broker-scoped call queries, portal KPI cards component, and call outcome chart component
+- [ ] 39-02-PLAN.md -- Upcoming callbacks component and /portal/calls page assembly with date filter wiring
 
 ### Phase 40: Dashboard Enrichment
 **Goal**: Brokers see richer insights on their portal home with lead volume trends, credit score averages, call summaries, and next callback awareness
@@ -373,9 +377,9 @@ Phases execute in numeric order: 38 -> 39 -> 40 -> 41 -> 42
 | 30-33 | v3.1 Enhancements | 5/5 | Complete | 2026-03-18 |
 | 34-37 | v4.0 Callbacks | 6/6 | Complete | 2026-03-25 |
 | 38. Portal Date Range Filters | 1/1 | Complete    | 2026-03-30 | - |
-| 39. Call Reporting Page | v5.0 Analytics | 0/TBD | Not started | - |
+| 39. Call Reporting Page | v5.0 Analytics | 0/2 | Not started | - |
 | 40. Dashboard Enrichment | v5.0 Analytics | 0/TBD | Not started | - |
 | 41. Lead Quality Analytics | v5.0 Analytics | 0/TBD | Not started | - |
 | 42. Portal Navigation + Polish | v5.0 Analytics | 0/TBD | Not started | - |
 
-**Total: 42 phases, 69+ plans across 9 milestones**
+**Total: 42 phases, 71+ plans across 9 milestones**

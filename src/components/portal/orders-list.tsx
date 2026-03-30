@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button'
 import { Package, Pause, Play, Loader2, Plus, RefreshCw } from 'lucide-react'
 import { format } from 'date-fns'
 import { brokerPauseOrder, brokerResumeOrder } from '@/lib/actions/portal-self-service'
-import Link from 'next/link'
 
 type Order = {
   id: string
@@ -117,13 +116,9 @@ function OrderRow({ order }: { order: Order }) {
             </Button>
           )}
           {order.status === 'completed' && (
-            <Link
-              href={`/portal/orders/new?reorder_vertical=${encodeURIComponent(order.verticals[0] || '')}&reorder_credit=${order.credit_score_min || ''}&reorder_count=${order.total_leads}`}
-            >
-              <Button variant="outline" size="sm" className="h-7 text-xs">
-                <RefreshCw className="size-3 mr-1" /> Reorder
-              </Button>
-            </Link>
+            <Button variant="outline" size="sm" className="h-7 text-xs opacity-50 cursor-not-allowed" disabled>
+              <RefreshCw className="size-3 mr-1" /> Reorder
+            </Button>
           )}
         </div>
       </div>
@@ -165,11 +160,9 @@ export function OrdersList({ orders }: { orders: Order[] }) {
         <Badge variant="secondary" className="ml-auto text-xs">
           {orders.length}
         </Badge>
-        <Link href="/portal/orders/new">
-          <Button size="sm" variant="outline" className="text-xs h-7">
-            <Plus className="size-3 mr-1" /> New Order
-          </Button>
-        </Link>
+        <Button size="sm" variant="outline" className="text-xs h-7 opacity-50 cursor-not-allowed" disabled>
+          <Plus className="size-3 mr-1" /> New Order
+        </Button>
       </CardHeader>
       <CardContent>
         {orders.length === 0 ? (

@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle, CardAction } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -34,11 +33,9 @@ export function ActiveOrdersCard({ orders }: { orders: ActiveOrder[] }) {
           {orders.length}
         </Badge>
         <CardAction>
-          <Link href="/portal/orders/new">
-            <Button size="sm" variant="outline" className="text-xs h-7">
-              <Plus className="size-3 mr-1" /> New Order
-            </Button>
-          </Link>
+          <Button size="sm" variant="outline" className="text-xs h-7 opacity-50 cursor-not-allowed" disabled>
+            <Plus className="size-3 mr-1" /> New Order
+          </Button>
         </CardAction>
       </CardHeader>
       <CardContent>

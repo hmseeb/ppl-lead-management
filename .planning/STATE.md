@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 ## Current Position
 
 Phase: 38 (1 of 5 in v5.0)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-03-30 -- Roadmap created for v5.0 milestone (phases 38-42)
+Plan: 1 of 1 in current phase
+Status: Phase execution complete, pending verification
+Last activity: 2026-03-30 -- Executed plan 38-01 (portal date filter types, component, query integration)
 
 Progress: 68 plans completed across 37 phases (8 milestones shipped)
 
@@ -30,6 +30,9 @@ Progress: 68 plans completed across 37 phases (8 milestones shipped)
 All decisions logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
+- [38-01]: Portal default date preset is 30d (brokers care about trends, not today's snapshot)
+- [38-01]: Portal filter types independent from admin types (no cross-import)
+- [38-01]: SpendSummary extended with totalInRangeCents for date-scoped spend
 - [v5.0]: Client-facing design for all portal analytics (not admin copy-paste)
 - [v5.0]: Shared date range filter bar built first (Phase 38) so all analytics pages consume it
 - [v5.0]: nuqs for URL-persisted date filters (consistent with admin dashboard pattern)

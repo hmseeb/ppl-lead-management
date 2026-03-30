@@ -103,7 +103,7 @@
 
 **Milestone Goal:** Give brokers a polished, client-facing analytics experience with call reporting, lead quality insights, and enriched dashboard KPIs, all with date range filtering.
 
-- [ ] **Phase 38: Portal Date Range Filters** - Shared date range filter bar and portal query infrastructure for broker-scoped analytics
+- [x] **Phase 38: Portal Date Range Filters** - Shared date range filter bar and portal query infrastructure for broker-scoped analytics (completed 2026-03-30)
 - [ ] **Phase 39: Call Reporting Page** - Dedicated /portal/calls page with KPI cards, outcome chart, and upcoming callbacks
 - [ ] **Phase 40: Dashboard Enrichment** - New dashboard cards for lead volume trend, credit score, call summary, and next callback
 - [ ] **Phase 41: Lead Quality Analytics** - Credit score distribution, vertical mix breakdown on dashboard and dedicated /portal/analytics page
@@ -372,7 +372,7 @@ Phases execute in numeric order: 38 -> 39 -> 40 -> 41 -> 42
 | 22-29 | v3.0 Portal | 14/14 | Complete | 2026-03-17 |
 | 30-33 | v3.1 Enhancements | 5/5 | Complete | 2026-03-18 |
 | 34-37 | v4.0 Callbacks | 6/6 | Complete | 2026-03-25 |
-| 38. Portal Date Range Filters | v5.0 Analytics | 0/1 | Not started | - |
+| 38. Portal Date Range Filters | 1/1 | Complete   | 2026-03-30 | - |
 | 39. Call Reporting Page | v5.0 Analytics | 0/TBD | Not started | - |
 | 40. Dashboard Enrichment | v5.0 Analytics | 0/TBD | Not started | - |
 | 41. Lead Quality Analytics | v5.0 Analytics | 0/TBD | Not started | - |

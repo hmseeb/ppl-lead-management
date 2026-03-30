@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getPortalDateRange } from '@/lib/types/portal-filters'
 import type { PortalDateFilters } from '@/lib/types/portal-filters'
+import { startOfDay, addDays, format, differenceInDays } from 'date-fns'
 
 /**
  * Broker-scoped query helpers for the portal.
@@ -274,6 +275,123 @@ function lookupPrice(
   // Fallback: try lowest tier
   const fallback = priceMap.get(`${vertical}:600`)
   return fallback ?? 0
+}
+
+/* ------------------------------------------------------------------ */
+/*  Lead volume trend                                                  */
+/* ------------------------------------------------------------------ */
+
+export type LeadVolumeTrendData = {
+  data: { date: string; label: string; count: number }[]
+  bucketType: 'daily' | 'weekly'
+  totalDays: number
+}
+
+/**
+ * Lead volume over time for this broker, bucketed daily or weekly.
+ * Follows the same bucketing pattern as fetchPortalCallOutcomeVolume.
+ */
+export async function fetchBrokerLeadVolumeTrend(
+  brokerId: string,
+  dateFilters?: PortalDateFilters
+): Promise<LeadVolumeTrendData> {
+  const supabase = createAdminClient()
+  const { from, to } = getPortalDateRange(dateFilters ?? {})
+  const fromDate = startOfDay(new Date(from))
+  const toDate = new Date(to)
+  const totalDays = Math.max(1, differenceInDays(toDate, fromDate) + 1)
+  const bucketType: 'daily' | 'weekly' = totalDays > 30 ? 'weekly' : 'daily'
+
+  const { data: rows } = await supabase
+    .from('leads')
+    .select('assigned_at')
+    .eq('assigned_broker_id', brokerId)
+    .gte('assigned_at', from)
+    .lte('assigned_at', to)
+
+  // Bucket results in TypeScript
+  const bucketMap = new Map<string, number>()
+
+  for (const row of rows ?? []) {
+    if (!row.assigned_at) continue
+    const rowDate = new Date(row.assigned_at)
+    let bucketKey: string
+
+    if (bucketType === 'daily') {
+      bucketKey = format(startOfDay(rowDate), 'yyyy-MM-dd')
+    } else {
+      const daysSinceStart = differenceInDays(rowDate, fromDate)
+      const weekIndex = Math.floor(daysSinceStart / 7)
+      const weekStart = addDays(fromDate, weekIndex * 7)
+      bucketKey = format(weekStart, 'yyyy-MM-dd')
+    }
+
+    bucketMap.set(bucketKey, (bucketMap.get(bucketKey) ?? 0) + 1)
+  }
+
+  // Build ordered bucket array with zero-fill
+  const data: LeadVolumeTrendData['data'] = []
+
+  if (bucketType === 'daily') {
+    const useShortLabel = totalDays <= 7
+    for (let i = 0; i < totalDays; i++) {
+      const day = addDays(fromDate, i)
+      const key = format(day, 'yyyy-MM-dd')
+      data.push({
+        date: key,
+        label: useShortLabel ? format(day, 'EEE') : format(day, 'MMM d'),
+        count: bucketMap.get(key) ?? 0,
+      })
+    }
+  } else {
+    const weekCount = Math.ceil(totalDays / 7)
+    for (let i = 0; i < weekCount; i++) {
+      const weekStart = addDays(fromDate, i * 7)
+      const key = format(weekStart, 'yyyy-MM-dd')
+      data.push({
+        date: key,
+        label: format(weekStart, 'MMM d'),
+        count: bucketMap.get(key) ?? 0,
+      })
+    }
+  }
+
+  return { data, bucketType, totalDays }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Average credit score                                               */
+/* ------------------------------------------------------------------ */
+
+export type AvgCreditScoreData = {
+  average: number | null
+  count: number
+}
+
+/**
+ * Average credit score across leads assigned to this broker within date range.
+ * Only includes leads with a non-null credit_score.
+ */
+export async function fetchBrokerAvgCreditScore(
+  brokerId: string,
+  dateFilters?: PortalDateFilters
+): Promise<AvgCreditScoreData> {
+  const supabase = createAdminClient()
+  const { from, to } = getPortalDateRange(dateFilters ?? {})
+
+  const { data: rows } = await supabase
+    .from('leads')
+    .select('credit_score')
+    .eq('assigned_broker_id', brokerId)
+    .not('credit_score', 'is', null)
+    .gte('assigned_at', from)
+    .lte('assigned_at', to)
+
+  const scores = (rows ?? []).map((r) => r.credit_score as number)
+  if (scores.length === 0) return { average: null, count: 0 }
+
+  const sum = scores.reduce((acc, s) => acc + s, 0)
+  return { average: Math.round(sum / scores.length), count: scores.length }
 }
 
 /* ------------------------------------------------------------------ */

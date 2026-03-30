@@ -366,7 +366,10 @@ Plans:
   2. Navigation highlights the active page correctly when on Calls or Analytics routes
   3. All v5.0 analytics components (KPI cards, charts, filter bars, callback lists) have consistent spacing, typography, color palette, and hover states across all portal pages
   4. The overall portal analytics experience feels cohesive and professional, distinct from the admin dashboard aesthetic
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 42-01-PLAN.md -- Navigation links for Calls + Analytics, and design consistency polish pass across all v5.0 portal components
 
 ## Progress
 
@@ -387,6 +390,6 @@ Phases execute in numeric order: 38 -> 39 -> 40 -> 41 -> 42
 | 39. Call Reporting Page | 2/2 | Complete    | 2026-03-30 | - |
 | 40. Dashboard Enrichment | v5.0 Analytics | 1/1 | Complete | 2026-03-30 |
 | 41. Lead Quality Analytics | 2/2 | Complete    | 2026-03-30 | - |
-| 42. Portal Navigation + Polish | v5.0 Analytics | 0/TBD | Not started | - |
+| 42. Portal Navigation + Polish | v5.0 Analytics | 0/1 | Not started | - |
 
-**Total: 42 phases, 74+ plans across 9 milestones**
+**Total: 42 phases, 75 plans across 9 milestones**

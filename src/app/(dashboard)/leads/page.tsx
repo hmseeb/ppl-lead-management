@@ -6,6 +6,7 @@ import { fetchActiveBrokersWithOrders } from '@/lib/queries/unassigned'
 import { LeadsFilters } from '@/components/leads/leads-filters'
 import { LeadsDataTable } from '@/components/leads/leads-data-table'
 import { leadsColumns } from '@/components/leads/leads-columns'
+import { ExportLeadsButton } from '@/components/leads/export-leads-button'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -57,6 +58,7 @@ export default async function LeadsPage({
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Leads <span className="text-muted-foreground text-base font-normal">({count})</span></h1>
+          <ExportLeadsButton />
         </div>
         <LeadsFilters brokers={brokers} />
         <LeadsDataTable data={data as any} columns={leadsColumns as any} totalCount={count} brokersWithOrders={brokersWithOrders as any} role={role} />

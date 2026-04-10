@@ -32,11 +32,7 @@ export const brokerSchema = z.object({
   first_name: z.string().min(1, 'First name is required'),
   last_name: z.string().min(1, 'Last name is required'),
   email: z.string().email('Invalid email address'),
-  phone: z
-    .string()
-    .min(7, 'Phone must be at least 7 characters')
-    .or(z.literal(''))
-    .optional(),
+  phone: z.string().optional(),
   company_name: z.string().optional(),
   state: z.string().optional(),
   primary_vertical: z.enum(VERTICALS).or(z.literal('')).optional(),

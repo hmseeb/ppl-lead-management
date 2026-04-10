@@ -137,7 +137,7 @@ export function BrokerForm({ mode = 'create', brokerId, defaultValues }: BrokerF
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 max-w-md">
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-8 max-w-md">
       {/* Basic Info */}
       <fieldset className="space-y-4">
         <legend className="text-base font-medium text-foreground">Basic Info</legend>

@@ -1,5 +1,6 @@
 import { formatDistanceToNow } from 'date-fns'
 import Link from 'next/link'
+import { AlertTriangle } from 'lucide-react'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
@@ -48,9 +49,16 @@ export function BrokersTable({ brokers }: { brokers: BrokerWithStats[] }) {
         {brokers.map((broker) => (
           <TableRow key={broker.id}>
             <TableCell className="font-medium">
-              <Link href={`/brokers/${broker.id}`} className="hover:underline">
-                {broker.first_name} {broker.last_name}
-              </Link>
+              <div className="flex items-center gap-1.5">
+                <Link href={`/brokers/${broker.id}`} className="hover:underline">
+                  {broker.first_name} {broker.last_name}
+                </Link>
+                {!(broker.delivery_methods ?? []).includes('crm_webhook') && (
+                  <span title="CRM Webhook not enabled">
+                    <AlertTriangle className="size-4 text-amber-500" />
+                  </span>
+                )}
+              </div>
             </TableCell>
             <TableCell>{broker.company || '-'}</TableCell>
             <TableCell>

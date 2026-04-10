@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { BrokersTable } from '@/components/brokers/brokers-table'
 import { BrokersFilters } from '@/components/brokers/brokers-filters'
 import { fetchBrokersWithStats } from '@/lib/queries/brokers'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { AlertTriangle, ChevronLeft, ChevronRight } from 'lucide-react'
 import { getRole, getMarketerBrokerIds } from '@/lib/auth/role'
 
 export default async function BrokersPage({
@@ -29,6 +29,9 @@ export default async function BrokersPage({
     per_page: perPage,
   })
   const totalPages = Math.ceil(count / perPage)
+  const brokersWithoutCrm = brokers.filter(
+    (b) => !(b.delivery_methods ?? []).includes('crm_webhook')
+  )
 
   function paginationUrl(p: number) {
     const url = new URLSearchParams()
@@ -51,6 +54,19 @@ export default async function BrokersPage({
         )}
       </div>
       <BrokersFilters />
+      {brokersWithoutCrm.length > 0 && (
+        <div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/30 px-4 py-3">
+          <AlertTriangle className="size-5 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+          <div className="text-sm text-amber-800 dark:text-amber-300">
+            <p className="font-medium">
+              {brokersWithoutCrm.length} broker{brokersWithoutCrm.length > 1 ? 's' : ''} without CRM Webhook enabled
+            </p>
+            <p className="text-amber-700 dark:text-amber-400 mt-0.5">
+              {brokersWithoutCrm.map((b) => `${b.first_name} ${b.last_name}`).join(', ')}
+            </p>
+          </div>
+        </div>
+      )}
       <BrokersTable brokers={brokers} />
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2">

@@ -1,8 +1,12 @@
 import { formatDistanceToNow } from 'date-fns'
 import Link from 'next/link'
+import { AlertTriangle } from 'lucide-react'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
+import {
+  Tooltip, TooltipTrigger, TooltipContent, TooltipProvider,
+} from '@/components/ui/tooltip'
 import { BrokerStatusBadge } from './broker-status-badge'
 import { OnboardingStatusBadge } from './onboarding-status-badge'
 import { BrokerActions } from './broker-actions'
@@ -48,9 +52,21 @@ export function BrokersTable({ brokers }: { brokers: BrokerWithStats[] }) {
         {brokers.map((broker) => (
           <TableRow key={broker.id}>
             <TableCell className="font-medium">
-              <Link href={`/brokers/${broker.id}`} className="hover:underline">
-                {broker.first_name} {broker.last_name}
-              </Link>
+              <div className="flex items-center gap-1.5">
+                <Link href={`/brokers/${broker.id}`} className="hover:underline">
+                  {broker.first_name} {broker.last_name}
+                </Link>
+                {!broker.crm_webhook_url && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="text-amber-500">
+                        <AlertTriangle className="size-4" />
+                      </TooltipTrigger>
+                      <TooltipContent>No CRM webhook configured</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+              </div>
             </TableCell>
             <TableCell>{broker.company || '-'}</TableCell>
             <TableCell>

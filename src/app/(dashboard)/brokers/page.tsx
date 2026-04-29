@@ -5,6 +5,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { Button } from '@/components/ui/button'
 import { BrokersTable } from '@/components/brokers/brokers-table'
 import { BrokersFilters } from '@/components/brokers/brokers-filters'
+import { ExportBrokersButton } from '@/components/brokers/export-brokers-button'
 import { fetchBrokersWithStats } from '@/lib/queries/brokers'
 import { AlertTriangle, ChevronLeft, ChevronRight } from 'lucide-react'
 import { getRole, getMarketerBrokerIds } from '@/lib/auth/role'
@@ -46,11 +47,14 @@ export default async function BrokersPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Brokers <span className="text-muted-foreground text-base font-normal">({count})</span></h1>
-        {role === 'admin' && (
-          <Link href="/brokers/new">
-            <Button>New Broker</Button>
-          </Link>
-        )}
+        <div className="flex items-center gap-2">
+          <ExportBrokersButton />
+          {role === 'admin' && (
+            <Link href="/brokers/new">
+              <Button>New Broker</Button>
+            </Link>
+          )}
+        </div>
       </div>
       {brokersWithoutCrm.length > 0 && (
         <div className="flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-800 dark:bg-amber-950/30">

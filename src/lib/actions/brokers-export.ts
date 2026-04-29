@@ -33,7 +33,7 @@ export async function exportAllBrokersCsv() {
       delivery_methods, crm_webhook_url,
       timezone, contact_hours, custom_hours_start, custom_hours_end, weekend_pause,
       assignment_status, status,
-      created_at, updated_at,
+      created_at,
       orders ( status, leads_delivered, last_assigned_at )
     `)
     .order('created_at', { ascending: false })
@@ -74,7 +74,6 @@ export async function exportAllBrokersCsv() {
     'Total Leads Delivered',
     'Last Delivery Date',
     'Created At',
-    'Updated At',
   ]
 
   const rows = brokers.map((broker) => {
@@ -113,7 +112,6 @@ export async function exportAllBrokersCsv() {
       field(totalLeadsDelivered),
       field(lastDeliveryDate),
       field(broker.created_at),
-      field(broker.updated_at),
     ].join(',')
   })
 
